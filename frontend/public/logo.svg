@@ -1,0 +1,14 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow (brutal offset) -->
+  <rect x="8" y="8" width="48" height="48" rx="6" fill="#000000"/>
+
+  <!-- Main square background -->
+  <rect x="4" y="4" width="48" height="48" rx="6" fill="#f97316" stroke="#000000" stroke-width="3"/>
+
+  <!-- Letter "C" - bold and geometric -->
+  <path d="M 38 20 L 38 16 L 18 16 L 18 44 L 38 44 L 38 40 M 22 20 L 22 40"
+        stroke="#000000"
+        stroke-width="4"
+        stroke-linecap="square"
+        fill="none"/>
+</svg>
