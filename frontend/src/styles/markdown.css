@@ -1,0 +1,248 @@
+/* ===== NEO-BRUTALIST MARKDOWN CONTENT STYLES ===== */
+.markdown-content {
+  color: rgb(15 23 42);
+  line-height: 1.75;
+  font-weight: 500;
+}
+
+/* Headings - Bold typography with thick borders */
+.markdown-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f97316;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 3px solid black;
+}
+
+.markdown-content h2 {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: #f97316;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 3px solid black;
+}
+
+.markdown-content h3 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: rgb(15 23 42);
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.markdown-content h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: rgb(15 23 42);
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Paragraphs - Opaque and bold */
+.markdown-content p {
+  margin-bottom: 1.25rem;
+  color: rgb(15 23 42);
+}
+
+/* Lists - Bold markers and saturated colors */
+.markdown-content ul,
+.markdown-content ol {
+  margin-left: 1.75rem;
+  margin-bottom: 1.25rem;
+  color: rgb(15 23 42);
+}
+
+.markdown-content ul {
+  list-style-type: disc;
+}
+
+.markdown-content ol {
+  list-style-type: decimal;
+}
+
+.markdown-content li {
+  margin-bottom: 0.5rem;
+  padding-left: 0.25rem;
+}
+
+.markdown-content li::marker {
+  color: #f97316;
+  font-size: 1.2em;
+  font-weight: 700;
+}
+
+.markdown-content ul ul,
+.markdown-content ol ul,
+.markdown-content ul ol,
+.markdown-content ol ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Bold and Italic - Strong emphasis */
+.markdown-content strong {
+  font-weight: 700;
+  color: black;
+}
+
+.markdown-content em {
+  font-style: italic;
+  color: rgb(15 23 42);
+}
+
+/* Inline Code - Thick border, bold, saturated background */
+.markdown-content code {
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #ea580c;
+  background-color: #fef3c7;
+  padding: 0.2em 0.5em;
+  border-radius: 0;
+  border: 2px solid black;
+}
+
+/* Code Blocks - Thick border, brutal shadow, saturated background */
+.markdown-content pre {
+  background-color: #fef3c7;
+  border: 3px solid black;
+  border-radius: 0;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.markdown-content pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: rgb(15 23 42);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-weight: 500;
+}
+
+/* Blockquotes - Thick left border, saturated background */
+.markdown-content blockquote {
+  border-left: 4px solid #f97316;
+  background-color: #fff7ed;
+  padding: 1rem 1.5rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  font-weight: 500;
+  color: rgb(15 23 42);
+  border-radius: 0;
+  border: 3px solid black;
+  border-left-width: 6px;
+  border-left-color: #f97316;
+}
+
+.markdown-content blockquote p:last-child {
+  margin-bottom: 0;
+}
+
+/* Links - Thick underline, saturated orange */
+.markdown-content a {
+  color: #f97316;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.markdown-content a:hover {
+  color: #ea580c;
+  text-decoration-thickness: 3px;
+}
+
+/* Tables - Thick borders everywhere */
+.markdown-content table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+  background-color: white;
+  border: 3px solid black;
+  border-radius: 0;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+.markdown-content thead {
+  background-color: #fed7aa;
+}
+
+.markdown-content th {
+  padding: 0.875rem 1rem;
+  text-align: left;
+  font-weight: 700;
+  color: black;
+  border-bottom: 3px solid black;
+  border-right: 2px solid black;
+  font-size: 0.95rem;
+  text-transform: none;
+}
+
+.markdown-content th:last-child {
+  border-right: none;
+}
+
+.markdown-content td {
+  padding: 0.875rem 1rem;
+  border-bottom: 2px solid black;
+  border-right: 2px solid black;
+  color: rgb(15 23 42);
+}
+
+.markdown-content td:last-child {
+  border-right: none;
+}
+
+.markdown-content tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-content tbody tr:hover {
+  background-color: #ffedd5;
+}
+
+/* Horizontal Rule - Thick brutal line */
+.markdown-content hr {
+  border: none;
+  border-top: 3px solid black;
+  margin: 2.5rem 0;
+}
+
+/* Images - Brutal borders and shadow */
+.markdown-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0;
+  margin: 1.5rem 0;
+  border: 3px solid black;
+  box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
+}
+
+/* Task lists - Bold checkboxes */
+.markdown-content input[type="checkbox"] {
+  margin-right: 0.5rem;
+  width: 1.1em;
+  height: 1.1em;
+  border: 2px solid black;
+  border-radius: 0;
+}
+
+/* First element no top margin */
+.markdown-content > *:first-child {
+  margin-top: 0;
+}
+
+/* Last element no bottom margin */
+.markdown-content > *:last-child {
+  margin-bottom: 0;
+}

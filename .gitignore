@@ -1,0 +1,56 @@
+# Test files
+mp3/
+
+# Documentation (local - not to be committed)
+frontend/GLASS_TEXTURE_EXTRACTION.md
+frontend/GLASS_IMPLEMENTATION.md
+doc/temp/
+docs/temp/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+backend/.venv/
+backend/venv/
+backend/ENV/
+backend/env/
+.env
+*.env
+backend/.env
+backend/*.env
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Storage
+backend/storage/
+
+# Logs
+logs/
+*.log
+
+# IDE
+.claude/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+AGENT_CORRECTEUR_PROMPT.md
+ARCHITECTURE_ISSUES.md
+architecture-analysis.md
+architecture-summary.txt
+CODEBASE_ANALYSIS_REPORT.md
+README_ARCHITECTURE_ANALYSIS.md
