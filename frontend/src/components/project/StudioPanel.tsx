@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Alert } from '../ui/feedback';
 import { GenerationControls } from './GenerationControls';
-import { DocumentPreview } from './DocumentPreview';
-import { useGenerateDocument, useDeleteDocument } from '../../hooks/useDocuments';
+import { DocumentsList } from './DocumentsList';
+import { DocumentModal } from '../ui/media';
+import { useGenerateDocument } from '../../hooks/useDocuments';
 import { useSources } from '../../hooks/useSources';
 import { useProject } from '../../hooks/useProjects';
-import { API_BASE_URL, getToken } from '../../lib/api';
+import { updateDocument, deleteDocument as apiDeleteDocument } from '../../lib/api';
+import type { Document } from '../../types';
 
 interface StudioPanelProps {
   projectId: string | number;
@@ -14,20 +16,23 @@ interface StudioPanelProps {
 
 export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
   const { generateDocument } = useGenerateDocument(projectId);
-  const { deleteDocument } = useDeleteDocument(projectId);
   const { project, mutate: mutateProject } = useProject(projectId);
   const { mutate: mutateSources } = useSources(projectId);
 
   const [error, setError] = useState<string | null>(null);
   const [isLaunching, setIsLaunching] = useState(false);
-  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [generatingDocTitle, setGeneratingDocTitle] = useState<string | undefined>(undefined);
+  const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
+  const [docModalOpen, setDocModalOpen] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState<number | null>(null);
 
   const readySources = (project?.sources || []).filter(s => s.processed_content || s.transcript);
   const hasAnyProcessedContent = readySources.length > 0;
-  const generatedDocument = project?.document;
+  const documents = project?.documents || [];
   const documentStatus = project?.document_status?.status;
   const isGenerating = documentStatus === 'pending' || documentStatus === 'in_progress';
 
+  // Poll for updates when generating
   useEffect(() => {
     if (!isGenerating) return;
     const interval = setInterval(() => {
@@ -39,6 +44,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
   const handleGenerateDocument = async (sourceIds: number[], title?: string) => {
     setError(null);
     setIsLaunching(true);
+    setGeneratingDocTitle(title);
     try {
       await generateDocument({ sourceIds, title });
     } catch (err) {
@@ -51,10 +57,15 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
     }
   };
 
-  const handleDeleteDocument = async () => {
+  const handleDeleteDocument = async (documentId: number) => {
     setError(null);
     try {
-      await deleteDocument();
+      await apiDeleteDocument(Number(projectId), documentId);
+      if (selectedDocument?.id === documentId) {
+        setSelectedDocument(null);
+        setDocModalOpen(false);
+      }
+      await mutateProject();
     } catch (err) {
       let errorMessage = 'Erreur lors de la suppression';
       if (err instanceof Error) errorMessage = err.message;
@@ -63,25 +74,28 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
     }
   };
 
-  const updateDocumentTitle = async (title: string) => {
-    const token = getToken();
-    const resp = await fetch(`${API_BASE_URL}/api/projects/${projectId}/documents`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-      },
-      body: JSON.stringify({ title }),
-    });
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({ detail: 'Erreur inconnue' }));
-      throw new Error(err?.detail || 'Echec du renommage');
+  const updateDocumentTitle = async (documentId: number, title: string) => {
+    try {
+      await updateDocument(Number(projectId), documentId, title);
+      await mutateProject();
+    } catch (err) {
+      throw new Error('Echec du renommage');
     }
-    await mutateProject();
+  };
+
+  const handleDocumentClick = (doc: Document) => {
+    setSelectedDocument(doc);
+    setDocModalOpen(true);
+  };
+
+  const handleMutate = () => {
+    mutateSources();
+    mutateProject();
+    onMutate?.();
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <GenerationControls
         projectId={projectId}
         projectTitle={project?.title}
@@ -94,23 +108,36 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
 
       {error && <Alert variant="error" message={error} />}
 
-      {(generatedDocument?.markdown || isGenerating) && (
-        <DocumentPreview
+      <DocumentsList
+        projectId={projectId}
+        projectTitle={project?.title}
+        documents={documents}
+        isGenerating={isGenerating}
+        isLaunching={isLaunching}
+        generatingDocTitle={generatingDocTitle}
+        onMutate={handleMutate}
+        onDocumentClick={handleDocumentClick}
+      />
+
+      {/* Document modal - shown when a document is selected */}
+      {selectedDocument && (
+        <DocumentModal
+          isOpen={docModalOpen}
+          onClose={() => {
+            setDocModalOpen(false);
+            setSelectedDocument(null);
+          }}
+          document={selectedDocument}
           projectId={projectId}
           projectTitle={project?.title}
-          document={generatedDocument}
-          isGenerating={isGenerating}
-          isLaunching={isLaunching}
           onDelete={handleDeleteDocument}
           onRename={updateDocumentTitle}
-          onMutate={() => {
-            mutateSources();
-            onMutate?.();
-          }}
-          confirmingDelete={confirmingDelete}
-          onConfirmDeleteChange={setConfirmingDelete}
+          isConfirmingDelete={confirmingDelete === selectedDocument.id}
+          onMutate={handleMutate}
         />
       )}
     </div>
   );
 }
+
+

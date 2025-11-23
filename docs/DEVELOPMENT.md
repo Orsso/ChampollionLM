@@ -657,68 +657,40 @@ export function Button({
 
 ---
 
-### Docker Deployment
+### Docker Deployment (Production)
 
 **Dockerfile (Backend):**
 
-```dockerfile
-FROM python:3.13-slim
-
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    ffmpeg \
-    pandoc \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application
-COPY . .
-
-# Run migrations and start
-CMD alembic upgrade head && \
-    uvicorn app.main:app --host 0.0.0.0 --port 8000
-```
+See `backend/Dockerfile`. It uses `python:3.13-slim` and installs `ffmpeg` and `pandoc`.
 
 **docker-compose.yml:**
 
-```yaml
-version: '3.8'
+Use the `docker-compose.yml` at the root of the project to run the full stack (Backend + PostgreSQL).
 
-services:
-  backend:
-    build: ./backend
-    ports:
-      - "8000:8000"
-    environment:
-      - ENVIRONMENT=prod
-      - DATABASE_URL=sqlite+aiosqlite:///./data/champollion.db
-      - CORS_ALLOWED_ORIGINS=https://yourdomain.com
-    env_file:
-      - ./backend/.env
-    volumes:
-      - ./data:/app/data
-      - ./storage:/app/storage
-    restart: unless-stopped
+**Running with Docker:**
 
-  frontend:
-    build: ./frontend
-    ports:
-      - "80:80"
-    depends_on:
-      - backend
-    restart: unless-stopped
-```
+1.  **Configure Environment:**
+    Ensure your `.env` file in `backend/` has the production settings, or set environment variables in your deployment platform.
+    
+    Crucially, set:
+    ```env
+    DATABASE_URL=postgresql+asyncpg://user:password@host:5432/dbname
+    ENVIRONMENT=prod
+    ```
+    *(Note: `docker-compose.yml` sets a default internal `DATABASE_URL` for the `backend` service that matches the `db` service configuration)*
 
-**Deploy:**
+2.  **Build and Start:**
+    ```bash
+    docker-compose up --build -d
+    ```
 
-```bash
-docker-compose up -d
-```
+3.  **Verify:**
+    - Backend: http://localhost:8000/docs
+    - Logs: `docker-compose logs -f backend`
+
+**Data Persistence:**
+- Database data is stored in the `postgres_data` volume.
+- Audio files are stored in the `audio_storage` volume.
 
 ---
 

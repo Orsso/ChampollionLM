@@ -1,9 +1,10 @@
 from __future__ import annotations
 
+import logging
 import tempfile
 from pathlib import Path
 
-from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile, status, Response, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile, status, Response, HTTPException, Query
 from fastapi.responses import FileResponse
 
 from app.api.deps import get_db_session, get_file_service
@@ -30,12 +31,13 @@ from app.services.jobs import run_document_job, run_processing_job
 from app.services.sources import SourceService
 from app.utils.text_extraction import extract_text_from_source
 from app.utils.tokens import (
-    estimate_tokens_batch,
+    estimate_tokens,
     format_token_count,
     get_context_usage_percentage,
     MISTRAL_CONTEXT_LIMIT,
 )
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/projects", tags=["projects"])
 
 
@@ -166,33 +168,45 @@ async def upload_audio_source(
 
 
 @router.get("/{project_id}/tokens/estimate", response_model=TokenEstimation)
-async def estimate_tokens(
+async def estimate_tokens_endpoint(
     project_id: int,
-    source_ids: list[int] = [],
+    source_ids: list[int] = Query(default=[]),
     service: ProjectService = Depends(get_project_service),
     source_service: SourceService = Depends(get_source_service),
 ) -> TokenEstimation:
     """Estimate token count for selected sources.
-    - If source_ids provided: use those sources
-    - Else: use all available transcripts from all sources
+    
+    Args:
+        project_id: ID of the project
+        source_ids: List of source IDs to estimate. If empty, estimates all sources.
+        
+    Returns:
+        TokenEstimation with total tokens, formatted count, and context percentage
     """
-    texts_to_count: list[str] = []
-
     if source_ids:
         sources = await source_service.get_sources_by_ids(project_id, source_ids)
     else:
         sources = await source_service.get_sources_by_ids(project_id, None)
 
+    total_tokens = 0
+    
     for source in sources:
-        try:
-            text = extract_text_from_source(source)
-            if text and text.strip():
-                texts_to_count.append(text)
-        except Exception:
-            continue
-    
-    total_tokens = estimate_tokens_batch(texts_to_count)
-    
+        if source.token_count is not None:
+            total_tokens += source.token_count
+        else:
+            # Fallback for legacy sources without cached token count
+            try:
+                text = extract_text_from_source(source)
+                if text and text.strip():
+                    count = estimate_tokens(text)
+                    total_tokens += count
+            except Exception as e:
+                logger.warning(
+                    "Failed to extract text for token estimation",
+                    extra={"source_id": source.id, "error": str(e)}
+                )
+                continue
+
     return TokenEstimation(
         total_tokens=total_tokens,
         formatted_count=format_token_count(total_tokens),
@@ -210,7 +224,7 @@ async def start_document_generation(
     service: ProjectService = Depends(get_project_service),
 ) -> JobStatusRead:
     """Generate document from project sources using LLM."""
-    job = await service.start_document_job(project_id, payload.provider)
+    job = await service.start_document_job(project_id, payload.provider, payload.type)
     source_ids = payload.source_ids or None
     background_tasks.add_task(
         run_document_job,
@@ -218,6 +232,7 @@ async def start_document_generation(
         payload.provider.lower(),
         source_ids,
         payload.title or None,
+        payload.type,
     )
     return job
 
@@ -231,50 +246,58 @@ async def get_document_status(
     return await service.get_document_status(project_id)
 
 
-@router.get("/{project_id}/documents", response_model=DocumentRead)
+@router.get("/{project_id}/documents", response_model=list[DocumentRead])
+async def list_documents(
+    project_id: int,
+    service: ProjectService = Depends(get_project_service),
+) -> list[DocumentRead]:
+    """List all documents for a project."""
+    return await service.list_documents(project_id)
+
+
+@router.get("/{project_id}/documents/{document_id}", response_model=DocumentRead)
 async def get_document(
     project_id: int,
+    document_id: int,
     service: ProjectService = Depends(get_project_service),
 ) -> DocumentRead:
-    """Get generated document."""
-    return await service.get_document(project_id)
+    """Get a specific document."""
+    return await service.get_document(project_id, document_id)
 
 
-@router.delete("/{project_id}/documents", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
+@router.delete("/{project_id}/documents/{document_id}", status_code=status.HTTP_204_NO_CONTENT, response_class=Response)
 async def delete_document(
     project_id: int,
+    document_id: int,
     service: ProjectService = Depends(get_project_service),
 ) -> Response:
-    """Delete document and generation job for a project."""
-    await service.delete_document(project_id)
+    """Delete a specific document."""
+    await service.delete_document(project_id, document_id)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
-@router.patch("/{project_id}/documents", response_model=DocumentRead)
+@router.patch("/{project_id}/documents/{document_id}", response_model=DocumentRead)
 async def update_document(
     project_id: int,
+    document_id: int,
     payload: DocumentUpdate,
     service: ProjectService = Depends(get_project_service),
 ) -> DocumentRead:
     """Update document title."""
-    return await service.update_document(project_id, title=payload.title)
+    return await service.update_document(project_id, document_id, title=payload.title)
 
 
-@router.get("/{project_id}/documents/export/pdf", response_class=FileResponse)
+@router.get("/{project_id}/documents/{document_id}/export/pdf", response_class=FileResponse)
 async def export_document_pdf(
     project_id: int,
+    document_id: int,
     background_tasks: BackgroundTasks,
     service: ProjectService = Depends(get_project_service),
 ) -> FileResponse:
     """Export document as PDF via Pandoc."""
     from app.exporters.pdf import PDFExporter, PDFExportError
 
-    project = await service.get_project(project_id, with_details=True)
-    if not project.document:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No document found for this project"
-        )
+    document = await service.get_document(project_id, document_id)
 
     pdf_file = tempfile.NamedTemporaryFile(suffix='.pdf', delete=False)
     pdf_path = Path(pdf_file.name)
@@ -284,16 +307,16 @@ async def export_document_pdf(
         # Use new PDF exporter from scaffold architecture
         exporter = PDFExporter()
         result = await exporter.export(
-            markdown_content=project.document.markdown,
+            markdown_content=document.markdown,
             output_path=pdf_path,
-            metadata={"title": project.title},
+            metadata={"title": document.title or "Document"},
         )
 
         if not result.success:
             raise PDFExportError(result.error or "Export failed")
 
-        safe_title = "".join(c if c.isalnum() or c in (' ', '-', '_') else '-' for c in project.title)
-        filename = f"document-{safe_title}.pdf"
+        safe_title = "".join(c if c.isalnum() or c in (' ', '-', '_') else '-' for c in (document.title or "document"))
+        filename = f"{safe_title}.pdf"
 
         background_tasks.add_task(pdf_path.unlink, missing_ok=True)
 

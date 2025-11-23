@@ -5,34 +5,42 @@ import { useAuth } from './useAuth';
 
 type TokenEstimateParams = {
   sourceIds?: number[];
-  recordingIds?: number[];
 };
 
 /**
- * Estimate token count for selected sources/recordings
- * - Prefer sourceIds when provided
- * - Falls back to recordingIds for backward compatibility
+ * Estimate token count for selected sources
+ * - sourceIds undefined: Estimate for ALL sources (backend default)
+ * - sourceIds empty array: Estimate for NO sources (return null/0 locally)
+ * - sourceIds populated: Estimate for specific sources
  */
 export function useTokenEstimate(
   projectId: string | number | undefined,
   params: TokenEstimateParams = {}
 ) {
   const { token } = useAuth();
+  const { sourceIds } = params;
 
-  const { sourceIds = [], recordingIds = [] } = params;
+  let shouldFetch = false;
+  let queryParams = '';
 
-  // Build query params supporting both
-  const queryParts: string[] = [];
-  if (sourceIds.length > 0) {
-    queryParts.push(...sourceIds.map(id => `source_ids=${id}`));
+  if (projectId && token) {
+    if (sourceIds === undefined) {
+      // No specific sources requested -> Fetch all
+      shouldFetch = true;
+      queryParams = '';
+    } else if (sourceIds.length > 0) {
+      // Specific sources requested -> Fetch specific
+      shouldFetch = true;
+      const queryParts = sourceIds.map(id => `source_ids=${id}`);
+      queryParams = `?${queryParts.join('&')}`;
+    } else {
+      // Empty array requested -> Fetch nothing (return 0/null)
+      shouldFetch = false;
+    }
   }
-  if (recordingIds.length > 0) {
-    queryParts.push(...recordingIds.map(id => `recording_ids=${id}`));
-  }
-  const queryParams = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
 
   const { data, isLoading, isError, mutate } = useSWRData<TokenEstimation>(
-    token && projectId ? `/api/projects/${projectId}/tokens/estimate${queryParams}` : null,
+    shouldFetch ? `/api/projects/${projectId}/tokens/estimate${queryParams}` : null,
     swrFetcher,
     {
       revalidateOnFocus: false,

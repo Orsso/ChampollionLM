@@ -34,11 +34,8 @@ export function GenerationControls({
   const [selectedSourceIds, setSelectedSourceIds] = useState<number[]>([]);
   const [docTitle, setDocTitle] = useState('');
 
-  const availableSources = readySources.length;
-  const selectedSources = selectedSourceIds.length > 0 ? selectedSourceIds.length : readySources.length;
-
-  const sourceIdsForEstimation = selectedSourceIds.length > 0 ? selectedSourceIds : readySources.map(s => s.id);
-  const { estimation } = useTokenEstimate(projectId, { sourceIds: sourceIdsForEstimation });
+  // Use selectedSourceIds directly for estimation to match "empty selection = empty bar"
+  const { estimation } = useTokenEstimate(projectId, { sourceIds: selectedSourceIds });
 
   const tileDisabled = !hasAnyProcessedContent || isLaunching || isGenerating;
 
@@ -63,7 +60,7 @@ export function GenerationControls({
 
   return (
     <>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <div
           onClick={handleGenerateClick}
           className={`
@@ -71,86 +68,46 @@ export function GenerationControls({
             ${BRUTAL_BORDERS.thick}
             border-black
             ${BRUTAL_RADIUS.normal}
-            ${BRUTAL_SHADOWS.large}
+            ${BRUTAL_SHADOWS.medium}
             transition-all ${TRANSITIONS.fast}
             ${tileDisabled
               ? 'opacity-60 cursor-not-allowed bg-slate-300'
-              : 'cursor-pointer bg-orange-500 hover:translate-x-[4px] hover:translate-y-[4px] hover:shadow-none'
+              : 'cursor-pointer bg-orange-500 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none'
             }
           `}
-          style={{ aspectRatio: '1.4/1' }}
         >
-          <div className="absolute inset-0 p-6 text-left">
-            <div className="flex flex-col h-full justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <span className={`
-                    inline-flex h-14 w-14 items-center justify-center
-                    ${BRUTAL_BORDERS.normal}
-                    border-black
-                    ${BRUTAL_RADIUS.subtle}
-                    ${tileDisabled ? 'bg-slate-400 text-slate-600' : 'bg-white text-orange-500'}
-                  `}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22h11A2.5 2.5 0 0 0 20 19.5v-15A2.5 2.5 0 0 0 17.5 2h-11A2.5 2.5 0 0 0 4 4.5z"/>
-                      <path d="M8 7h8"/><path d="M8 11h8"/><path d="M8 15h6"/>
-                    </svg>
-                  </span>
-                  <div>
-                    <p className={`font-black text-xl ${tileDisabled ? 'text-slate-600' : 'text-white'}`}>
-                      Cours
-                    </p>
-                    <p className={`text-sm font-bold ${tileDisabled ? 'text-slate-500' : 'text-white/90'}`}>
-                      Document structure
-                    </p>
-                  </div>
+          <div className="p-4 text-left">
+            <div className="flex flex-col justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <span className={`
+                  inline-flex h-10 w-10 items-center justify-center
+                  ${BRUTAL_BORDERS.normal}
+                  border-black
+                  ${BRUTAL_RADIUS.subtle}
+                  ${tileDisabled ? 'bg-slate-400 text-slate-600' : 'bg-white text-orange-500'}
+                `}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M4 19.5A2.5 2.5 0 0 0 6.5 22h11A2.5 2.5 0 0 0 20 19.5v-15A2.5 2.5 0 0 0 17.5 2h-11A2.5 2.5 0 0 0 4 4.5z" />
+                    <path d="M8 7h8" /><path d="M8 11h8" /><path d="M8 15h6" />
+                  </svg>
+                </span>
+                <div>
+                  <p className={`font-black text-lg ${tileDisabled ? 'text-slate-600' : 'text-white'}`}>
+                    Cours
+                  </p>
+                  <p className={`text-xs font-bold ${tileDisabled ? 'text-slate-500' : 'text-white/90'}`}>
+                    Document structure
+                  </p>
                 </div>
-
-                <div className="flex items-center gap-2 text-sm">
-                  <span className={`
-                    inline-flex items-center gap-2 px-3 py-1.5
-                    ${BRUTAL_BORDERS.thin}
-                    border-black
-                    ${BRUTAL_RADIUS.subtle}
-                    font-bold
-                    ${tileDisabled ? 'bg-slate-400 text-slate-600' : 'bg-white text-black'}
-                  `}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                      <polyline points="7 10 12 15 17 10" />
-                      <line x1="12" y1="15" x2="12" y2="3" />
-                    </svg>
-                    {selectedSources}/{availableSources}
-                  </span>
-                  {isGenerating && (
-                    <Badge color="amber">
-                      <ShinyText size="xs">En cours</ShinyText>
-                    </Badge>
-                  )}
-                </div>
-
-                {estimation && (
-                  <div className="space-y-2 mt-2">
-                    <div className={`flex items-center justify-between text-xs font-bold ${tileDisabled ? 'text-slate-600' : 'text-white/80'}`}>
-                      <span>{Math.round(estimation.context_percentage)}% de 128k</span>
-                      <span>~{estimation.formatted_count} tokens</span>
-                    </div>
-                    <div className={`
-                      w-full h-2
-                      ${BRUTAL_BORDERS.thin}
-                      border-black
-                      ${BRUTAL_RADIUS.subtle}
-                      ${tileDisabled ? 'bg-slate-400' : 'bg-white/30'}
-                      overflow-hidden
-                    `}>
-                      <div
-                        className={`h-full ${tileDisabled ? 'bg-slate-600' : 'bg-white'} transition-all ${TRANSITIONS.normal}`}
-                        style={{ width: `${Math.min(estimation.context_percentage, 100)}%` }}
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
+
+              {isGenerating && (
+                <div className="flex items-center gap-2 text-xs">
+                  <Badge color="amber">
+                    <ShinyText size="xs">En cours</ShinyText>
+                  </Badge>
+                </div>
+              )}
             </div>
           </div>
 
@@ -161,7 +118,7 @@ export function GenerationControls({
                 setSelectModalOpen(true);
               }}
               className={`
-                absolute top-4 right-4 p-2.5
+                absolute top-3 right-3 p-2
                 ${BRUTAL_BORDERS.normal}
                 border-black
                 ${BRUTAL_RADIUS.subtle}
@@ -169,14 +126,14 @@ export function GenerationControls({
                 bg-white
                 text-black
                 transition-all ${TRANSITIONS.fast}
-                hover:translate-x-[2px] hover:translate-y-[2px]
+                hover:translate-x-[1px] hover:translate-y-[1px]
                 hover:shadow-none
               `}
               title="Configurer les sources"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 20h9"/>
-                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z"/>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4Z" />
               </svg>
             </button>
           )}
@@ -188,45 +145,42 @@ export function GenerationControls({
             ${BRUTAL_BORDERS.thick}
             border-black
             ${BRUTAL_RADIUS.normal}
-            ${BRUTAL_SHADOWS.large}
+            ${BRUTAL_SHADOWS.medium}
             opacity-60 cursor-not-allowed bg-slate-300
           `}
-          style={{ aspectRatio: '1.4/1' }}
         >
-          <div className="absolute inset-0 p-6">
-            <div className="flex flex-col h-full justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <span className={`
-                    inline-flex h-14 w-14 items-center justify-center
-                    ${BRUTAL_BORDERS.normal}
-                    border-black
-                    ${BRUTAL_RADIUS.subtle}
-                    bg-slate-400 text-slate-600
-                  `}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14 2 14 8 20 8"/>
-                      <line x1="16" y1="13" x2="8" y2="13"/>
-                      <line x1="16" y1="17" x2="8" y2="17"/>
-                      <polyline points="10 9 9 9 8 9"/>
-                    </svg>
-                  </span>
-                  <div>
-                    <p className="text-slate-600 font-black text-xl">Resume</p>
-                    <p className="text-slate-500 text-sm font-bold">Synthese concise</p>
-                  </div>
-                </div>
+          <div className="p-4">
+            <div className="flex flex-col justify-between gap-3">
+              <div className="flex items-center gap-3">
                 <span className={`
-                  inline-flex items-center gap-1.5 px-3 py-1.5
-                  ${BRUTAL_BORDERS.thin}
+                  inline-flex h-10 w-10 items-center justify-center
+                  ${BRUTAL_BORDERS.normal}
                   border-black
                   ${BRUTAL_RADIUS.subtle}
-                  bg-slate-400 text-slate-600 font-bold text-sm
+                  bg-slate-400 text-slate-600
                 `}>
-                  Bientot disponible
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
+                  </svg>
                 </span>
+                <div>
+                  <p className="text-slate-600 font-black text-lg">Resume</p>
+                  <p className="text-slate-500 text-xs font-bold">Synthese concise</p>
+                </div>
               </div>
+              <span className={`
+                inline-flex items-center gap-1.5 px-2 py-1
+                ${BRUTAL_BORDERS.thin}
+                border-black
+                ${BRUTAL_RADIUS.subtle}
+                bg-slate-400 text-slate-600 font-bold text-xs
+              `}>
+                Bientot disponible
+              </span>
             </div>
           </div>
         </div>
@@ -237,42 +191,39 @@ export function GenerationControls({
             ${BRUTAL_BORDERS.thick}
             border-black
             ${BRUTAL_RADIUS.normal}
-            ${BRUTAL_SHADOWS.large}
+            ${BRUTAL_SHADOWS.medium}
             opacity-60 cursor-not-allowed bg-slate-300
           `}
-          style={{ aspectRatio: '1.4/1' }}
         >
-          <div className="absolute inset-0 p-6">
-            <div className="flex flex-col h-full justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center gap-4">
-                  <span className={`
-                    inline-flex h-14 w-14 items-center justify-center
-                    ${BRUTAL_BORDERS.normal}
-                    border-black
-                    ${BRUTAL_RADIUS.subtle}
-                    bg-slate-400 text-slate-600
-                  `}>
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 11l3 3L22 4"/>
-                      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
-                    </svg>
-                  </span>
-                  <div>
-                    <p className="text-slate-600 font-black text-xl">Todo</p>
-                    <p className="text-slate-500 text-sm font-bold">Liste de taches</p>
-                  </div>
-                </div>
+          <div className="p-4">
+            <div className="flex flex-col justify-between gap-3">
+              <div className="flex items-center gap-3">
                 <span className={`
-                  inline-flex items-center gap-1.5 px-3 py-1.5
-                  ${BRUTAL_BORDERS.thin}
+                  inline-flex h-10 w-10 items-center justify-center
+                  ${BRUTAL_BORDERS.normal}
                   border-black
                   ${BRUTAL_RADIUS.subtle}
-                  bg-slate-400 text-slate-600 font-bold text-sm
+                  bg-slate-400 text-slate-600
                 `}>
-                  Bientot disponible
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M9 11l3 3L22 4" />
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                  </svg>
                 </span>
+                <div>
+                  <p className="text-slate-600 font-black text-lg">Todo</p>
+                  <p className="text-slate-500 text-xs font-bold">Liste de taches</p>
+                </div>
               </div>
+              <span className={`
+                inline-flex items-center gap-1.5 px-2 py-1
+                ${BRUTAL_BORDERS.thin}
+                border-black
+                ${BRUTAL_RADIUS.subtle}
+                bg-slate-400 text-slate-600 font-bold text-xs
+              `}>
+                Bientot disponible
+              </span>
             </div>
           </div>
         </div>
@@ -348,7 +299,7 @@ export function GenerationControls({
           </div>
           <div>
             <label className="block text-sm font-bold text-slate-800 mb-2">Selectionnez les sources a inclure</label>
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
               {readySources.length > 0 ? (
                 readySources.map(source => {
                   const idNum = source.id;
@@ -357,18 +308,18 @@ export function GenerationControls({
 
                   const sourceIcon = isAudio ? (
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                      <line x1="12" y1="19" x2="12" y2="23"/>
-                      <line x1="8" y1="23" x2="16" y2="23"/>
+                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                      <line x1="12" y1="19" x2="12" y2="23" />
+                      <line x1="8" y1="23" x2="16" y2="23" />
                     </svg>
                   ) : (
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                      <polyline points="14 2 14 8 20 8"/>
-                      <line x1="16" y1="13" x2="8" y2="13"/>
-                      <line x1="16" y1="17" x2="8" y2="17"/>
-                      <polyline points="10 9 9 9 8 9"/>
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                      <line x1="16" y1="13" x2="8" y2="13" />
+                      <line x1="16" y1="17" x2="8" y2="17" />
+                      <polyline points="10 9 9 9 8 9" />
                     </svg>
                   );
 
@@ -376,7 +327,7 @@ export function GenerationControls({
                     <label
                       key={source.id}
                       className={`
-                        flex items-center gap-3 p-4
+                        flex items-center gap-3 p-3
                         ${BRUTAL_BORDERS.normal}
                         border-black
                         ${BRUTAL_RADIUS.subtle}
@@ -390,7 +341,7 @@ export function GenerationControls({
                     >
                       <input
                         type="checkbox"
-                        className="form-checkbox h-5 w-5 text-orange-500 rounded border-2 border-black"
+                        className="form-checkbox h-4 w-4 text-orange-500 rounded border-2 border-black"
                         checked={checked}
                         onChange={(e) => {
                           if (e.target.checked) {
@@ -405,9 +356,9 @@ export function GenerationControls({
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <p className="font-bold text-black truncate">{source.title || source.filename}</p>
+                          <p className="font-bold text-sm text-black truncate">{source.title || source.filename}</p>
                           <span className={`
-                            inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-bold
+                            inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold
                             ${BRUTAL_BORDERS.thin}
                             border-black
                             ${BRUTAL_RADIUS.subtle}
@@ -416,7 +367,7 @@ export function GenerationControls({
                             {isAudio ? 'AUDIO' : 'DOC'}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-600 truncate font-medium mt-1">
+                        <p className="text-xs text-slate-600 truncate font-medium mt-0.5">
                           {isAudio && source.filename ? source.filename : `Ajoute le ${formatDateTime(source.created_at)}`}
                         </p>
                       </div>
@@ -429,6 +380,36 @@ export function GenerationControls({
                   <p className="text-xs mt-1">Ajoutez des enregistrements ou des documents pour commencer</p>
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Token Usage Bar */}
+          <div className="pt-2 border-t-2 border-black/10">
+            <div className="space-y-2">
+              <div className={`flex items-center justify-between text-xs font-bold text-slate-800`}>
+                <span>Utilisation des tokens (Estimation)</span>
+                {estimation ? (
+                  <span>{Math.round(estimation.context_percentage)}% de 128k (~{estimation.formatted_count})</span>
+                ) : (
+                  <span>0% de 128k</span>
+                )}
+              </div>
+              <div className={`
+                  w-full h-3
+                  ${BRUTAL_BORDERS.thin}
+                  border-black
+                  ${BRUTAL_RADIUS.subtle}
+                  bg-slate-100
+                  overflow-hidden
+                `}>
+                <div
+                  className={`h-full bg-orange-500 transition-all ${TRANSITIONS.normal}`}
+                  style={{ width: estimation ? `${Math.min(estimation.context_percentage, 100)}%` : '0%' }}
+                />
+              </div>
+              <p className="text-[10px] text-slate-500 font-medium">
+                L'estimation est basee sur les sources selectionnees.
+              </p>
             </div>
           </div>
         </div>

@@ -30,7 +30,7 @@ export interface Project {
   status_updated_at: string;
   sources: Source[];
   sources_count: number;
-  document?: Document;
+  documents?: Document[];
   processing_status?: JobStatus;
   document_status?: JobStatus;
   processing_error?: string;
@@ -52,7 +52,7 @@ export interface ProjectSummary {
 
 export interface ProjectDetail extends Project {
   sources: Source[];
-  document?: Document;
+  documents?: Document[];
   processing_status?: JobStatus;
   document_status?: JobStatus;
 }
@@ -91,7 +91,7 @@ export interface Source {
   title: string;
   created_at: string;
   has_processed_content: boolean;
-  processed_content?: ProcessedContent;
+  processed_content?: string;
   // Audio-specific fields (optional)
   filename?: string;
   duration_seconds?: number;
@@ -114,10 +114,12 @@ export interface CreateSourceData {
 }
 
 export interface Document {
+  id: number;
   provider: string;
   title: string | null;
   markdown: string;
   created_at: string;
+  type: 'cours' | 'resume' | 'quiz';
 }
 
 export interface TokenEstimation {
@@ -127,4 +129,3 @@ export interface TokenEstimation {
   context_limit: number;
   source_count: number;
 }
-

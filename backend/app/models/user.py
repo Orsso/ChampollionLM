@@ -18,7 +18,7 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_verified: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     api_key_encrypted: Mapped[str | None] = mapped_column(Text)
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=lambda: datetime.now(tz=UTC))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(tz=UTC))
 
     projects = relationship(
         "Project",

@@ -19,6 +19,7 @@ from app.models import (
     SourceStatus,
     ProcessingJob,
     User,
+    Document,
 )
 from app.schemas.project import (
     ProjectCreate,
@@ -127,7 +128,7 @@ class ProjectService:
         if with_details:
             stmt = stmt.options(
                 selectinload(Project.sources),
-                selectinload(Project.document),
+                selectinload(Project.documents),
                 selectinload(Project.processing_job),
                 selectinload(Project.generation_job),
             )
@@ -153,7 +154,7 @@ class ProjectService:
         Args:
             project_id: ID of the project
             with_sources: Load project sources relationship
-            with_document: Load project document relationship
+            with_document: Load project documents relationship
 
         Returns:
             Project if found, None otherwise
@@ -166,7 +167,7 @@ class ProjectService:
         if with_sources:
             options.append(selectinload(Project.sources))
         if with_document:
-            options.append(selectinload(Project.document))
+            options.append(selectinload(Project.documents))
 
         stmt = select(Project).where(Project.id == project_id).options(*options)
         result = await self.session.execute(stmt)
@@ -264,7 +265,7 @@ class ProjectService:
 
         return SourceRead.model_validate(audio_source, from_attributes=True)
 
-    async def start_document_job(self, project_id: int, provider: str) -> JobStatusRead:
+    async def start_document_job(self, project_id: int, provider: str, document_type: str = "cours") -> JobStatusRead:
         """Start document generation job."""
         provider = provider.lower()
         if not GeneratorRegistry.is_supported(provider):
@@ -301,37 +302,65 @@ class ProjectService:
             raise_resource_unavailable("Document job", "not created yet")
         return JobStatusRead.model_validate(job, from_attributes=True)
 
-    async def get_document(self, project_id: int) -> DocumentRead:
-        """Get generated document."""
+    async def list_documents(self, project_id: int) -> list[DocumentRead]:
+        """List all documents for a project."""
         project = await self.get_project(project_id, with_details=True)
-        if not project.document:
-            raise_resource_unavailable("Document", "not generated yet")
-        return DocumentRead.model_validate(project.document, from_attributes=True)
+        return [DocumentRead.model_validate(doc, from_attributes=True) for doc in project.documents]
 
-    async def update_document(self, project_id: int, *, title: str | None) -> DocumentRead:
-        """Update document title."""
-        project = await self.get_project(project_id, with_details=True)
-        if not project.document:
-            raise_resource_unavailable("Document", "not generated yet")
-        if title:
-            project.document.title = title
-            await self.session.commit()
-            await self.session.refresh(project.document)
-        return DocumentRead.model_validate(project.document, from_attributes=True)
-
-    async def delete_document(self, project_id: int) -> None:
-        """Delete document and generation job for a project."""
-        project = await self.get_project(project_id, with_details=True)
+    async def get_document(self, project_id: int, document_id: int) -> DocumentRead:
+        """Get a specific document."""
+        # Verify project ownership
+        await self.get_project(project_id)
         
-        # Delete document if exists
-        if project.document:
-            await self.session.delete(project.document)
+        stmt = select(Document).where(
+            Document.id == document_id,
+            Document.project_id == project_id
+        )
+        result = await self.session.execute(stmt)
+        document = result.scalars().first()
+        
+        if not document:
+            raise_not_found("Document", document_id)
+            
+        return DocumentRead.model_validate(document, from_attributes=True)
 
-        # Delete notes job if exists
-        if project.generation_job:
-            await self.session.delete(project.generation_job)
+    async def update_document(self, project_id: int, document_id: int, *, title: str | None) -> DocumentRead:
+        """Update document title."""
+        # Verify project ownership
+        await self.get_project(project_id)
+        
+        stmt = select(Document).where(
+            Document.id == document_id,
+            Document.project_id == project_id
+        )
+        result = await self.session.execute(stmt)
+        document = result.scalars().first()
+        
+        if not document:
+            raise_not_found("Document", document_id)
 
-        await self.session.commit()
+        if title:
+            document.title = title
+            await self.session.commit()
+            await self.session.refresh(document)
+            
+        return DocumentRead.model_validate(document, from_attributes=True)
+
+    async def delete_document(self, project_id: int, document_id: int) -> None:
+        """Delete a specific document."""
+        # Verify project ownership
+        await self.get_project(project_id)
+        
+        stmt = select(Document).where(
+            Document.id == document_id,
+            Document.project_id == project_id
+        )
+        result = await self.session.execute(stmt)
+        document = result.scalars().first()
+        
+        if document:
+            await self.session.delete(document)
+            await self.session.commit()
 
     def _to_summary(self, project: Project) -> ProjectSummary:
         """Convert Project model to ProjectSummary schema."""
@@ -365,7 +394,8 @@ class ProjectService:
         # Convert sources to new unified SourceRead format
         sources = [SourceService._to_source_read(source) for source in project.sources]
         
-        document = self._to_document(project.document)
+        documents = [DocumentRead.model_validate(doc, from_attributes=True) for doc in project.documents]
+        
         processing_status = (
             JobStatusRead.model_validate(project.processing_job, from_attributes=True)
             if project.processing_job
@@ -383,15 +413,8 @@ class ProjectService:
             created_at=project.created_at,
             description=project.description,
             sources=sources,
-            document=document,
+            documents=documents,
             sources_count=len([s for s in project.sources if s.type == SourceType.AUDIO]),
             processing_status=processing_status,
             document_status=document_status,
         )
-
-    @staticmethod
-    def _to_document(document) -> DocumentRead | None:
-        """Convert Document model to DocumentRead schema."""
-        if not document:
-            return None
-        return DocumentRead.model_validate(document, from_attributes=True)

@@ -30,6 +30,10 @@ backend/*.env
 *.sqlite
 *.sqlite3
 
+# Docker / Postgres
+postgres_data/
+.docker/
+
 # Storage
 backend/storage/
 
