@@ -57,6 +57,9 @@ class Source(Base):
     # Audio → transcription, PDF → OCR/extraction, Text → passthrough, etc.
     processed_content: Mapped[str | None] = mapped_column(Text, nullable=True)
 
+    # Token count for the processed content (cached for performance)
+    token_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
+
     # Structured metadata: JSON storage for type-safe metadata handling
     # Contains AudioMetadata or DocumentMetadata depending on source type
     source_metadata: Mapped[dict | None] = mapped_column(
@@ -66,7 +69,7 @@ class Source(Base):
     )
     
     created_at: Mapped[datetime] = mapped_column(
-        DateTime,
+        DateTime(timezone=True),
         nullable=False,
         default=lambda: datetime.now(tz=UTC)
     )

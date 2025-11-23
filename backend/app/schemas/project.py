@@ -32,11 +32,14 @@ class DocumentRead(BaseModel):
     - title: str | None → string | undefined
     - markdown: str → string (full document content)
     - created_at: datetime → string (ISO 8601)
+    - type: str → string ('cours', 'resume', 'quiz')
     """
+    id: int
     provider: str
     title: str | None = None
     markdown: str
     created_at: datetime
+    type: str = "cours"
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -112,13 +115,13 @@ class ProjectDetail(ProjectSummary):
     Inherits all fields from ProjectSummary, adds:
     - description: str | None → string | undefined
     - sources: list[SourceRead] → Source[]
-    - document: DocumentRead | None → Document | null
+    - documents: list[DocumentRead] → Document[]
     - processing_error: (computed) str | None → (derived from processing_status.error)
     - document_error: (computed) str | None → (derived from document_status.error)
     """
     description: str | None
     sources: list['SourceRead']
-    document: DocumentRead | None
+    documents: list['DocumentRead']
     processing_status: JobStatusRead | None = None
     document_status: JobStatusRead | None = None
 
@@ -146,6 +149,7 @@ class DocumentRequest(BaseModel):
     provider: str = Field(..., min_length=1)
     source_ids: list[int] | None = Field(default=None, description="Selected sources to include")
     title: str | None = Field(default=None, min_length=1, max_length=160)
+    type: str = Field(default="cours", description="Type of document (cours, resume, quiz)")
 
 
 class JobStatusRead(BaseModel):
@@ -178,5 +182,3 @@ class TokenEstimation(BaseModel):
 # Resolve forward references after SourceRead is imported
 from .source import SourceRead  # noqa: E402
 ProjectDetail.model_rebuild()
-
-

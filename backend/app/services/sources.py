@@ -11,6 +11,7 @@ from app.models import Project, Source, SourceType, User
 from app.schemas import SourceCreate, SourceDetail, SourceRead, SourceUpdate
 from app.utils.db import save_and_refresh
 from app.utils.errors import raise_invalid_request, raise_not_found, raise_resource_unavailable
+from app.utils.tokens import estimate_tokens
 
 
 class SourceNotFoundError(HTTPException):
@@ -51,6 +52,7 @@ class SourceService:
         # Documents don't need processing - they're already in text form
         if data.type == SourceType.DOCUMENT and data.content:
             source.processed_content = data.content
+            source.token_count = estimate_tokens(data.content)
 
         await save_and_refresh(self.session, source)
 
@@ -101,6 +103,14 @@ class SourceService:
         update_data = payload.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(source, key, value)
+        
+        # Recalculate tokens if content changed
+        if 'processed_content' in update_data and update_data['processed_content']:
+             source.token_count = estimate_tokens(update_data['processed_content'])
+        elif 'content' in update_data and update_data['content'] and source.type == SourceType.DOCUMENT:
+             source.processed_content = update_data['content']
+             source.token_count = estimate_tokens(update_data['content'])
+
         await self.session.commit()
         await self.session.refresh(source)
         return self._to_source_read(source)

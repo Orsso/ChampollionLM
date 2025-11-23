@@ -31,7 +31,7 @@ export const removeToken = (): void => {
  */
 export async function fetcher<T>(url: string, options: RequestInit = {}): Promise<T> {
   const token = getToken();
-  
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
@@ -68,9 +68,9 @@ export async function fetcher<T>(url: string, options: RequestInit = {}): Promis
  */
 export async function uploadFetcher<T>(url: string, formData: FormData): Promise<T> {
   const token = getToken();
-  
+
   const headers: Record<string, string> = {};
-  
+
   if (token) {
     headers['Authorization'] = `Bearer ${token}`;
   }
@@ -103,3 +103,16 @@ export async function uploadFetcher<T>(url: string, formData: FormData): Promise
  */
 export const swrFetcher = <T>(url: string): Promise<T> => fetcher<T>(url);
 
+// Document API functions
+export const deleteDocument = async (projectId: number, documentId: number): Promise<void> => {
+  return fetcher<void>(`/api/projects/${projectId}/documents/${documentId}`, {
+    method: 'DELETE',
+  });
+};
+
+export const updateDocument = async (projectId: number, documentId: number, title: string): Promise<void> => {
+  return fetcher<void>(`/api/projects/${projectId}/documents/${documentId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ title }),
+  });
+};

@@ -25,6 +25,7 @@ from app.services.generation_job import GenerationJobService
 from app.services.projects import ProjectService
 from app.services.transcription import STTProviderError
 from app.utils.text_extraction import TextExtractionError, extract_text_from_source
+from app.utils.tokens import estimate_tokens
 
 logger = logging.getLogger(__name__)
 
@@ -132,6 +133,7 @@ async def run_document_job(
     provider: str,
     source_ids: list[int] | None = None,
     document_title: str | None = None,
+    document_type: str = "cours",
     session: AsyncSession | None = None,
 ) -> None:
     """Generate document from sources using LLM.
@@ -141,20 +143,21 @@ async def run_document_job(
         provider: Name of the generation provider (e.g., 'mistral')
         source_ids: Optional list of source IDs to use (if None, use all)
         document_title: Optional title for generated document
+        document_type: Type of document to generate (cours, resume, quiz)
         session: Optional AsyncSession (for DI/testing). If None, creates its own.
     """
-    logger.info("Starting document generation job", extra={"project_id": project_id})
+    logger.info("Starting document generation job", extra={"project_id": project_id, "type": document_type})
 
     # Create session if not provided (for backward compat with background tasks)
     if session is None:
         async for session in get_session():
             await _run_document_job_impl(
-                project_id, provider, source_ids, document_title, session
+                project_id, provider, source_ids, document_title, document_type, session
             )
             return
     else:
         await _run_document_job_impl(
-            project_id, provider, source_ids, document_title, session
+            project_id, provider, source_ids, document_title, document_type, session
         )
 
 
@@ -163,6 +166,7 @@ async def _run_document_job_impl(
     provider: str,
     source_ids: list[int] | None,
     document_title: str | None,
+    document_type: str,
     session: AsyncSession,
 ) -> None:
     """Internal implementation of document generation job (requires session)."""
@@ -170,9 +174,9 @@ async def _run_document_job_impl(
     project_svc = ProjectService(session, user=None, file_service=file_svc)  # No user context for background job
     job_svc = GenerationJobService(session)
 
-    # Load project with sources and document
+    # Load project with sources
     project = await project_svc.get_project_for_job(
-        project_id, with_sources=True, with_document=True
+        project_id, with_sources=True, with_document=False
     )
     if not project:
         logger.error("Project not found", extra={"project_id": project_id})
@@ -180,7 +184,8 @@ async def _run_document_job_impl(
 
     # Get or create job
     job = await job_svc.get_or_create_job(project_id)
-    await job_svc.mark_in_progress(job.id)
+    job_id = job.id
+    await job_svc.mark_in_progress(job_id)
     await session.commit()
     logger.info("Generation job marked as IN_PROGRESS", extra={"project_id": project_id})
 
@@ -189,6 +194,7 @@ async def _run_document_job_impl(
             session, project, provider,
             source_ids=source_ids,
             document_title=document_title,
+            document_type=document_type,
         )
     except Exception as exc:  # pragma: no cover - defensive catch
         logger.error("Error generating document", extra={
@@ -196,28 +202,21 @@ async def _run_document_job_impl(
             "error": str(exc)
         })
         await session.rollback()
-        await job_svc.mark_failed(job.id, str(exc))
+        await job_svc.mark_failed(job_id, str(exc))
         await session.commit()
         return
 
-    # Save or update document
+    # Always create a new document
     now = datetime.now(tz=UTC)
-    document = project.document
-    if document:
-        document.provider = provider
-        document.markdown = markdown
-        if document_title:
-            document.title = document_title
-        document.created_at = now
-    else:
-        document = Document(
-            project_id=project.id,
-            provider=provider,
-            title=document_title,
-            markdown=markdown,
-            created_at=now
-        )
-        session.add(document)
+    document = Document(
+        project_id=project.id,
+        provider=provider,
+        title=document_title,
+        markdown=markdown,
+        created_at=now,
+        type=document_type
+    )
+    session.add(document)
 
     # Mark job as succeeded
     await job_svc.mark_succeeded(job.id)
@@ -268,6 +267,7 @@ async def _transcribe_audio_source(session: AsyncSession, source: Source, provid
 
     # Store transcription in source.processed_content
     source.processed_content = result.processed_content.strip()
+    source.token_count = estimate_tokens(source.processed_content)
     await session.commit()
 
 
@@ -278,6 +278,7 @@ async def _generate_project_document(
     *,
     source_ids: list[int] | None = None,
     document_title: str | None = None,
+    document_type: str = "cours",
 ) -> str:
     """Generate document from project sources using specified provider."""
     provider_lower = provider.lower()
@@ -332,7 +333,7 @@ async def _generate_project_document(
     # Generate document from all text parts
     result = await generator.generate(
         source_texts=text_parts,
-        document_type="notes",
+        document_type=document_type,
         metadata=metadata,
     )
 
@@ -368,5 +369,3 @@ async def _get_sources_for_document(
     )
     result = await session.execute(stmt)
     return list(result.scalars().all())
-
-
