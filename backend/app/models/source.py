@@ -11,7 +11,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 from .enums import SourceStatus
-from .metadata import AudioMetadata, DocumentMetadata
+from .metadata import AudioMetadata, DocumentMetadata, YouTubeMetadata
 
 
 class SourceType(str, Enum):
@@ -23,6 +23,7 @@ class SourceType(str, Enum):
     """
     AUDIO = "audio"
     DOCUMENT = "document"
+    YOUTUBE = "youtube"
 
 
 class Source(Base):
@@ -113,6 +114,22 @@ class Source(Base):
             return None
         try:
             return DocumentMetadata(**self.source_metadata)
+        except (KeyError, ValueError, TypeError):
+            # Graceful fallback for invalid/legacy metadata
+            return None
+
+    @property
+    def youtube_metadata(self) -> Optional[YouTubeMetadata]:
+        """
+        Safely extract YouTube metadata if this is a YouTube source.
+
+        Returns:
+            YouTubeMetadata object if valid YouTube source with metadata, else None
+        """
+        if self.type != SourceType.YOUTUBE or not self.source_metadata:
+            return None
+        try:
+            return YouTubeMetadata(**self.source_metadata)
         except (KeyError, ValueError, TypeError):
             # Graceful fallback for invalid/legacy metadata
             return None

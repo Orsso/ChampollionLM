@@ -1,4 +1,4 @@
-import { AudioUploadZone } from './AudioUploadZone';
+import { SourceImportZone } from './SourceImportZone';
 import { SourcesList } from './SourcesList';
 import type { Source, JobStatus } from '../../types';
 
@@ -12,7 +12,7 @@ interface SourcesPanelProps {
 export function SourcesPanel({ projectId, sources, processingStatus, onMutate }: SourcesPanelProps) {
   return (
     <div className="space-y-6">
-      <AudioUploadZone projectId={projectId} onMutate={onMutate} />
+      <SourceImportZone projectId={projectId} onMutate={onMutate} />
       <SourcesList
         projectId={projectId}
         sources={sources}

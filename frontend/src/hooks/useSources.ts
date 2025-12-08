@@ -42,7 +42,7 @@ export async function createSource(projectId: string | number, data: CreateSourc
 export async function deleteSource(projectId: string | number, sourceId: number): Promise<void> {
   return fetcher<void>(`/api/projects/${projectId}/sources/${sourceId}`, {
     method: 'DELETE',
-    });
+  });
 }
 
 /**
@@ -61,5 +61,15 @@ export async function updateSource(projectId: string | number, sourceId: number,
   return fetcher<Source>(`/api/projects/${projectId}/sources/${sourceId}`, {
     method: 'PATCH',
     body: JSON.stringify(data),
+  });
+}
+
+/**
+ * Import YouTube video transcript as source
+ */
+export async function importYouTubeSource(projectId: string | number, url: string): Promise<Source> {
+  return fetcher<Source>(`/api/projects/${projectId}/sources/youtube`, {
+    method: 'POST',
+    body: JSON.stringify({ url }),
   });
 }

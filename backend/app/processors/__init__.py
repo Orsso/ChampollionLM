@@ -17,8 +17,7 @@ from app.processors.base import SourceProcessor, ProcessorResult
 
 # Import implemented processors
 from app.processors.audio import MistralAudioConfig, MistralAudioProcessor
-
-# Note: PDF and Text processors are scaffolds only - not yet implemented
+from app.processors.youtube import YouTubeProcessor, YouTubeProcessorConfig
 
 
 class ProcessorRegistry:
@@ -84,6 +83,7 @@ class TranscriptionRegistry:
 
 # Auto-register implemented processors
 ProcessorRegistry.register(MistralAudioProcessor)
+ProcessorRegistry.register(YouTubeProcessor)
 TranscriptionRegistry.register("mistral", MistralAudioProcessor)
 
 
@@ -94,4 +94,6 @@ __all__ = [
     "TranscriptionRegistry",
     "MistralAudioProcessor",
     "MistralAudioConfig",
+    "YouTubeProcessor",
+    "YouTubeProcessorConfig",
 ]

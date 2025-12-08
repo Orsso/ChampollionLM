@@ -196,5 +196,6 @@ class SourceService:
             processed_content=source.processed_content,
             audio_metadata=source.audio_metadata,
             document_metadata=source.document_metadata,
+            youtube_metadata=source.youtube_metadata,
             content=source.content if source.type == SourceType.DOCUMENT else None,
         )

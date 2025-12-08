@@ -5,6 +5,6 @@ export { StudioPanel } from './StudioPanel';
 
 // Sub-components
 export { AudioUploadZone } from './AudioUploadZone';
+export { SourceImportZone } from './SourceImportZone';
 export { SourcesList } from './SourcesList';
 export { GenerationControls } from './GenerationControls';
-export { DocumentPreview } from './DocumentPreview';

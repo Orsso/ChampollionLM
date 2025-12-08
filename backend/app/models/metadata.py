@@ -101,6 +101,56 @@ class DocumentMetadata(BaseModel):
         }
 
 
+class YouTubeMetadata(BaseModel):
+    """Metadata for YouTube video sources.
+
+    Contains information about the YouTube video and its transcript.
+    """
+    video_id: str = Field(
+        ...,
+        description="YouTube video ID (e.g., 'dQw4w9WgXcQ')"
+    )
+    channel_name: Optional[str] = Field(
+        None,
+        description="Name of the YouTube channel"
+    )
+    video_title: Optional[str] = Field(
+        None,
+        description="Original title of the YouTube video"
+    )
+    duration_seconds: Optional[float] = Field(
+        None,
+        description="Video duration in seconds",
+        ge=0
+    )
+    thumbnail_url: Optional[str] = Field(
+        None,
+        description="URL of the video thumbnail"
+    )
+    language: Optional[str] = Field(
+        None,
+        description="Transcript language (ISO 639-1 code)"
+    )
+    transcript_type: Optional[str] = Field(
+        None,
+        description="Type of transcript: 'manual' or 'auto-generated'"
+    )
+
+    class Config:
+        """Pydantic model configuration."""
+        json_schema_extra = {
+            "example": {
+                "video_id": "dQw4w9WgXcQ",
+                "channel_name": "Official Channel",
+                "video_title": "Sample Video Title",
+                "duration_seconds": 212.0,
+                "thumbnail_url": "https://i.ytimg.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+                "language": "en",
+                "transcript_type": "auto-generated"
+            }
+        }
+
+
 class SourceMetadataUnion(BaseModel):
     """Union of all metadata types.
 

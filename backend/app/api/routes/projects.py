@@ -6,6 +6,7 @@ from pathlib import Path
 
 from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile, status, Response, HTTPException, Query
 from fastapi.responses import FileResponse
+from pydantic import BaseModel, Field
 
 from app.api.deps import get_db_session, get_file_service
 from app.core.auth import current_active_user
@@ -164,6 +165,26 @@ async def upload_audio_source(
     default_provider = "mistral"
     background_tasks.add_task(run_processing_job, project_id, default_provider)
     return source
+
+
+class YouTubeImportRequest(BaseModel):
+    """Request body for YouTube video import."""
+    url: str = Field(..., description="YouTube video URL")
+
+
+@router.post("/{project_id}/sources/youtube", response_model=SourceRead, status_code=status.HTTP_201_CREATED)
+async def import_youtube_source(
+    project_id: int,
+    payload: YouTubeImportRequest,
+    service: ProjectService = Depends(get_project_service),
+) -> SourceRead:
+    """
+    Import YouTube video transcript as source.
+
+    Extracts the transcript from a YouTube video (requires captions enabled).
+    Supports both manually uploaded and auto-generated captions.
+    """
+    return await service.add_youtube_source(project_id, payload.url)
 
 
 

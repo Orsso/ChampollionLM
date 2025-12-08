@@ -1,14 +1,15 @@
 # Champollion
 
-Générateur de notes de cours alimenté par IA à partir de sources audio et documentaires.
+Générateur de notes de cours alimenté par IA à partir de sources audio, vidéos YouTube et documents.
 
 ---
 
 ## Fonctionnalités
 
 - **Transcription Audio** - Mistral Voxtral STT
+- **Vidéos YouTube** - Import transcriptions YouTube (sans clé API)
 - **Synthèse Intelligente** - Génération notes Markdown via Mistral LLM
-- **Multi-Sources** - Audio (MP3, WAV, M4A, WebM) + documents texte
+- **Multi-Sources** - Audio (MP3, WAV, M4A, WebM) + YouTube + documents texte
 - **Sécurisé** - Clés API chiffrées (Fernet), authentification JWT
 - **Estimation Tokens** - Prévisualisation coûts avant génération
 - **Export PDF** - Via Pandoc
@@ -94,8 +95,8 @@ npm run dev
 ## Workflow
 
 1. **Créer un Projet** - Titre, description
-2. **Ajouter des Sources** - Upload audio ou coller texte
-3. **Transcrire** - STT automatique pour sources audio
+2. **Ajouter des Sources** - Upload audio, lien YouTube ou coller texte
+3. **Transcrire** - STT automatique pour audio, import pour YouTube
 4. **Générer Document** - Synthèse IA à partir des sources sélectionnées
 5. **Exporter** - PDF via Pandoc
 

@@ -265,6 +265,83 @@ class ProjectService:
 
         return SourceRead.model_validate(audio_source, from_attributes=True)
 
+    async def add_youtube_source(self, project_id: int, url: str) -> SourceRead:
+        """
+        Add YouTube video transcript as source.
+
+        Creates a source with type YOUTUBE and immediately processes
+        the transcript using YouTubeProcessor.
+
+        Args:
+            project_id: ID of project to add source to
+            url: YouTube video URL
+
+        Returns:
+            SourceRead schema with YouTube source details
+
+        Raises:
+            HTTPException: If URL is invalid or transcript unavailable
+        """
+        from app.processors.youtube import YouTubeProcessor
+        from app.utils.tokens import estimate_tokens
+        import httpx
+
+        project = await self.get_project(project_id)
+
+        # Validate URL and extract video ID
+        video_id = YouTubeProcessor.extract_video_id(url)
+        if not video_id:
+            raise_invalid_request(f"Invalid YouTube URL: {url}")
+
+        # Fetch video title via oEmbed API (no API key required)
+        video_title = None
+        try:
+            async with httpx.AsyncClient() as client:
+                oembed_url = f"https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v={video_id}&format=json"
+                response = await client.get(oembed_url, timeout=10.0)
+                if response.status_code == 200:
+                    data = response.json()
+                    video_title = data.get("title")
+        except Exception:
+            pass  # Fall back to video_id if oEmbed fails
+
+        # Process transcript immediately (synchronous for now, fast operation)
+        processor = YouTubeProcessor()
+        result = await processor.process(content=url)
+
+        if not result.success:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=result.error or "Failed to extract YouTube transcript"
+            )
+
+        # Build metadata
+        metadata = {
+            "video_id": video_id,
+            "video_title": video_title,
+            "language": result.metadata.get("language") if result.metadata else None,
+            "transcript_type": result.metadata.get("transcript_type") if result.metadata else None,
+            "thumbnail_url": f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg",
+        }
+
+        # Use video title if available, otherwise fall back to video_id
+        source_title = video_title or f"YouTube: {video_id}"
+
+        # Create source with processed content
+        youtube_source = Source(
+            project_id=project.id,
+            type=SourceType.YOUTUBE,
+            title=source_title,
+            content=url,  # Store original URL
+            processed_content=result.processed_content,
+            token_count=estimate_tokens(result.processed_content) if result.processed_content else None,
+            source_metadata=metadata,
+            status=SourceStatus.PROCESSED,  # Already processed
+        )
+        await save_and_refresh(self.session, youtube_source)
+
+        return SourceRead.model_validate(youtube_source, from_attributes=True)
+
     async def start_document_job(self, project_id: int, provider: str, document_type: str = "cours") -> JobStatusRead:
         """Start document generation job."""
         provider = provider.lower()

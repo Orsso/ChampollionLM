@@ -124,6 +124,47 @@ export function SourceModal({
       );
     }
 
+    // YouTube source
+    if (source.type === 'youtube') {
+      const videoId = source.youtube_metadata?.video_id;
+      return (
+        <div className="space-y-6">
+          {/* Video link and thumbnail */}
+          {videoId && (
+            <div>
+              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BRUTAL_BORDERS.thin} border-b-black`}>
+                Vidéo source
+              </h3>
+              <a
+                href={`https://www.youtube.com/watch?v=${videoId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white font-bold ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.subtle} ${BRUTAL_SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none`}
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+                  <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                </svg>
+                Voir sur YouTube
+              </a>
+            </div>
+          )}
+
+          {/* Transcript */}
+          {hasProcessedContent && (
+            <div>
+              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BRUTAL_BORDERS.thin} border-b-black`}>
+                Transcription
+              </h3>
+              <TranscriptView
+                text={source.processed_content || ''}
+              />
+            </div>
+          )}
+        </div>
+      );
+    }
+
     // Document source
     if (source.type === 'document') {
       return (
@@ -156,6 +197,14 @@ export function SourceModal({
           <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
           <line x1="12" y1="19" x2="12" y2="23" />
           <line x1="8" y1="23" x2="16" y2="23" />
+        </svg>
+      );
+    }
+    if (source.type === 'youtube') {
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+          <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
         </svg>
       );
     }

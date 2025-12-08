@@ -6,7 +6,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from app.models import SourceType
 from app.models.enums import SourceStatus
-from app.models.metadata import AudioMetadata, DocumentMetadata
+from app.models.metadata import AudioMetadata, DocumentMetadata, YouTubeMetadata
 
 
 class ProcessedContentRead(BaseModel):
@@ -32,13 +32,14 @@ class SourceRead(BaseModel):
 
     Type Mapping (see docs/TYPE_MAPPING.md):
     - id: int → string (converted at API boundary)
-    - type: SourceType → 'audio' | 'document'
+    - type: SourceType → 'audio' | 'document' | 'youtube'
     - status: SourceStatus → 'uploaded' | 'processing' | 'processed' | 'failed'
     - title: str → string
     - created_at: datetime → string (ISO 8601)
     - processed_content: str | None → string | undefined
     - audio_metadata: AudioMetadata | None → AudioMetadata | undefined
     - document_metadata: DocumentMetadata | None → DocumentMetadata | undefined
+    - youtube_metadata: YouTubeMetadata | None → YouTubeMetadata | undefined
     """
     id: int
     type: SourceType
@@ -60,6 +61,10 @@ class SourceRead(BaseModel):
     document_metadata: DocumentMetadata | None = Field(
         default=None,
         description="Document metadata (only present for document sources)"
+    )
+    youtube_metadata: YouTubeMetadata | None = Field(
+        default=None,
+        description="YouTube metadata (only present for YouTube sources)"
     )
 
     # Raw content for document sources

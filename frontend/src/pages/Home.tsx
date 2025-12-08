@@ -4,7 +4,7 @@ import {
   MicrophoneIcon,
   SparklesIcon,
   FolderOpenIcon,
-  FileDownIcon
+  YouTubeIcon
 } from '../components/ui/icons/Icons';
 import {
   BRUTAL_CARD_VARIANTS,
@@ -26,26 +26,26 @@ const features: Feature[] = [
   {
     icon: MicrophoneIcon,
     title: 'Transcription Audio',
-    description: 'Convertissez vos enregistrements en texte avec Mistral Voxtral STT. Précision maximale pour vos cours et conférences.',
+    description: 'Convertissez vos enregistrements en texte avec Mistral Voxtral STT. Précision maximale pour vos cours.',
     color: 'bg-brutal-cyan',
   },
   {
-    icon: SparklesIcon,
-    title: 'Synthèse Intelligente',
-    description: 'L\'IA Mistral structure et organise vos contenus en notes Markdown claires et professionnelles.',
-    color: 'bg-brutal-pink',
+    icon: YouTubeIcon,
+    title: 'Vidéos YouTube',
+    description: 'Importez les transcriptions de vidéos YouTube en un clic. Idéal pour les conférences et tutoriels.',
+    color: 'bg-red-500',
   },
   {
     icon: FolderOpenIcon,
     title: 'Multi-Sources',
-    description: 'Combinez audios et documents texte. Créez des notes complètes à partir de toutes vos ressources.',
+    description: 'Combinez audio, vidéos et documents. Créez des notes complètes à partir de toutes vos ressources.',
     color: 'bg-brutal-yellow',
   },
   {
-    icon: FileDownIcon,
-    title: 'Export PDF',
-    description: 'Exportez vos notes en PDF professionnel via Pandoc. Prêtes à partager ou imprimer.',
-    color: 'bg-orange-500',
+    icon: SparklesIcon,
+    title: 'Synthèse IA',
+    description: 'Mistral AI structure vos contenus en documents professionnels.',
+    color: 'bg-brutal-pink',
   },
 ];
 
@@ -91,7 +91,7 @@ export function Home() {
             <h1 className="text-5xl md:text-6xl font-bold text-black leading-tight">
               Transformez vos
               <span className="relative inline-block ml-3">
-                <span className="relative z-10">audios</span>
+                <span className="relative z-10">sources</span>
                 <span className="absolute inset-0 bg-orange-500 -rotate-1 -z-10 rounded" />
               </span>
               <br />
@@ -99,8 +99,8 @@ export function Home() {
             </h1>
 
             <p className="text-xl text-slate-700 leading-relaxed max-w-xl">
-              Champollion utilise l'IA pour transcrire vos enregistrements et générer
-              des notes de cours claires et professionnelles. Gagnez du temps, conservez l'essentiel.
+              Champollion utilise l'IA pour transcrire vos enregistrements et vidéos YouTube,
+              puis générer des notes de cours claires et professionnelles.
             </p>
 
             <div className="flex flex-wrap gap-4 pt-4">

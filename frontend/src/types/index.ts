@@ -83,7 +83,7 @@ export interface ProcessedContent {
 // New naming convention
 export type CreateProjectData = ProjectCreate;
 
-export type SourceType = 'audio' | 'document';
+export type SourceType = 'audio' | 'document' | 'youtube';
 
 export interface Source {
   id: number;
@@ -97,10 +97,28 @@ export interface Source {
   duration_seconds?: number;
   size_bytes?: number;
   uploaded_at?: string;
+  audio_metadata?: {
+    duration_seconds?: number;
+    sample_rate?: number;
+    channels?: number;
+    size_bytes?: number;
+    format?: string;
+    bitrate?: number;
+  };
   // Document-specific fields (optional)
   content?: string;
   file_path?: string;
   metadata?: string | Record<string, unknown>;
+  // YouTube-specific fields (optional)
+  youtube_metadata?: {
+    video_id: string;
+    channel_name?: string;
+    video_title?: string;
+    duration_seconds?: number;
+    thumbnail_url?: string;
+    language?: string;
+    transcript_type?: string;
+  };
   // Legacy fields for transition
   has_transcript?: boolean;
   transcript?: ProcessedContent;
