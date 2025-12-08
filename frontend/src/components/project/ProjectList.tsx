@@ -12,11 +12,18 @@ import {
   TRANSITIONS
 } from '../../constants/styles';
 
+/**
+ * Props for the ProjectList component.
+ */
 interface ProjectListProps {
   projects: Project[] | undefined;
   isLoading: boolean;
 }
 
+/**
+ * Displays a list of user projects with status badges and delete actions.
+ * Navigates to project detail on click, supports two-step delete confirmation.
+ */
 export function ProjectList({ projects, isLoading }: ProjectListProps) {
   const navigate = useNavigate();
   const { deleteProject } = useDeleteProject();
@@ -34,8 +41,8 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
 
     const processingStatus = project.processing_status?.status;
     const isProcessing = project.status === 'processing' ||
-                         processingStatus === 'pending' ||
-                         processingStatus === 'in_progress';
+      processingStatus === 'pending' ||
+      processingStatus === 'in_progress';
 
     if (isProcessing) {
       return (

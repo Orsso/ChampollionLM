@@ -1,4 +1,5 @@
 export * from './useAudioPlayer';
+export * from './useAudioRecorder';
 export * from './useAuth';
 export * from './useConfirmDelete';
 export * from './useDocuments';
@@ -7,4 +8,5 @@ export * from './useProjects';
 export * from './useProjectsWithPolling';
 export * from './useRecordingAnimations';
 export * from './useSources';
+export * from './useSWRData';
 export * from './useTokens';

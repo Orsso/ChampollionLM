@@ -119,9 +119,6 @@ export interface Source {
     language?: string;
     transcript_type?: string;
   };
-  // Legacy fields for transition
-  has_transcript?: boolean;
-  transcript?: ProcessedContent;
 }
 
 export interface CreateSourceData {

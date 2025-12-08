@@ -8,15 +8,23 @@ import { Alert } from '../ui/feedback';
 import { BrutalPageHeader } from '../ui/layout';
 import { BRUTAL_CARD_VARIANTS } from '../../constants/styles';
 
+/**
+ * Props for the AuthForm component.
+ */
 interface AuthFormProps {
   mode: 'login' | 'register';
 }
 
+/** Form data structure for authentication. */
 interface FormData {
   email: string;
   password: string;
 }
 
+/**
+ * Handles user authentication (login or registration).
+ * Features neo-brutalist styling with animated inputs and form validation.
+ */
 export function AuthForm({ mode }: AuthFormProps) {
   const { login, register: registerUser } = useAuth();
   const navigate = useNavigate();

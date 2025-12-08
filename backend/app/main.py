@@ -1,4 +1,5 @@
 import logging
+from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -22,7 +23,28 @@ logger = logging.getLogger("champollion")
 # Initialize rate limiter
 limiter = Limiter(key_func=get_remote_address, default_limits=["200/minute"])
 
-app = FastAPI(title=settings.app_name)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Application lifespan context manager for startup/shutdown events."""
+    # Startup
+    logger.info("Starting Champollion API", extra={"environment": settings.environment})
+    await init_db()
+    
+    # Cleanup old temporary files
+    temp_dir = Path("./tmp/mistral")
+    if temp_dir.exists():
+        deleted = cleanup_temp_files(temp_dir, max_age_hours=24)
+        if deleted > 0:
+            logger.info("Cleaned up temporary files", extra={"deleted": deleted})
+    
+    yield
+    
+    # Shutdown (if needed in the future)
+    logger.info("Shutting down Champollion API")
+
+
+app = FastAPI(title=settings.app_name, lifespan=lifespan)
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
@@ -50,20 +72,6 @@ app.add_middleware(
     **cors_config,
     allow_credentials=True,
 )
-
-
-@app.on_event("startup")
-async def on_startup() -> None:
-    logger.info("Starting Champollion API", extra={"environment": settings.environment})
-    await init_db()
-    
-    # Cleanup old temporary files
-    temp_dir = Path("./tmp/mistral")
-    if temp_dir.exists():
-        deleted = cleanup_temp_files(temp_dir, max_age_hours=24)
-        if deleted > 0:
-            logger.info("Cleaned up temporary files", extra={"deleted": deleted})
-
 
 app.include_router(auth_routes.router, prefix="/api")
 app.include_router(project_routes.router, prefix="/api")

@@ -231,24 +231,18 @@ export function useDocumentChat(documentId: number): UseDocumentChatReturn {
                         // Parse tool events and extract clean content
                         const { events, cleanContent } = parseAndCleanData(data);
 
-                        // Debug: log parsed events
-                        if (events.length > 0) {
-                            console.log('[RAG] Parsed events:', events);
-                        }
+
 
                         // Handle tool events
                         for (const event of events) {
                             if (event.type === 'search_start') {
                                 const payload = event.payload as { query?: string } | undefined;
                                 setSearchStatus({ isSearching: true, query: payload?.query });
-                                console.log('[RAG] Search started:', payload?.query);
                             } else if (event.type === 'search_complete') {
                                 const payload = event.payload as { sources?: string[]; chunks?: ChunkPreview[] } | undefined;
                                 setSearchStatus({ isSearching: false, query: undefined, chunks: payload?.chunks });
-                                console.log('[RAG] Search complete:', payload);
                                 // Add sources and chunks to the current assistant message metadata
                                 if (payload?.sources && payload.sources.length > 0) {
-                                    console.log('[RAG] Updating message metadata with sources:', payload.sources);
                                     setMessages(prev =>
                                         prev.map(msg =>
                                             msg.id === assistantId

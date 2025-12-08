@@ -16,10 +16,15 @@ from .metadata import AudioMetadata, DocumentMetadata, YouTubeMetadata
 
 class SourceType(str, Enum):
     """
-    LEGACY: Simple source type classification.
+    High-level source type classification for user-facing categorization.
 
-    TODO: Migrate to SourceFormat (models/enums.py) which uses MIME types
-    for precise format handling (audio/mp3, application/pdf, text/markdown, etc.).
+    This enum provides simple categories (audio, document, youtube) for UI display
+    and routing logic. For precise format handling (MIME types like audio/mp3,
+    application/pdf, etc.), internal processing uses file extensions and content type
+    detection rather than a separate enum.
+
+    Design Decision: Kept simple for now. SourceFormat (models/enums.py) is defined
+    for future use if granular format tracking becomes necessary.
     """
     AUDIO = "audio"
     DOCUMENT = "document"

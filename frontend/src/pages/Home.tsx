@@ -255,10 +255,10 @@ export function Home() {
               © 2025 Champollion • Propulsé par Mistral AI
             </p>
             <div className="flex gap-6 text-sm text-slate-600">
-              <a href="https://github.com/orsso" className="hover:text-orange-500 transition-colors">
+              <a href="https://github.com/orsso/champollionlm" className="hover:text-orange-500 transition-colors">
                 GitHub
               </a>
-              <a href="/login" className="hover:text-orange-500 transition-colors">
+              <a href="https://github.com/Orsso/ChampollionLM/blob/main/docs/ARCHITECTURE.md" className="hover:text-orange-500 transition-colors">
                 Documentation
               </a>
             </div>

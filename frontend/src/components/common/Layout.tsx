@@ -10,10 +10,17 @@ import { ClickSpark } from '../ui/effects';
 import { BrutalBackground } from '../ui';
 import { BRUTAL_BORDERS, BRUTAL_BACKGROUNDS, BRUTAL_BUTTON_DANGER } from '../../constants/styles';
 
+/**
+ * Props for the Layout component.
+ */
 interface LayoutProps {
   children: ReactNode;
 }
 
+/**
+ * Main application layout with navigation, header, and floating action button.
+ * Includes neo-brutalist styling with animated background and click effects.
+ */
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const { logout } = useAuth();

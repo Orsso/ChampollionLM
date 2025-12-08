@@ -24,8 +24,8 @@ class ProcessingJob(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     project_id: Mapped[int] = mapped_column(ForeignKey("project.id", ondelete="CASCADE"), nullable=False, index=True)
-    # TODO: Add job_type field to differentiate TRANSCRIPTION, OCR, EXTRACTION, etc.
-    # job_type: Mapped[ProcessingJobType] = mapped_column(String(20), nullable=False)
+    # NOTE: Currently uses project-level jobs. For multi-source parallel processing,
+    # add job_type field (ProcessingJobType) to track per-source jobs independently.
     status: Mapped[JobStatus] = mapped_column(SAEnum(JobStatus, name="processing_job_status", native_enum=False), nullable=False, default=JobStatus.PENDING)
     error: Mapped[str | None] = mapped_column(Text, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(tz=UTC))

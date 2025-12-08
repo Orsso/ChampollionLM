@@ -1,5 +1,5 @@
 // Buttons
-export * from '../ui/buttons';
+export * from './buttons';
 
 // Forms
 export * from './forms';
