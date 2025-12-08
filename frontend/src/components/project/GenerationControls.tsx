@@ -389,9 +389,9 @@ export function GenerationControls({
               <div className={`flex items-center justify-between text-xs font-bold text-slate-800`}>
                 <span>Utilisation des tokens (Estimation)</span>
                 {estimation ? (
-                  <span>{Math.round(estimation.context_percentage)}% de 128k (~{estimation.formatted_count})</span>
+                  <span>{Math.round(estimation.context_percentage)}% de 200k (~{estimation.formatted_count})</span>
                 ) : (
-                  <span>0% de 128k</span>
+                  <span>0% de 200k</span>
                 )}
               </div>
               <div className={`

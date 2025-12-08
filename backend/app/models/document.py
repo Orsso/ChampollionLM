@@ -19,5 +19,21 @@ class Document(Base):
     type: Mapped[str] = mapped_column(String(50), nullable=False, default="cours")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=lambda: datetime.now(tz=UTC))
 
-    # Relationship to Project (one-to-many)
+    # Relationship to Project (many-to-one)
     project = relationship("Project", back_populates="documents")
+    
+    # Relationship to sources used for generation (via association table)
+    sources = relationship(
+        "Source",
+        secondary="document_source",
+        back_populates="documents",
+        lazy="selectin"
+    )
+    
+    # Relationship to chat messages
+    chat_messages = relationship(
+        "ChatMessage",
+        back_populates="document",
+        cascade="all, delete-orphan",
+        order_by="ChatMessage.created_at"
+    )

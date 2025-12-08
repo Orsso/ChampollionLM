@@ -12,6 +12,7 @@ from .project import (
 )
 from .source import SourceCreate, SourceDetail, SourceRead, SourceUpdate
 from .user import UserCreate, UserRead, UserUpdate
+from .chat import ChatMessageCreate, ChatMessageRead, ChatHistoryResponse
 
 __all__ = [
     "UserRead",
@@ -31,4 +32,7 @@ __all__ = [
     "DocumentRequest",
     "DocumentUpdate",
     "JobStatusRead",
+    "ChatMessageCreate",
+    "ChatMessageRead",
+    "ChatHistoryResponse",
 ]

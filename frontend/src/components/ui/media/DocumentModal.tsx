@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { saveAs } from 'file-saver';
 import { Modal } from '../layout';
 import { MarkdownViewer } from './MarkdownViewer';
+import { DocumentChatPanel } from './DocumentChatPanel';
 import { IconButton, ConfirmDeleteButton } from '../buttons';
 import { PlusIcon, CheckIcon, DocumentIcon, EditIcon } from '../icons';
 import { ExportMenu, type ExportOption } from './ExportMenu';
-import { BRUTAL_BORDERS, BRUTAL_RADIUS } from '../../../constants/styles';
+import { BRUTAL_BORDERS, BRUTAL_RADIUS, BRUTAL_SHADOWS } from '../../../constants/styles';
 import { API_BASE_URL, getToken } from '../../../lib/api';
 import { createSource } from '../../../hooks/useSources';
 import type { Document } from '../../../types';
@@ -37,6 +38,7 @@ export function DocumentModal({
   const [renameValue, setRenameValue] = useState('');
   const [copied, setCopied] = useState(false);
   const [addedToSource, setAddedToSource] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const handleRenameClick = () => {
     setRenameValue(document.title || '');
@@ -127,12 +129,19 @@ export function DocumentModal({
     { label: 'TXT', onClick: handleExportTXT, bgColor: '#fb923c' },
   ];
 
+  // Chat toggle icon
+  const ChatIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+
   return (
     <>
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        maxWidth="w-[95vw] max-w-[110rem]"
+        maxWidth={chatOpen ? "w-[95vw] max-w-[140rem]" : "w-[95vw] max-w-[110rem]"}
         title={(
           <div className="flex items-center gap-2">
             <span className={`
@@ -156,15 +165,23 @@ export function DocumentModal({
         )}
         headerRight={(
           <div className="flex items-center gap-2">
+            {/* Chat toggle button */}
+            <IconButton
+              onClick={() => setChatOpen(!chatOpen)}
+              tooltip={chatOpen ? 'Fermer le chat' : 'Ouvrir le chat'}
+              icon={<ChatIcon />}
+              variant={chatOpen ? 'primary' : 'default'}
+              className={`${BRUTAL_SHADOWS.small}`}
+            />
             <IconButton
               onClick={handleAddToSource}
-              tooltip={addedToSource ? 'Ajoute !' : 'Ajouter comme source'}
+              tooltip={addedToSource ? 'Ajouté !' : 'Ajouter comme source'}
               icon={addedToSource ? <CheckIcon /> : <PlusIcon />}
               variant="primary"
             />
             <IconButton
               onClick={handleCopyMarkdown}
-              tooltip={copied ? 'Copie !' : 'Copier le markdown'}
+              tooltip={copied ? 'Copié !' : 'Copier le markdown'}
               icon={copied ? <CheckIcon /> : (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -183,7 +200,20 @@ export function DocumentModal({
           </div>
         )}
       >
-        <MarkdownViewer markdown={document?.markdown || ''} />
+        <div className="flex h-full">
+          {/* Document content */}
+          <div className={`flex-1 overflow-y-auto ${chatOpen ? 'pr-0' : ''}`}>
+            <MarkdownViewer markdown={document?.markdown || ''} />
+          </div>
+
+          {/* Chat panel */}
+          {chatOpen && (
+            <DocumentChatPanel
+              documentId={document.id}
+              onClose={() => setChatOpen(false)}
+            />
+          )}
+        </div>
       </Modal>
 
       {renameOpen && (

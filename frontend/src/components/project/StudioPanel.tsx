@@ -6,6 +6,7 @@ import { DocumentModal } from '../ui/media';
 import { useGenerateDocument } from '../../hooks/useDocuments';
 import { useSources } from '../../hooks/useSources';
 import { useProject } from '../../hooks/useProjects';
+import { useConfirmDelete } from '../../hooks';
 import { updateDocument, deleteDocument as apiDeleteDocument } from '../../lib/api';
 import type { Document } from '../../types';
 
@@ -24,7 +25,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
   const [generatingDocTitle, setGeneratingDocTitle] = useState<string | undefined>(undefined);
   const [selectedDocument, setSelectedDocument] = useState<Document | null>(null);
   const [docModalOpen, setDocModalOpen] = useState(false);
-  const [confirmingDelete, setConfirmingDelete] = useState<number | null>(null);
+  const { isConfirmingId, handleDelete } = useConfirmDelete<number>();
 
   const readySources = (project?.sources || []).filter(s => s.processed_content || s.transcript);
   const hasAnyProcessedContent = readySources.length > 0;
@@ -57,21 +58,23 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
     }
   };
 
-  const handleDeleteDocument = async (documentId: number) => {
-    setError(null);
-    try {
-      await apiDeleteDocument(Number(projectId), documentId);
-      if (selectedDocument?.id === documentId) {
-        setSelectedDocument(null);
-        setDocModalOpen(false);
+  const handleDeleteClick = (documentId: number) => {
+    handleDelete(async () => {
+      setError(null);
+      try {
+        await apiDeleteDocument(Number(projectId), documentId);
+        if (selectedDocument?.id === documentId) {
+          setSelectedDocument(null);
+          setDocModalOpen(false);
+        }
+        await mutateProject();
+      } catch (err) {
+        let errorMessage = 'Erreur lors de la suppression';
+        if (err instanceof Error) errorMessage = err.message;
+        else if (typeof err === 'string') errorMessage = err;
+        setError(errorMessage);
       }
-      await mutateProject();
-    } catch (err) {
-      let errorMessage = 'Erreur lors de la suppression';
-      if (err instanceof Error) errorMessage = err.message;
-      else if (typeof err === 'string') errorMessage = err;
-      setError(errorMessage);
-    }
+    }, documentId);
   };
 
   const updateDocumentTitle = async (documentId: number, title: string) => {
@@ -130,9 +133,9 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
           document={selectedDocument}
           projectId={projectId}
           projectTitle={project?.title}
-          onDelete={handleDeleteDocument}
+          onDelete={handleDeleteClick}
           onRename={updateDocumentTitle}
-          isConfirmingDelete={confirmingDelete === selectedDocument.id}
+          isConfirmingDelete={isConfirmingId(selectedDocument.id)}
           onMutate={handleMutate}
         />
       )}

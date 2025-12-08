@@ -7,7 +7,7 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from app.api.routes import auth as auth_routes, projects as project_routes
+from app.api.routes import auth as auth_routes, projects as project_routes, chat as chat_routes
 from app.core.settings import settings
 from app.db.init_db import init_db
 from app.utils.cleanup import cleanup_temp_files
@@ -67,5 +67,4 @@ async def on_startup() -> None:
 
 app.include_router(auth_routes.router, prefix="/api")
 app.include_router(project_routes.router, prefix="/api")
-
-
+app.include_router(chat_routes.router, prefix="/api")

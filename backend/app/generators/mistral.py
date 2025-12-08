@@ -13,7 +13,7 @@ from mistralai import Mistral
 from app.core.security import decrypt_api_key
 from app.generators.base import DocumentProviderError, GenerationResult, GenerationStrategy
 
-MISTRAL_NOTES_MODEL = "mistral-medium-latest"
+MISTRAL_NOTES_MODEL = "mistral-large-latest"
 
 
 @dataclass

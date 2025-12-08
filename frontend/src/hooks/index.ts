@@ -2,6 +2,7 @@ export * from './useAudioPlayer';
 export * from './useAuth';
 export * from './useConfirmDelete';
 export * from './useDocuments';
+export * from './useDocumentChat';
 export * from './useProjects';
 export * from './useProjectsWithPolling';
 export * from './useRecordingAnimations';

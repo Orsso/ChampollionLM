@@ -10,7 +10,8 @@ import tiktoken
 
 # Mistral models use similar tokenization to GPT models
 # We use cl100k_base encoding as a good approximation
-MISTRAL_CONTEXT_LIMIT = 128_000
+# mistral-large-latest supports 262k tokens, we reserve 60k for generation
+MISTRAL_CONTEXT_LIMIT = 200_000
 
 
 @lru_cache(maxsize=1)
@@ -78,11 +79,11 @@ def format_token_count(count: int) -> str:
 
 def get_context_usage_percentage(token_count: int) -> float:
     """
-    Calculate percentage of context window used for mistral-medium-latest.
-    
+    Calculate percentage of context window used for mistral-large-latest.
+
     Args:
         token_count: Number of tokens
-        
+
     Returns:
         Percentage of context used (0-100)
     """

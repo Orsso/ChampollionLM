@@ -3,6 +3,8 @@
 from .projects import ProjectService
 from .jobs import run_document_job, run_processing_job
 from .transcription import AudioSegment, AudioSegmenter, SpeechToTextProvider, STTProviderError
+from .chat import ChatService
+from .embedding import EmbeddingService
 
 __all__ = [
     "ProjectService",
@@ -12,5 +14,6 @@ __all__ = [
     "STTProviderError",
     "AudioSegment",
     "AudioSegmenter",
+    "ChatService",
+    "EmbeddingService",
 ]
-

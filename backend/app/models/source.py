@@ -76,6 +76,13 @@ class Source(Base):
 
     # Relationships
     project = relationship("Project", back_populates="sources")
+    
+    # Relationship to documents where this source was used (via association table)
+    documents = relationship(
+        "Document",
+        secondary="document_source",
+        back_populates="sources"
+    )
 
     # Type-safe metadata accessors
     @property

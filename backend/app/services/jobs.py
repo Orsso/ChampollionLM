@@ -11,6 +11,7 @@ from app.db.session import get_session
 from app.generators.base import DocumentProviderError
 from app.models import (
     Document,
+    DocumentSource,
     JobStatus,
     Project,
     Source,
@@ -189,6 +190,9 @@ async def _run_document_job_impl(
     await session.commit()
     logger.info("Generation job marked as IN_PROGRESS", extra={"project_id": project_id})
 
+    # Get sources that will be used for generation (for linking later)
+    sources_used = await _get_sources_for_document(session, project, source_ids)
+    
     try:
         markdown = await _generate_project_document(
             session, project, provider,
@@ -217,11 +221,23 @@ async def _run_document_job_impl(
         type=document_type
     )
     session.add(document)
+    await session.flush()  # Flush to get document.id
+
+    # Link document to sources used for generation (for chat context)
+    for source in sources_used:
+        doc_source = DocumentSource(
+            document_id=document.id,
+            source_id=source.id
+        )
+        session.add(doc_source)
 
     # Mark job as succeeded
     await job_svc.mark_succeeded(job.id)
     await session.commit()
-    logger.info("Document generation completed successfully", extra={"project_id": project_id})
+    logger.info("Document generation completed successfully", extra={
+        "project_id": project_id,
+        "sources_linked": len(sources_used)
+    })
 
 
 async def _transcribe_audio_source(session: AsyncSession, source: Source, provider: str) -> None:
