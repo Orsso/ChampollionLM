@@ -72,12 +72,22 @@ fly postgres attach champollion-db --app champollion-backend
 
 ### 4.4 Configurer les secrets
 
-```bash
-# Clé Fernet (générée pour vous)
-fly secrets set FERNET_SECRET_KEY="IKkkDNwUC-4OQimaHS97eOAcCjTYv1AncazcnIum1mk="
+**Générez vos propres clés** (ne réutilisez jamais des clés publiées) :
 
-# Clé JWT (générée pour vous)
-fly secrets set JWT_SECRET="f1bf34a1cb6dd6faefaf306cfcc625957b7b07a09064122ebb448b60899789f4"
+```bash
+# Générer la clé Fernet (dans le venv backend)
+python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"
+
+# Générer la clé JWT
+openssl rand -hex 32
+```
+
+**Puis configurez-les sur Fly.io :**
+
+```bash
+# Remplacez par VOS clés générées ci-dessus
+fly secrets set FERNET_SECRET_KEY="votre-clé-fernet-générée"
+fly secrets set JWT_SECRET="votre-clé-jwt-générée"
 
 # CORS - autoriser le frontend (à mettre à jour après déploiement frontend)
 fly secrets set CORS_ALLOWED_ORIGINS='["https://champollion-frontend.fly.dev"]'
