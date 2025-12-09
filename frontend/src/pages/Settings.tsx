@@ -143,7 +143,7 @@ export function Settings() {
             {apiKeyError && <Alert variant="error" message={apiKeyError} />}
             {apiKeySuccess && <Alert variant="success" message={apiKeySuccess} />}
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 type="submit"
                 className="bg-orange-500 hover:bg-orange-600 text-white"

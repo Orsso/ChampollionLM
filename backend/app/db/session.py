@@ -15,7 +15,7 @@ def create_engine() -> AsyncEngine:
         settings.database_url, 
         future=True, 
         echo=False,
-        connect_args=connect_args if connect_args else None
+        connect_args=connect_args
     )
 
 

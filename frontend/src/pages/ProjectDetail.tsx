@@ -20,11 +20,11 @@ export function ProjectDetail() {
     if (!project) return;
 
     const isProcessing = project.status === 'processing' ||
-                          project.processing_status?.status === 'pending' ||
-                          project.processing_status?.status === 'in_progress';
+      project.processing_status?.status === 'pending' ||
+      project.processing_status?.status === 'in_progress';
 
     const isGeneratingDocument = project.document_status?.status === 'pending' ||
-                                project.document_status?.status === 'in_progress';
+      project.document_status?.status === 'in_progress';
 
     if (isProcessing || isGeneratingDocument) {
       const interval = setInterval(() => {
@@ -66,7 +66,8 @@ export function ProjectDetail() {
             className={`inline-flex items-center gap-2 px-4 py-2.5 bg-white text-orange-500 ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_SHADOWS.small} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:bg-orange-50`}
           >
             <span className="text-xl">←</span>
-            <span>Retour aux projets</span>
+            <span className="hidden sm:inline">Retour aux projets</span>
+            <span className="sm:hidden">Retour</span>
           </button>
         </div>
 
@@ -79,16 +80,15 @@ export function ProjectDetail() {
 
         {/* Brutal tabs with global button style */}
         <div className="mb-8">
-          <div className="flex gap-2">
+          <div className="flex gap-2 overflow-x-auto pb-2">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 text-sm uppercase tracking-wide ${BRUTAL_RADIUS.normal} ${
-                  activeTab === tab.id
+                className={`px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm uppercase tracking-wide whitespace-nowrap ${BRUTAL_RADIUS.normal} ${activeTab === tab.id
                     ? `${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_SHADOWS.medium} active:translate-x-[2px] active:translate-y-[2px] active:shadow-none`
                     : `${BRUTAL_BUTTON_VARIANTS.secondary} ${BRUTAL_SHADOWS.medium} active:translate-x-[2px] active:translate-y-[2px] active:shadow-none`
-                }`}
+                  }`}
               >
                 {tab.label}
               </button>

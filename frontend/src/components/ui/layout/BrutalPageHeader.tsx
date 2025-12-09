@@ -52,20 +52,20 @@ export function BrutalPageHeader({
   };
 
   const titleColorClass = variant === 'accent' ? 'text-white' : 'text-black';
-  
+
   const subtitleClasses = subtitleVariant === 'highlight'
     ? 'text-xl font-bold text-orange-500 uppercase tracking-wide'
     : variant === 'accent'
-    ? 'text-lg font-medium text-white/90'
-    : 'text-lg font-medium text-gray-600';
+      ? 'text-lg font-medium text-white/90'
+      : 'text-lg font-medium text-gray-600';
 
   return (
     <div
-      className={`relative mb-8 -mx-4 px-6 py-5 ${variantClasses[variant]} ${BRUTAL_BORDERS.thick} border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${className}`}
+      className={`relative mb-6 md:mb-8 -mx-4 px-4 md:px-6 py-4 md:py-5 ${variantClasses[variant]} ${BRUTAL_BORDERS.thick} border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${className}`}
     >
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h1 className={`text-5xl font-bold ${titleColorClass} mb-1 tracking-tight`}>
+          <h1 className={`text-3xl md:text-5xl font-bold ${titleColorClass} mb-1 tracking-tight`}>
             {title}
           </h1>
           {subtitle && (

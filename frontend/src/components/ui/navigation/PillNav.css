@@ -217,15 +217,16 @@
 }
 
 .mobile-menu-popover {
-  position: absolute;
-  top: 3em;
+  position: fixed;
+  top: 84px;
   left: 1rem;
   right: 1rem;
+  width: auto;
   background: var(--base, #f0f0f0);
   border-radius: 8px;
   border: 3px solid black;
   box-shadow: 4px 4px 0px 0px rgba(0, 0, 0, 1);
-  z-index: 998;
+  z-index: 999;
   opacity: 0;
   transform-origin: top center;
   visibility: hidden;
