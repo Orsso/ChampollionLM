@@ -441,6 +441,23 @@ class ProjectService:
             await self.session.delete(document)
             await self.session.commit()
 
+    async def reset_processing_status(self, project_id: int) -> None:
+        """
+        Reset processing job status to allow reprocessing.
+        
+        This resets the job status to PENDING so that a new processing
+        attempt can be made for sources that previously failed.
+        """
+        from datetime import UTC, datetime
+        project = await self.get_project(project_id, with_details=True)
+        job = project.processing_job
+        
+        if job:
+            job.status = JobStatus.PENDING
+            job.error = None
+            job.updated_at = datetime.now(tz=UTC)
+            await self.session.commit()
+
     def _to_summary(self, project: Project) -> ProjectSummary:
         """Convert Project model to ProjectSummary schema."""
         processing_status = (

@@ -1,9 +1,13 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AudioVisualizer } from '../ui/media/AudioVisualizer';
 import { ProgressBar } from '../ui/feedback';
 import { BrutalInput } from '../ui/forms';
+import { Button } from '../ui/buttons';
+import { Modal } from '../ui/layout';
 import { useRecordingAnimations } from '../../hooks/useRecordingAnimations';
 import { useAudioRecorder } from '../../hooks/useAudioRecorder';
+import { useAuth } from '../../hooks';
 import { uploadAudioSource, importYouTubeSource } from '../../hooks/useSources';
 import { formatDuration } from '../../utils/formatters';
 import { MicrophoneIcon, LinkIcon, FileIcon } from '../ui/icons';
@@ -37,6 +41,10 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
     const [youtubeUrl, setYoutubeUrl] = useState('');
     const [youtubeLoading, setYoutubeLoading] = useState(false);
     const [youtubeError, setYoutubeError] = useState<string | null>(null);
+    const [apiKeyWarning, setApiKeyWarning] = useState(false);
+
+    const { user } = useAuth();
+    const navigate = useNavigate();
 
     const recordBtnRef = useRef<HTMLButtonElement>(null!);
     const importBtnRef = useRef<HTMLButtonElement>(null!);
@@ -62,6 +70,11 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             clearInterval(progressInterval);
             setUploadProgress(100);
             onMutate?.();
+
+            // Show warning if no API key (source saved but processing will fail)
+            if (!user?.has_api_key) {
+                setApiKeyWarning(true);
+            }
 
             setTimeout(() => {
                 setUploadProgress(0);
@@ -452,6 +465,40 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                     />
                 </div>
             )}
+
+            {/* API Key Warning Modal - shows after upload if no API key */}
+            <Modal
+                isOpen={apiKeyWarning}
+                onClose={() => setApiKeyWarning(false)}
+                title="Clé API requise"
+                maxWidth="max-w-md"
+            >
+                <div className="space-y-4">
+                    <p className="text-slate-700 font-medium">
+                        Votre source a été ajoutée, mais le traitement échouera sans clé API Mistral.
+                    </p>
+                    <p className="text-sm text-slate-500">
+                        Configurez votre clé API dans les paramètres, puis utilisez le bouton "Réessayer" sur la source.
+                    </p>
+                    <div className="flex gap-3 justify-end pt-2">
+                        <Button
+                            variant="secondary"
+                            onClick={() => setApiKeyWarning(false)}
+                        >
+                            Compris
+                        </Button>
+                        <Button
+                            variant="primary"
+                            onClick={() => {
+                                setApiKeyWarning(false);
+                                navigate('/settings');
+                            }}
+                        >
+                            Aller aux paramètres
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 }

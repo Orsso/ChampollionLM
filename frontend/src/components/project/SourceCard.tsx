@@ -1,5 +1,6 @@
 import { Badge, ShinyText } from '../ui/feedback';
-import { ConfirmDeleteButton } from '../ui/buttons';
+import { ConfirmDeleteButton, IconButton } from '../ui/buttons';
+import { RefreshIcon } from '../ui/icons';
 import { formatDateShort, formatDuration, formatSize } from '../../utils/formatters';
 import type { Source, JobStatus } from '../../types';
 import {
@@ -12,8 +13,10 @@ interface SourceCardProps {
   source: Source;
   processingStatus?: JobStatus;
   isConfirmingDelete: boolean;
+  isRetrying?: boolean;
   onClick: () => void;
   onDelete: () => void;
+  onRetry?: () => void;
 }
 
 /**
@@ -26,8 +29,10 @@ export function SourceCard({
   source,
   processingStatus,
   isConfirmingDelete,
+  isRetrying,
   onClick,
-  onDelete
+  onDelete,
+  onRetry
 }: SourceCardProps) {
   // Determine processing state
   const hasProcessedContent = Boolean(source.processed_content);
@@ -120,8 +125,19 @@ export function SourceCard({
               {source.title}
             </h3>
             {badge && (
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 flex items-center gap-2">
                 {badge}
+                {/* Retry button next to Echec badge */}
+                {isJobFailed && !hasProcessedContent && onRetry && (
+                  <IconButton
+                    icon={<RefreshIcon size={14} className={isRetrying ? 'animate-spin' : ''} />}
+                    onClick={(e) => { e.stopPropagation(); onRetry(); }}
+                    tooltip="Réessayer le traitement"
+                    variant="primary"
+                    size="sm"
+                    disabled={isRetrying}
+                  />
+                )}
               </div>
             )}
           </div>

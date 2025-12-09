@@ -58,8 +58,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     if (!response.ok) {
-      const error = await response.json().catch(() => ({ detail: 'Login failed' }));
-      throw new Error(error.detail || 'Login failed');
+      // Parse error response for better messages
+      const error = await response.json().catch(() => ({}));
+
+      // Map common auth errors to user-friendly French messages
+      if (response.status === 400 || response.status === 401) {
+        throw new Error('Email ou mot de passe incorrect');
+      } else if (response.status === 422) {
+        throw new Error('Format d\'email invalide');
+      } else if (response.status >= 500) {
+        throw new Error('Erreur serveur. Veuillez réessayer plus tard.');
+      } else {
+        throw new Error(error.detail || 'Échec de la connexion');
+      }
     }
 
     const data = await response.json();
@@ -79,14 +90,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       body: JSON.stringify(data),
     });
-    
+
     if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Registration failed: ${response.status} - ${errorText}`);
+      const error = await response.json().catch(() => ({}));
+
+      // Map common registration errors to user-friendly French messages
+      if (response.status === 400) {
+        // Check for specific error types
+        const detail = error.detail || '';
+        if (detail.includes('REGISTER_USER_ALREADY_EXISTS') || detail.toLowerCase().includes('already exists')) {
+          throw new Error('Un compte avec cet email existe déjà');
+        }
+        throw new Error('Données d\'inscription invalides');
+      } else if (response.status === 422) {
+        throw new Error('Format d\'email ou mot de passe invalide');
+      } else if (response.status >= 500) {
+        throw new Error('Erreur serveur. Veuillez réessayer plus tard.');
+      } else {
+        throw new Error(error.detail || 'Échec de l\'inscription');
+      }
     }
-    
+
     await response.json();
-    
+
     // After registration, auto-login
     await login({ username: data.email, password: data.password });
   };

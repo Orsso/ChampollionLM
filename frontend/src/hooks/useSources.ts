@@ -73,3 +73,12 @@ export async function importYouTubeSource(projectId: string | number, url: strin
     body: JSON.stringify({ url }),
   });
 }
+
+/**
+ * Reprocess a source (retry failed processing)
+ */
+export async function reprocessSource(projectId: string | number, sourceId: number): Promise<void> {
+  return fetcher<void>(`/api/projects/${projectId}/sources/${sourceId}/reprocess`, {
+    method: 'POST',
+  });
+}

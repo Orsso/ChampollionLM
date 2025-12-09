@@ -417,3 +417,29 @@ async def get_source_file(
     service: SourceService = Depends(get_source_service),
 ) -> FileResponse:
     return await service.get_source_file(project_id, source_id)
+
+
+@router.post("/{project_id}/sources/{source_id}/reprocess", status_code=status.HTTP_202_ACCEPTED)
+async def reprocess_source(
+    project_id: int,
+    source_id: int,
+    background_tasks: BackgroundTasks,
+    service: SourceService = Depends(get_source_service),
+    project_service: ProjectService = Depends(get_project_service),
+) -> dict:
+    """
+    Retry processing a failed source.
+    
+    Resets the source processing status and triggers a new processing job.
+    """
+    # Verify source exists and belongs to project
+    await service.get_source(project_id, source_id)
+    
+    # Reset processing status
+    await project_service.reset_processing_status(project_id)
+    
+    # Trigger processing job again
+    default_provider = "mistral"
+    background_tasks.add_task(run_processing_job, project_id, default_provider)
+    
+    return {"message": "Reprocessing started", "source_id": source_id}

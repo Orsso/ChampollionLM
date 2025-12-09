@@ -1,8 +1,11 @@
 import { useState } from 'react';
-import { Badge, ShinyText } from '../ui/feedback';
+import { useNavigate } from 'react-router-dom';
+import { Badge, ShinyText, Alert } from '../ui/feedback';
 import { Modal } from '../ui/layout';
 import { AnimatedInput } from '../ui/forms';
+import { Button } from '../ui/buttons';
 import { useTokenEstimate } from '../../hooks/useTokens';
+import { useAuth } from '../../hooks';
 import { formatDateTime } from '../../utils/formatters';
 import type { Source } from '../../types';
 import {
@@ -34,6 +37,11 @@ export function GenerationControls({
   const [selectModalOpen, setSelectModalOpen] = useState(false);
   const [selectedSourceIds, setSelectedSourceIds] = useState<number[]>([]);
   const [docTitle, setDocTitle] = useState('');
+  const [apiKeyError, setApiKeyError] = useState(false);
+  const [generationError, setGenerationError] = useState<string | null>(null);
+
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   // Use selectedSourceIds directly for estimation to match "empty selection = empty bar"
   const { estimation } = useTokenEstimate(projectId, { sourceIds: selectedSourceIds });
@@ -46,6 +54,13 @@ export function GenerationControls({
   };
 
   const handleLaunchGeneration = async () => {
+    // Check if API key is configured before proceeding
+    if (!user?.has_api_key) {
+      setApiKeyError(true);
+      return;
+    }
+
+    setGenerationError(null);
     const sourceIds = selectedSourceIds.length > 0
       ? selectedSourceIds
       : readySources.map(s => s.id);
@@ -55,8 +70,13 @@ export function GenerationControls({
       title = `${projectTitle}:Cours1`;
     }
 
-    await onGenerate(sourceIds, title);
-    setSelectModalOpen(false);
+    try {
+      await onGenerate(sourceIds, title);
+      setSelectModalOpen(false);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Erreur lors de la génération';
+      setGenerationError(message);
+    }
   };
 
   return (
@@ -400,6 +420,45 @@ export function GenerationControls({
                 L'estimation est basee sur les sources selectionnees.
               </p>
             </div>
+          </div>
+
+          {/* Show generation error inside modal */}
+          {generationError && (
+            <Alert variant="error" message={generationError} />
+          )}
+        </div>
+      </Modal>
+
+      {/* API Key Error Modal */}
+      <Modal
+        isOpen={apiKeyError}
+        onClose={() => setApiKeyError(false)}
+        title="Clé API requise"
+        maxWidth="max-w-md"
+      >
+        <div className="space-y-4">
+          <p className="text-slate-700 font-medium">
+            Vous devez configurer votre clé API Mistral pour utiliser les fonctionnalités de génération.
+          </p>
+          <p className="text-sm text-slate-500">
+            Rendez-vous dans les paramètres pour ajouter votre clé API.
+          </p>
+          <div className="flex gap-3 justify-end pt-2">
+            <Button
+              variant="secondary"
+              onClick={() => setApiKeyError(false)}
+            >
+              Annuler
+            </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                setApiKeyError(false);
+                navigate('/settings');
+              }}
+            >
+              Aller aux paramètres
+            </Button>
           </div>
         </div>
       </Modal>

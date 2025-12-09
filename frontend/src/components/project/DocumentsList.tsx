@@ -15,7 +15,6 @@ interface DocumentsListProps {
     projectTitle?: string;
     documents: Document[];
     isGenerating: boolean;
-    isLaunching: boolean;
     generatingDocTitle?: string;
     onMutate?: () => void;
     onDocumentClick: (doc: Document) => void;
@@ -26,7 +25,6 @@ export function DocumentsList({
     projectTitle,
     documents,
     isGenerating,
-    isLaunching,
     generatingDocTitle,
     onMutate,
     onDocumentClick

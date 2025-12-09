@@ -27,7 +27,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
   const [docModalOpen, setDocModalOpen] = useState(false);
   const { isConfirmingId, handleDelete } = useConfirmDelete<number>();
 
-  const readySources = (project?.sources || []).filter(s => s.processed_content || s.transcript);
+  const readySources = (project?.sources || []).filter(s => s.processed_content);
   const hasAnyProcessedContent = readySources.length > 0;
   const documents = project?.documents || [];
   const documentStatus = project?.document_status?.status;
@@ -116,7 +116,6 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
         projectTitle={project?.title}
         documents={documents}
         isGenerating={isGenerating}
-        isLaunching={isLaunching}
         generatingDocTitle={generatingDocTitle}
         onMutate={handleMutate}
         onDocumentClick={handleDocumentClick}

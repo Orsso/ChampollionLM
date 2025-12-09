@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { SourceModal } from '../ui/media';
 import { SourceCard } from './SourceCard';
-import { deleteSource, updateSource } from '../../hooks/useSources';
+import { deleteSource, updateSource, reprocessSource } from '../../hooks/useSources';
 import { useAuth, useConfirmDelete } from '../../hooks';
 import { API_BASE_URL } from '../../lib/api';
 import type { Source, JobStatus } from '../../types';
@@ -25,6 +25,7 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
   const [selectedSource, setSelectedSource] = useState<Source | null>(null);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
+  const [retryingSourceId, setRetryingSourceId] = useState<number | null>(null);
   const audioUrlsRef = useRef(audioUrls);
 
   // Sort sources by created_at descending (newest first)
@@ -100,6 +101,19 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
     onMutate?.();
   };
 
+  const handleRetryClick = async (sourceId: number) => {
+    setRetryingSourceId(sourceId);
+    try {
+      await reprocessSource(projectId, sourceId);
+      onMutate?.();
+    } catch {
+      // Error handling - could add toast notification here
+      console.error('Failed to reprocess source');
+    } finally {
+      setRetryingSourceId(null);
+    }
+  };
+
   if (!sources || sources.length === 0) {
     return null;
   }
@@ -122,8 +136,10 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
             source={source}
             processingStatus={processingStatus}
             isConfirmingDelete={isConfirmingId(source.id)}
+            isRetrying={retryingSourceId === source.id}
             onClick={() => handleSourceClick(source)}
             onDelete={() => handleDeleteClick(source.id)}
+            onRetry={() => handleRetryClick(source.id)}
           />
         ))}
       </div>

@@ -59,7 +59,7 @@ export function SourceModal({
   const [renameOpen, setRenameOpen] = useState(false);
   const [renameValue, setRenameValue] = useState('');
 
-  const hasProcessedContent = Boolean(source.processed_content || source.transcript);
+  const hasProcessedContent = Boolean(source.processed_content);
   const jobStatus = processingStatus?.status;
   const isJobActive = jobStatus === 'pending' || jobStatus === 'in_progress';
   const isProcessing = !hasProcessedContent && isJobActive;
@@ -107,7 +107,7 @@ export function SourceModal({
                 Transcription
               </h3>
               <TranscriptView
-                text={source.processed_content || source.transcript?.text || ''}
+                text={source.processed_content || ''}
               />
             </div>
           )}
