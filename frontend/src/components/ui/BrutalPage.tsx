@@ -21,8 +21,8 @@ interface BrutalPageProps {
   className?: string;
 }
 
-export function BrutalPage({ 
-  children, 
+export function BrutalPage({
+  children,
   variant = 'grid',
   showShapes = true,
   className = ''

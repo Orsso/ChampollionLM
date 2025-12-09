@@ -4,6 +4,7 @@ import { Modal } from '../layout';
 import { MarkdownViewer } from './MarkdownViewer';
 import { DocumentChatPanel } from './DocumentChatPanel';
 import { IconButton, ConfirmDeleteButton } from '../buttons';
+import { AnimatedInput } from '../forms';
 import { PlusIcon, CheckIcon, DocumentIcon, EditIcon } from '../icons';
 import { ExportMenu, type ExportOption } from './ExportMenu';
 import { BRUTAL_BORDERS, BRUTAL_RADIUS, BRUTAL_SHADOWS } from '../../../constants/styles';
@@ -200,13 +201,13 @@ export function DocumentModal({
           </div>
         )}
       >
-        <div className="flex h-full">
-          {/* Document content */}
+        <div className="flex h-[calc(95vh-16rem)] min-h-[400px]">
+          {/* Document content - independent scroll */}
           <div className={`flex-1 overflow-y-auto ${chatOpen ? 'pr-0' : ''}`}>
             <MarkdownViewer markdown={document?.markdown || ''} />
           </div>
 
-          {/* Chat panel */}
+          {/* Chat panel - independent scroll (handled internally) */}
           {chatOpen && (
             <DocumentChatPanel
               documentId={document.id}
@@ -219,24 +220,13 @@ export function DocumentModal({
       {renameOpen && (
         <Modal isOpen={renameOpen} onClose={() => setRenameOpen(false)} title="Renommer le document" maxWidth="max-w-md">
           <div className="space-y-4">
-            <label className="block text-sm font-bold text-slate-800">Titre</label>
-            <input
-              className={`
-                w-full px-4 py-3
-                bg-white
-                ${BRUTAL_BORDERS.normal}
-                border-black
-                ${BRUTAL_RADIUS.subtle}
-                font-bold text-black
-                placeholder:text-slate-400
-                focus:outline-none
-                focus:ring-4 focus:ring-orange-500/30
-              `}
+            <AnimatedInput
+              label="Titre"
               value={renameValue}
               onChange={(e) => setRenameValue(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleRenameSubmit()}
-              placeholder="Nouveau titre"
               autoFocus
+              darkMode={false}
             />
             <div className="flex justify-end gap-2">
               <button

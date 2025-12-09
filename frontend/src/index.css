@@ -59,6 +59,7 @@ body {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -74,6 +75,7 @@ body {
   0% {
     background-position: 200% center;
   }
+
   100% {
     background-position: -200% center;
   }
@@ -85,6 +87,7 @@ body {
 
 /* Neo-Brutalist Background Patterns */
 @layer components {
+
   /* Dot grid pattern */
   .brutal-bg-dots {
     background-image: radial-gradient(circle, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
@@ -93,7 +96,7 @@ body {
 
   /* Grid lines pattern */
   .brutal-bg-grid {
-    background-image: 
+    background-image:
       linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
     background-size: 32px 32px;
@@ -101,13 +104,11 @@ body {
 
   /* Diagonal stripes pattern */
   .brutal-bg-stripes {
-    background-image: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 20px,
-      rgba(0, 0, 0, 0.03) 20px,
-      rgba(0, 0, 0, 0.03) 40px
-    );
+    background-image: repeating-linear-gradient(45deg,
+        transparent,
+        transparent 20px,
+        rgba(0, 0, 0, 0.03) 20px,
+        rgba(0, 0, 0, 0.03) 40px);
   }
 
   /* Main brutal background with geometric shapes */

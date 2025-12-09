@@ -1,1 +1,1 @@
-export { AnimatedInput } from './Input';
+export { AnimatedInput, BrutalInput, BrutalTextarea } from './Input';

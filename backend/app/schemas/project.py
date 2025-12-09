@@ -67,6 +67,7 @@ class ProjectSummary(BaseModel):
     title: str
     created_at: datetime
     sources_count: int = 0
+    documents_count: int = 0
     processing_status: JobStatusRead | None = None
     document_status: JobStatusRead | None = None
 

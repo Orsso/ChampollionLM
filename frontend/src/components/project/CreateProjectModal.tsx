@@ -2,13 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert } from '../ui/feedback';
 import { Button } from '../ui/buttons';
+import { AnimatedInput, BrutalTextarea } from '../ui/forms';
 import { useCreateProject } from '../../hooks/useProjects';
 import {
-  BRUTAL_BORDERS,
   BRUTAL_SHADOWS,
   BRUTAL_RADIUS,
   BRUTAL_CARD_VARIANTS,
-  TRANSITIONS
 } from '../../constants/styles';
 
 interface CreateProjectModalProps {
@@ -64,24 +63,10 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label className="block text-sm font-bold text-black mb-2">
-              Titre du projet
-            </label>
-            <input
+            <AnimatedInput
+              label="Titre du projet"
               {...register('title', { required: 'Titre requis' })}
-              className={`
-                w-full px-4 py-3
-                bg-white
-                ${BRUTAL_BORDERS.normal}
-                border-black
-                ${BRUTAL_RADIUS.subtle}
-                font-bold text-black
-                placeholder:text-slate-400
-                focus:outline-none
-                focus:ring-4 focus:ring-orange-500/30
-                transition-all ${TRANSITIONS.fast}
-              `}
-              placeholder="Ex: Cours de Mathematiques"
+              darkMode={false}
             />
             {errors.title && (
               <p className="text-red-500 text-sm font-bold mt-2">{errors.title.message}</p>
@@ -92,22 +77,9 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
             <label className="block text-sm font-bold text-black mb-2">
               Description (optionnel)
             </label>
-            <textarea
+            <BrutalTextarea
               {...register('description')}
               rows={3}
-              className={`
-                w-full px-4 py-3
-                bg-white
-                ${BRUTAL_BORDERS.normal}
-                border-black
-                ${BRUTAL_RADIUS.subtle}
-                font-medium text-black
-                placeholder:text-slate-400
-                focus:outline-none
-                focus:ring-4 focus:ring-orange-500/30
-                transition-all ${TRANSITIONS.fast}
-                resize-none
-              `}
               placeholder="Decrivez votre projet..."
             />
           </div>

@@ -70,6 +70,7 @@ class ProjectService:
             .order_by(Project.created_at.desc())
             .options(
                 selectinload(Project.sources),
+                selectinload(Project.documents),
                 selectinload(Project.processing_job),
                 selectinload(Project.generation_job),
             )
@@ -111,6 +112,7 @@ class ProjectService:
             .offset(offset)
             .options(
                 selectinload(Project.sources),
+                selectinload(Project.documents),
                 selectinload(Project.processing_job),
                 selectinload(Project.generation_job),
             )
@@ -452,14 +454,16 @@ class ProjectService:
             else None
         )
         
-        # Count audio sources
-        sources_count = len([s for s in project.sources if s.type == SourceType.AUDIO])
+        # Count all sources and documents
+        sources_count = len(project.sources)
+        documents_count = len(project.documents)
         
         return ProjectSummary(
             id=project.id,
             title=project.title,
             created_at=project.created_at,
             sources_count=sources_count,
+            documents_count=documents_count,
             processing_status=processing_status,
             document_status=document_status,
         )
@@ -491,7 +495,8 @@ class ProjectService:
             description=project.description,
             sources=sources,
             documents=documents,
-            sources_count=len([s for s in project.sources if s.type == SourceType.AUDIO]),
+            sources_count=len(project.sources),
+            documents_count=len(project.documents),
             processing_status=processing_status,
             document_status=document_status,
         )

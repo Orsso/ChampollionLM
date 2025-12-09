@@ -7,6 +7,7 @@
 import { useState, useRef, useEffect, useCallback, type FormEvent, type KeyboardEvent } from 'react';
 import { useDocumentChat, type ChatOptions } from '../../../hooks/useDocumentChat';
 import { ChatMessage } from './ChatMessage';
+import { BrutalTextarea } from '../forms';
 import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS, BRUTAL_BUTTON_VARIANTS, TRANSITIONS } from '../../../constants/styles';
 
 interface DocumentChatPanelProps {
@@ -351,8 +352,8 @@ export function DocumentChatPanel({
           bg-white
         `}
             >
-                <div className="flex gap-3">
-                    <textarea
+                <div className="flex gap-3 items-center">
+                    <BrutalTextarea
                         ref={inputRef}
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
@@ -360,19 +361,13 @@ export function DocumentChatPanel({
                         placeholder="Posez une question..."
                         disabled={isStreaming}
                         rows={2}
-                        className={`
-              flex-1 p-4 resize-none text-sm
-              ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal}
-              focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-1
-              disabled:bg-slate-100 disabled:cursor-not-allowed
-              placeholder:text-slate-400 placeholder:font-medium
-            `}
+                        className="flex-1 text-sm"
                     />
                     <button
                         type="submit"
                         disabled={!inputValue.trim() || isStreaming}
                         className={`
-              p-4 font-bold self-end
+              p-4 font-bold
               ${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_RADIUS.normal}
               ${BRUTAL_SHADOWS.medium}
               disabled:opacity-50 disabled:cursor-not-allowed

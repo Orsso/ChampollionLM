@@ -1,14 +1,25 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useProjectsWithPolling } from '../hooks/useProjectsWithPolling';
 import { ProjectList } from '../components/project/ProjectList';
 import { CreateProjectModal } from '../components/project/CreateProjectModal';
 import { BrutalPageHeader } from '../components/ui/layout';
-import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS, TRANSITIONS } from '../constants/styles';
+import { BrutalInput } from '../components/ui/forms';
 
 export function Dashboard() {
   const { projects, isLoading } = useProjectsWithPolling();
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter projects based on search query
+  const filteredProjects = useMemo(() => {
+    if (!projects) return [];
+    if (!searchQuery.trim()) return projects;
+    const query = searchQuery.toLowerCase().trim();
+    return projects.filter(project =>
+      project.title?.toLowerCase().includes(query) ||
+      project.description?.toLowerCase().includes(query)
+    );
+  }, [projects, searchQuery]);
 
   return (
     <div className="flex-1">
@@ -22,17 +33,17 @@ export function Dashboard() {
 
         {/* Search bar with brutal styling */}
         <div className="mb-6">
-          <input
+          <BrutalInput
             type="search"
             placeholder="Rechercher un projet..."
-            onFocus={() => setIsSearchFocused(true)}
-            onBlur={() => setIsSearchFocused(false)}
-            className={`w-full md:w-96 px-4 py-3 bg-white ${BRUTAL_BORDERS.normal} ${isSearchFocused ? 'border-orange-500' : 'border-black'} ${BRUTAL_RADIUS.normal} text-black placeholder-gray-400 font-medium focus:outline-none ${isSearchFocused ? BRUTAL_SHADOWS.orange : 'shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]'} transition-all ${TRANSITIONS.fast}`}
+            className="md:w-96"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
 
         {/* Project list (already brutal from Phase 4) */}
-        <ProjectList projects={projects} isLoading={isLoading} />
+        <ProjectList projects={filteredProjects} isLoading={isLoading} />
       </div>
 
       <CreateProjectModal
@@ -42,4 +53,3 @@ export function Dashboard() {
     </div>
   );
 }
-

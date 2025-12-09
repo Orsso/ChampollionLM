@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { AudioVisualizer } from '../ui/media/AudioVisualizer';
 import { ProgressBar } from '../ui/feedback';
+import { BrutalInput } from '../ui/forms';
 import { useRecordingAnimations } from '../../hooks/useRecordingAnimations';
 import { useAudioRecorder } from '../../hooks/useAudioRecorder';
 import { uploadAudioSource, importYouTubeSource } from '../../hooks/useSources';
@@ -233,12 +234,9 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                 transition-all ${TRANSITIONS.fast}
                 ${isActive
                                     ? 'bg-orange-500 text-white shadow-none translate-x-[2px] translate-y-[2px]'
-                                    : 'bg-white text-black hover:bg-orange-50'
+                                    : `bg-white text-black ${BRUTAL_SHADOWS.small} hover:bg-orange-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none`
                                 }
-                ${tab.disabled
-                                    ? 'opacity-40 cursor-not-allowed'
-                                    : `${BRUTAL_SHADOWS.small} hover:translate-x-[1px] hover:translate-y-[1px]`
-                                }
+                ${tab.disabled ? 'opacity-40 cursor-not-allowed hover:translate-x-0 hover:translate-y-0 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]' : ''}
               `}
                             title={tab.disabled ? 'Bientôt disponible' : undefined}
                         >
@@ -371,8 +369,8 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             {/* Link mode content (YouTube) */}
             {importMode === 'link' && (
                 <div className="space-y-4">
-                    <div className="flex gap-3">
-                        <input
+                    <div className="flex gap-3 items-center">
+                        <BrutalInput
                             type="url"
                             value={youtubeUrl}
                             onChange={(e) => {
@@ -380,17 +378,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                 setYoutubeError(null);
                             }}
                             placeholder="https://youtube.com/watch?v=..."
-                            className={`
-                flex-1 px-4 py-3
-                ${BRUTAL_BORDERS.normal}
-                border-black
-                ${BRUTAL_RADIUS.subtle}
-                bg-white
-                text-black
-                font-medium
-                placeholder:text-gray-400
-                focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2
-              `}
+                            className="flex-1"
                         />
                         <button
                             onClick={handleYouTubeImport}

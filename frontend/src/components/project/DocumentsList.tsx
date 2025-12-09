@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Badge, ShinyText } from '../ui/feedback';
 import { DocumentCard } from './DocumentCard';
 import { deleteDocument } from '../../lib/api';
@@ -38,6 +39,16 @@ export function DocumentsList({
             onMutate?.();
         }, documentId);
     };
+
+    // Sort documents by created_at descending (newest first)
+    const sortedDocuments = useMemo(() => {
+        if (!documents) return [];
+        return [...documents].sort((a, b) => {
+            const dateA = new Date(a.created_at).getTime();
+            const dateB = new Date(b.created_at).getTime();
+            return dateB - dateA;
+        });
+    }, [documents]);
 
     if (documents.length === 0 && !isGenerating) {
         return null;
@@ -92,7 +103,7 @@ export function DocumentsList({
                 )}
 
                 {/* Show all documents */}
-                {documents.map((doc) => (
+                {sortedDocuments.map((doc) => (
                     <DocumentCard
                         key={doc.id}
                         document={doc}

@@ -15,12 +15,12 @@ interface BrutalBackgroundProps {
   showShapes?: boolean;
 }
 
-export function BrutalBackground({ 
-  variant = 'grid', 
-  showShapes = true 
+export function BrutalBackground({
+  variant = 'grid',
+  showShapes = true
 }: BrutalBackgroundProps) {
   const patternClass = BRUTAL_BACKGROUNDS[variant];
-  
+
   return (
     <>
       {showShapes && (

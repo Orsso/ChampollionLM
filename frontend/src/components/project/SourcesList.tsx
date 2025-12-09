@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { SourceModal } from '../ui/media';
 import { SourceCard } from './SourceCard';
 import { deleteSource, updateSource } from '../../hooks/useSources';
@@ -26,6 +26,16 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
   const audioUrlsRef = useRef(audioUrls);
+
+  // Sort sources by created_at descending (newest first)
+  const sortedSources = useMemo(() => {
+    if (!sources) return [];
+    return [...sources].sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return dateB - dateA;
+    });
+  }, [sources]);
 
   useEffect(() => {
     audioUrlsRef.current = audioUrls;
@@ -106,7 +116,7 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
       <h2 className="text-xl font-black text-black mb-4">Sources du projet</h2>
 
       <div className="space-y-3">
-        {sources.map((source) => (
+        {sortedSources.map((source) => (
           <SourceCard
             key={source.id}
             source={source}

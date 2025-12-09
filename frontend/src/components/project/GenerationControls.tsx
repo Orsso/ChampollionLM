@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Badge, ShinyText } from '../ui/feedback';
 import { Modal } from '../ui/layout';
+import { AnimatedInput } from '../ui/forms';
 import { useTokenEstimate } from '../../hooks/useTokens';
 import { formatDateTime } from '../../utils/formatters';
 import type { Source } from '../../types';
@@ -275,23 +276,11 @@ export function GenerationControls({
       >
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-bold text-slate-800 mb-2">Titre du document</label>
-            <input
-              className={`
-                w-full px-4 py-3
-                bg-white
-                ${BRUTAL_BORDERS.normal}
-                border-black
-                ${BRUTAL_RADIUS.subtle}
-                font-bold text-black
-                placeholder:text-slate-400
-                focus:outline-none
-                focus:ring-4 focus:ring-orange-500/30
-                transition-all ${TRANSITIONS.fast}
-              `}
+            <AnimatedInput
+              label="Titre du document"
               value={docTitle}
               onChange={(e) => setDocTitle(e.target.value)}
-              placeholder={projectTitle ? `${projectTitle}:Cours1` : 'Cours'}
+              darkMode={false}
             />
             <p className="text-xs text-slate-600 mt-2 font-medium">
               Laissez vide pour utiliser le format par defaut: {projectTitle ? `${projectTitle}:Cours1` : 'Cours'}

@@ -30,6 +30,7 @@ export interface Project {
   status_updated_at: string;
   sources: Source[];
   sources_count: number;
+  documents_count: number;
   documents?: Document[];
   processing_status?: JobStatus;
   document_status?: JobStatus;
@@ -46,6 +47,7 @@ export interface ProjectSummary {
   created_at: string;
   status_updated_at: string;
   sources_count: number;
+  documents_count: number;
   processing_status?: JobStatus;
   document_status?: JobStatus;
 }

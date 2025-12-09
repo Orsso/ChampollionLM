@@ -52,13 +52,23 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
       );
     }
 
-    const badges = {
-      draft: { color: 'gray' as const, text: 'Brouillon' },
-      processing: { color: 'amber' as const, text: 'Traitement en cours' },
-      ready: { color: 'green' as const, text: 'Pret' },
-    };
-    const badge = badges[project.status];
-    return <Badge color={badge.color}>{badge.text}</Badge>;
+    // Show "Pret" badge only temporarily (within 10 seconds of status update)
+    if (project.status === 'ready' && project.status_updated_at) {
+      const statusTime = new Date(project.status_updated_at).getTime();
+      const now = Date.now();
+      const isRecent = (now - statusTime) < 10000; // 10 seconds
+      
+      if (isRecent) {
+        return <Badge color="green">Pret</Badge>;
+      }
+      return null; // No badge for older "ready" status
+    }
+
+    if (project.status === 'draft') {
+      return <Badge color="gray">Brouillon</Badge>;
+    }
+
+    return null;
   };
 
   const handleDeleteClick = (projectId: number) => {
@@ -118,17 +128,25 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
                 {project.title}
               </h3>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm font-bold">
-                <span className="text-black">
-                  {project.sources_count ?? project.sources?.length ?? 0} enregistrement{(project.sources_count ?? project.sources?.length ?? 0) > 1 ? 's' : ''}
-                </span>
-                <span className="text-slate-600">
-                  {formatDate(project.status_updated_at)}
-                </span>
-                <div>
-                  {getStatusBadge(project)}
-                </div>
-              </div>
+              {(() => {
+                const sourcesCount = project.sources_count ?? project.sources?.length ?? 0;
+                const documentsCount = project.documents_count ?? project.documents?.length ?? 0;
+                const statusBadge = getStatusBadge(project);
+                return (
+                  <div className="flex flex-wrap items-center gap-4 text-sm font-bold">
+                    <span className="text-black">
+                      {sourcesCount} source{sourcesCount > 1 ? 's' : ''}
+                    </span>
+                    <span className="text-black">
+                      {documentsCount} document{documentsCount > 1 ? 's' : ''}
+                    </span>
+                    <span className="text-slate-600">
+                      {formatDate(project.status_updated_at)}
+                    </span>
+                    {statusBadge && <div>{statusBadge}</div>}
+                  </div>
+                );
+              })()}
             </div>
 
             <div onClick={(e) => e.stopPropagation()}>
