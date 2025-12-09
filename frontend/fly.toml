@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for champollion-frontend on 2025-12-09T11:15:54+01:00
+# fly.toml app configuration file generated for champollion-app on 2025-12-09T11:41:34+01:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'champollion'
+app = 'champollion-app'
 primary_region = 'cdg'
 
 [build]

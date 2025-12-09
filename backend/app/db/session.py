@@ -4,7 +4,19 @@ from app.core.settings import settings
 
 
 def create_engine() -> AsyncEngine:
-    return create_async_engine(settings.database_url, future=True, echo=False)
+    # Build connect_args for asyncpg SSL configuration
+    connect_args = {}
+    
+    # Disable SSL for Fly.io internal connections (private network)
+    if "postgresql+asyncpg" in settings.database_url:
+        connect_args["ssl"] = False
+    
+    return create_async_engine(
+        settings.database_url, 
+        future=True, 
+        echo=False,
+        connect_args=connect_args if connect_args else None
+    )
 
 
 engine = create_engine()

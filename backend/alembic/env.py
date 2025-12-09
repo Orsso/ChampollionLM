@@ -82,11 +82,20 @@ async def run_async_migrations() -> None:
     and associate a connection with the context.
 
     """
-
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
+    from sqlalchemy.ext.asyncio import create_async_engine
+    
+    # Build connect_args for asyncpg SSL configuration
+    connect_args = {}
+    db_url = settings.database_url
+    
+    # Disable SSL for Fly.io internal connections (private network)
+    if "postgresql+asyncpg" in db_url:
+        connect_args["ssl"] = False
+    
+    connectable = create_async_engine(
+        db_url,
         poolclass=pool.NullPool,
+        connect_args=connect_args if connect_args else None
     )
 
     async with connectable.connect() as connection:
