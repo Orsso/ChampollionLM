@@ -1,0 +1,27 @@
+# fly.toml - Fly.io configuration for Champollion Backend
+app = 'champollion-backend'
+primary_region = 'cdg'  # Paris
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  AUDIO_STORAGE_ROOT = "/app/storage/audio"
+  ENVIRONMENT = "prod"
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = 'stop'      
+  auto_start_machines = true       
+  min_machines_running = 1        
+  processes = ['app']
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[mounts]
+  source = "audio_data"
+  destination = "/app/storage/audio"
