@@ -81,6 +81,9 @@ class AppSettings(BaseSettings):
     # Accept optional provider API key to avoid .env validation errors; not used at runtime
     mistral_api_key: SecretStr | None = None
 
+    # YouTube Proxy URL to avoid IP blocks
+    youtube_proxy_url: str | None = Field(default=None, description="Proxy URL for YouTube requests")
+
     model_config = {
         "env_file": ".env",
         "case_sensitive": False,

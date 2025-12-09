@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from app.processors.base import ProcessorResult, SourceProcessor
+from app.core.settings import settings
 
 
 @dataclass
@@ -140,6 +141,7 @@ class YouTubeProcessor(SourceProcessor):
         try:
             # Import here to avoid import errors if package not installed
             from youtube_transcript_api import YouTubeTranscriptApi
+            from youtube_transcript_api.proxies import GenericProxyConfig
             from youtube_transcript_api._errors import (
                 NoTranscriptFound,
                 TranscriptsDisabled,
@@ -147,8 +149,16 @@ class YouTubeProcessor(SourceProcessor):
             )
 
             try:
+                # Configure proxy if available
+                proxy_config = None
+                if settings.youtube_proxy_url:
+                    proxy_config = GenericProxyConfig(
+                        http_url=settings.youtube_proxy_url,
+                        https_url=settings.youtube_proxy_url
+                    )
+
                 # Create API instance (v1.x API)
-                ytt_api = YouTubeTranscriptApi()
+                ytt_api = YouTubeTranscriptApi(proxy_config=proxy_config)
                 
                 # List available transcripts
                 transcript_list = ytt_api.list(video_id)
