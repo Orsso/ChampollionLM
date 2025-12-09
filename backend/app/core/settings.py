@@ -2,7 +2,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
-from pydantic import Field, SecretStr
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -24,6 +24,16 @@ class AppSettings(BaseSettings):
         default=f"sqlite+aiosqlite:///{(BASE_BACKEND_DIR / 'champollion.db').as_posix()}",
         description="Async SQLAlchemy connection string",
     )
+
+    @field_validator("database_url", mode="after")
+    @classmethod
+    def normalize_database_url(cls, v: str) -> str:
+        """Convert Fly.io postgres:// to postgresql+asyncpg:// for async SQLAlchemy."""
+        if v.startswith("postgres://"):
+            return v.replace("postgres://", "postgresql+asyncpg://", 1)
+        if v.startswith("postgresql://"):
+            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
 
     fernet_secret_key: SecretStr = Field(..., description="Base64 Fernet key")
 

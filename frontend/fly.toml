@@ -1,12 +1,16 @@
-# fly.toml - Fly.io configuration for Champollion Frontend
-app = 'champollion-frontend'
-primary_region = 'cdg'  # Paris
+# fly.toml app configuration file generated for champollion-frontend on 2025-12-09T11:15:54+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'champollion'
+primary_region = 'cdg'
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
-[build.args]
-  VITE_API_BASE_URL = "https://champollion-backend.fly.dev"
+  [build.args]
+    VITE_API_BASE_URL = 'https://champollion-api.fly.dev'
 
 [http_service]
   internal_port = 80
