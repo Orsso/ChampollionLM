@@ -25,8 +25,8 @@ function renderWithRouter(ui: ReactNode, initialEntries = ['/protected']) {
 }
 
 const mockAuthContext = {
-  user: null,
-  token: null,
+  user: null as { id: number; email: string; is_active: boolean; is_superuser: boolean; is_verified: boolean; has_api_key: boolean; is_demo_user: boolean; demo_expires_at: null } | null,
+  token: null as string | null,
   isAuthenticated: false,
   isLoading: false,
   login: vi.fn(),

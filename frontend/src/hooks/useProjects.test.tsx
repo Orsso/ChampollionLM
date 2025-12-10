@@ -109,7 +109,7 @@ describe('useCreateProject', () => {
   it('creates a new project', async () => {
     const { result } = renderHook(() => useCreateProject(), { wrapper });
 
-    let createdProject;
+    let createdProject: { id: number; title: string; description?: string | null } | undefined;
     await act(async () => {
       createdProject = await result.current.createProject({
         title: 'New Test Project',
