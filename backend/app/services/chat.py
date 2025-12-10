@@ -96,8 +96,10 @@ class ChatService(BaseChatService):
         if not document:
             raise ValueError("Document not found or access denied")
 
-        if not self.user.api_key_encrypted:
-            raise ValueError("API key not configured")
+        # Check API key availability (user's own or demo)
+        from app.services.api_key_resolver import get_effective_api_key_sync
+        if not get_effective_api_key_sync(self.user):
+            raise ValueError("API key not configured and no active demo access")
 
         # Save user message
         user_msg = ChatMessage(

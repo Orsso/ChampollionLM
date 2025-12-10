@@ -250,8 +250,14 @@ async def _transcribe_audio_source(session: AsyncSession, source: Source, provid
         raise STTProviderError("Project not found")
 
     owner = project.owner or await session.get(User, project.user_id)
-    if not owner or not owner.api_key_encrypted:
-        raise STTProviderError("API key not configured")
+    if not owner:
+        raise STTProviderError("Project owner not found")
+
+    # Get effective API key (user's own key or demo key)
+    from app.services.api_key_resolver import get_effective_api_key
+    api_key = await get_effective_api_key(owner, session)
+    if not api_key:
+        raise STTProviderError("API key not configured and no active demo access")
 
     # Currently, only Mistral provider supports audio transcription
     # We use TranscriptionRegistry to get the processor class
@@ -259,10 +265,10 @@ async def _transcribe_audio_source(session: AsyncSession, source: Source, provid
     if not processor_class:
         raise STTProviderError(f"Unsupported transcription provider: {provider}")
 
-    # Configure processor
+    # Configure processor with the resolved API key
     try:
         config_class = processor_class.config_class()
-        config = config_class(api_key_encrypted=owner.api_key_encrypted)
+        config = config_class(api_key=api_key)
     except Exception as exc:
         raise STTProviderError(f"Configuration failed for provider {provider}: {str(exc)}")
 
@@ -309,8 +315,14 @@ async def _generate_project_document(
         raise DocumentProviderError(f"Generator not found for provider: {provider}")
 
     owner = project.owner or await session.get(User, project.user_id)
-    if not owner or not owner.api_key_encrypted:
-        raise DocumentProviderError("API key not configured")
+    if not owner:
+        raise DocumentProviderError("Project owner not found")
+
+    # Get effective API key (user's own key or demo key)
+    from app.services.api_key_resolver import get_effective_api_key
+    api_key = await get_effective_api_key(owner, session)
+    if not api_key:
+        raise DocumentProviderError("API key not configured and no active demo access")
 
     # Get sources (all or filtered by IDs)
     sources = await _get_sources_for_document(session, project, source_ids)
@@ -332,10 +344,10 @@ async def _generate_project_document(
     if not text_parts:
         raise DocumentProviderError("No content available from sources")
 
-    # Create generator instance using registry
+    # Create generator instance using registry with resolved API key
     try:
         config_class = generator_class.config_class()
-        config = config_class(api_key_encrypted=owner.api_key_encrypted)
+        config = config_class(api_key=api_key)
     except Exception as exc:
         raise DocumentProviderError(f"Configuration failed for provider {provider}: {str(exc)}")
 

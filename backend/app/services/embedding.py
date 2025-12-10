@@ -89,7 +89,10 @@ class EmbeddingService:
     def _get_mistral(self) -> Mistral:
         """Lazy-load Mistral client."""
         if self._mistral is None:
-            api_key = decrypt_api_key(self.user.api_key_encrypted)
+            from app.services.api_key_resolver import get_effective_api_key_sync
+            api_key = get_effective_api_key_sync(self.user)
+            if not api_key:
+                raise ValueError("API key not configured and no active demo access")
             self._mistral = Mistral(api_key=api_key)
         return self._mistral
     

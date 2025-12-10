@@ -10,7 +10,8 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db_session
-from app.core.auth import current_active_user
+from app.api.deps import get_db_session
+from app.core.auth import current_user_with_demo
 from app.models import User
 from app.schemas import (
     ProjectChatMessageCreate, ChatMessageRead, ProjectChatHistoryResponse,
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/projects", tags=["project-chat"])
 def get_project_chat_service(
     session: AsyncSession = Depends(get_db_session),
-    user: User = Depends(current_active_user),
+    user: User = Depends(current_user_with_demo),
 ) -> ProjectChatService:
     """Dependency to get ProjectChatService instance."""
     return ProjectChatService(session=session, user=user)

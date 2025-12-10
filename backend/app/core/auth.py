@@ -4,8 +4,9 @@ from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, IntegerIDMixin, schemas as fs_schemas
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
 from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_user_db
+from app.api.deps import get_db_session, get_user_db
 from app.core.security import encrypt_api_key
 from app.core.settings import settings
 from app.models import User
@@ -75,4 +76,24 @@ fastapi_users = FastAPIUsers[User, int](
 
 
 current_active_user = fastapi_users.current_user(active=True)
+
+
+async def current_user_with_demo(
+    user: User = Depends(current_active_user),
+    session: "AsyncSession" = Depends(get_db_session),
+) -> User:
+    """Get current user with demo_access relationship eagerly loaded.
+    
+    Use this dependency instead of current_active_user when you need
+    to check demo access status (e.g., for API key resolution).
+    """
+    from sqlalchemy import select
+    from sqlalchemy.orm import selectinload
+    
+    result = await session.execute(
+        select(User)
+        .options(selectinload(User.demo_access))
+        .where(User.id == user.id)
+    )
+    return result.scalar_one()
 

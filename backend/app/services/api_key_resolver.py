@@ -45,14 +45,14 @@ async def get_effective_api_key(user: User, session: AsyncSession) -> str | None
     return None
 
 
-def get_effective_api_key_sync(user: User, has_active_demo: bool) -> str | None:
-    """Synchronous version for contexts where async is not available.
+def get_effective_api_key_sync(user: User) -> str | None:
+    """Synchronous version that checks user.demo_access relationship.
     
-    Use this when you've already checked demo access status.
+    NOTE: Requires user.demo_access to be loaded (eager or lazy).
+    When used with current_user_with_demo dependency, this is safe.
     
     Args:
         user: The user to get API key for
-        has_active_demo: Whether user has active demo access
         
     Returns:
         Decrypted API key string, or None if no key available
@@ -65,7 +65,13 @@ def get_effective_api_key_sync(user: User, has_active_demo: bool) -> str | None:
             logger.warning(f"Failed to decrypt API key for user {user.id}")
     
     # Priority 2: Demo shared API key
-    if has_active_demo and settings.demo_mistral_api_key:
-        return settings.demo_mistral_api_key.get_secret_value()
+    if settings.demo_mistral_api_key:
+        # Accessing .demo_access here is safe ONLY if eagerly loaded
+        # or if we are in a sync session context (which we aren't).
+        # The dependency current_user_with_demo ensures it is loaded.
+        demo_access = getattr(user, "demo_access", None)
+        if demo_access and demo_access.is_active:
+            logger.debug(f"Using demo API key for user {user.id}")
+            return settings.demo_mistral_api_key.get_secret_value()
     
     return None

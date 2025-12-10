@@ -16,6 +16,7 @@ from mistralai import Mistral
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import decrypt_api_key
+from app.services.api_key_resolver import get_effective_api_key_sync
 from app.models import User
 
 logger = logging.getLogger(__name__)
@@ -82,7 +83,9 @@ class BaseChatService(ABC):
         2. If tool call, execute and add result
         3. Call model again to get final response
         """
-        api_key = decrypt_api_key(self.user.api_key_encrypted)
+        api_key = get_effective_api_key_sync(self.user)
+        if not api_key:
+            raise ValueError("API key not configured and no active demo access")
         client = Mistral(api_key=api_key)
 
         max_iterations = 3

@@ -9,7 +9,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db_session
-from app.core.auth import current_active_user
+from app.core.auth import current_user_with_demo
 from app.models import User
 from app.schemas import ChatMessageCreate, ChatMessageRead, ChatHistoryResponse
 from app.services.chat import ChatService
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/documents", tags=["chat"])
 
 def get_chat_service(
     session: AsyncSession = Depends(get_db_session),
-    user: User = Depends(current_active_user),
+    user: User = Depends(current_user_with_demo),
 ) -> ChatService:
     """Dependency to get ChatService instance."""
     return ChatService(session=session, user=user)

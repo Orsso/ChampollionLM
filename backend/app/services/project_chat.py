@@ -136,9 +136,11 @@ class ProjectChatService(BaseChatService):
             A concise title (5-7 words max)
         """
         from mistralai import Mistral
-        from app.core.security import decrypt_api_key
+        from app.services.api_key_resolver import get_effective_api_key_sync
         
-        api_key = decrypt_api_key(self.user.api_key_encrypted)
+        api_key = get_effective_api_key_sync(self.user)
+        if not api_key:
+            return "Nouvelle conversation"  # Fallback if no API key
         client = Mistral(api_key=api_key)
         
         prompt = f"""Génère un titre TRÈS CONCIS (5-7 mots maximum) pour cette conversation.
@@ -227,8 +229,10 @@ Titre:"""
         if not project:
             raise ValueError("Project not found or access denied")
 
-        if not self.user.api_key_encrypted:
-            raise ValueError("API key not configured")
+        # Check API key availability (user's own or demo)
+        from app.services.api_key_resolver import get_effective_api_key_sync
+        if not get_effective_api_key_sync(self.user):
+            raise ValueError("API key not configured and no active demo access")
 
         # Filter sources if source_ids provided
         sources = list(project.sources)

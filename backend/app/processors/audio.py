@@ -23,10 +23,24 @@ MAX_MISTRAL_AUDIO_SECONDS = 8 * 60
 
 @dataclass
 class MistralAudioConfig:
-    """Configuration for Mistral audio processor."""
+    """Configuration for Mistral audio processor.
+    
+    Accepts either:
+    - api_key: Plain text API key (preferred, used by demo access)
+    - api_key_encrypted: Encrypted API key (legacy, will be decrypted)
+    """
 
-    api_key_encrypted: str
+    api_key: str | None = None
+    api_key_encrypted: str | None = None
     language: str | None = None
+
+    def get_api_key(self) -> str:
+        """Get the effective API key, decrypting if needed."""
+        if self.api_key:
+            return self.api_key
+        if self.api_key_encrypted:
+            return decrypt_api_key(self.api_key_encrypted)
+        raise ValueError("No API key provided")
 
 
 class MistralAudioProcessor(SourceProcessor):
@@ -42,7 +56,7 @@ class MistralAudioProcessor(SourceProcessor):
 
     def __init__(self, config: MistralAudioConfig):
         self.config = config
-        self.api_key = decrypt_api_key(config.api_key_encrypted)
+        self.api_key = config.get_api_key()
 
     @classmethod
     def supported_formats(cls) -> list[str]:
