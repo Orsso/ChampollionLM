@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { PillNav } from '../ui/navigation';
 import type { PillNavItem } from '../ui/navigation';
 import { useAuth } from '../../hooks';
@@ -9,6 +9,21 @@ import { FloatingActionButton } from '../ui/buttons';
 import { ClickSpark } from '../ui/effects';
 import { BrutalBackground } from '../ui';
 import { BRUTAL_BORDERS, BRUTAL_BACKGROUNDS, BRUTAL_BUTTON_DANGER } from '../../constants/styles';
+
+/**
+ * Format remaining time for demo badge display
+ */
+function formatDemoRemaining(dateStr: string | null): string {
+  if (!dateStr) return '';
+  const now = new Date();
+  const expires = new Date(dateStr);
+  const diffMs = expires.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+
+  if (diffDays <= 0) return 'Expiré';
+  if (diffDays === 1) return '1 jour';
+  return `${diffDays} jours`;
+}
 
 /**
  * Props for the Layout component.
@@ -23,7 +38,7 @@ interface LayoutProps {
  */
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [hasPlayedAnimation] = useState(() => {
     // Vérifier si l'animation a déjà été jouée dans cette session
@@ -76,6 +91,13 @@ export function Layout({ children }: LayoutProps) {
       <header className={`fixed top-0 left-0 right-0 z-50 bg-white ${BRUTAL_BORDERS.thick} border-b-black`}>
         <div className="flex items-center justify-between px-4 py-3 md:px-8">
           <div className="flex items-center gap-4">
+            {/* Logo with Beta badge */}
+            <div className="relative flex-shrink-0">
+              <img src="/logo.svg" alt="Champollion" className="w-[55px] h-[55px] mt-[10px]" />
+              <span className="absolute bottom-[5px] right-[-2px] px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-yellow-300 text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded -rotate-12">
+                Beta
+              </span>
+            </div>
             <PillNav
               items={navItems}
               activeHref={getCurrentHref()}
@@ -85,21 +107,28 @@ export function Layout({ children }: LayoutProps) {
               pillTextColor="#000000"
               initialLoadAnimation={!hasPlayedAnimation}
             />
-            <span className="px-2 py-1 text-[10px] font-black uppercase tracking-wider bg-yellow-300 text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded rotate-6">
-              Beta
-            </span>
           </div>
-          <button
-            onClick={handleLogout}
-            className={`text-sm uppercase tracking-wide ${BRUTAL_BUTTON_DANGER} flex items-center gap-2`}
-          >
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <polyline points="16,17 21,12 16,7" />
-              <line x1="21" y1="12" x2="9" y2="12" />
-            </svg>
-            <span className="hidden md:inline">Déconnexion</span>
-          </button>
+          <div className="flex items-center gap-3">
+            {user?.is_demo_user && (
+              <Link
+                to="/settings"
+                className="px-2 py-1 text-[10px] font-black uppercase tracking-wider bg-cyan-400 text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded hover:bg-cyan-300 transition-colors"
+              >
+                Demo {user.demo_expires_at && `• ${formatDemoRemaining(user.demo_expires_at)}`}
+              </Link>
+            )}
+            <button
+              onClick={handleLogout}
+              className={`text-sm uppercase tracking-wide ${BRUTAL_BUTTON_DANGER} flex items-center gap-2`}
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16,17 21,12 16,7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              <span className="hidden md:inline">Déconnexion</span>
+            </button>
+          </div>
         </div>
       </header>
 

@@ -22,9 +22,16 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
   const { token } = useAuth();
   const { isConfirmingId, handleDelete } = useConfirmDelete<number>();
 
-  const [selectedSource, setSelectedSource] = useState<Source | null>(null);
+  const [selectedSourceId, setSelectedSourceId] = useState<number | null>(null);
   const [sourceModalOpen, setSourceModalOpen] = useState(false);
   const [audioUrls, setAudioUrls] = useState<Record<string, string>>({});
+
+  // Derive selectedSource from sources array to keep it in sync with live data
+  // This ensures the modal updates when transcription completes via polling
+  const selectedSource = useMemo(() => {
+    if (selectedSourceId === null) return null;
+    return sources.find(s => s.id === selectedSourceId) ?? null;
+  }, [selectedSourceId, sources]);
   const [retryingSourceId, setRetryingSourceId] = useState<number | null>(null);
   const audioUrlsRef = useRef(audioUrls);
 
@@ -70,9 +77,9 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
       await deleteSource(projectId, sourceId);
       onMutate?.();
 
-      if (selectedSource?.id === sourceId) {
+      if (selectedSourceId === sourceId) {
         setSourceModalOpen(false);
-        setSelectedSource(null);
+        setSelectedSourceId(null);
       }
 
       if (audioUrlsRef.current[sourceId]) {
@@ -87,7 +94,7 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
   };
 
   const handleSourceClick = (source: Source) => {
-    setSelectedSource(source);
+    setSelectedSourceId(source.id);
 
     if (source.type === 'audio') {
       loadAudioForSource(source);
@@ -149,7 +156,7 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
           isOpen={sourceModalOpen}
           onClose={() => {
             setSourceModalOpen(false);
-            setSelectedSource(null);
+            setSelectedSourceId(null);
           }}
           source={selectedSource}
           fileUrl={audioUrls[selectedSource.id]}

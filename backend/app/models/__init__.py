@@ -10,6 +10,7 @@ from .chat_message import ChatMessage
 from .project_chat_message import ProjectChatMessage
 from .project_chat_session import ProjectChatSession
 from .job import GenerationJob, ProcessingJob
+from .demo_access import DemoAccess
 from .enums import (
     JobStatus,
     ProjectStatus,
@@ -33,6 +34,7 @@ __all__ = [
     "ProjectChatSession",
     "ProcessingJob",
     "GenerationJob",
+    "DemoAccess",
     # Legacy enums (still in their original files for backward compat)
     "SourceType",
     # Centralized enums

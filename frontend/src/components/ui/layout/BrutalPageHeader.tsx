@@ -65,7 +65,7 @@ export function BrutalPageHeader({
 
   return (
     <div
-      className={`relative ${compact ? 'mb-0 py-2' : 'mb-6 md:mb-8 py-4 md:py-5'} -mx-4 px-4 md:px-6 ${variantClasses[variant]} ${borderClass} border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${className}`}
+      className={`relative top-[5px] ${compact ? 'mb-0 py-2' : 'mb-6 md:mb-8 py-4 md:py-5'} -mx-4 px-4 md:px-6 ${variantClasses[variant]} ${borderClass} border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${className}`}
     >
       <div className="flex justify-between items-center">
         <div className="flex-1">

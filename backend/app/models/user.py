@@ -26,6 +26,13 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         cascade="all, delete-orphan",
     )
 
+    demo_access = relationship(
+        "DemoAccess",
+        back_populates="user",
+        uselist=False,
+        cascade="all, delete-orphan",
+    )
+
     @property
     def has_api_key(self) -> bool:
         """Check if user has configured an API key."""

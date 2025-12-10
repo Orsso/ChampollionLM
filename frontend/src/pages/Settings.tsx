@@ -103,10 +103,47 @@ export function Settings() {
           variant="colored"
         />
 
+        {/* Demo Access Info - Only visible to demo users */}
+        {user?.is_demo_user && (
+          <div className={`mb-6 ${BRUTAL_CARD_VARIANTS.colored} bg-cyan-100`}>
+            <h2 className="text-xl font-bold text-black mb-2">Accès Demo</h2>
+            <p className="text-gray-700 mb-3">
+              Vous bénéficiez actuellement d'un accès demo gratuit à Champollion.
+              {user.demo_expires_at && (
+                <span className="font-bold"> Cet accès expire le {new Date(user.demo_expires_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}.</span>
+              )}
+            </p>
+            <p className="text-gray-600 text-sm">
+              Pour continuer à utiliser Champollion après cette date, configurez votre propre clé API Mistral ci-dessous.
+              Une fois votre clé configurée, elle sera utilisée en priorité sur l'accès demo.
+            </p>
+          </div>
+        )}
+
         {/* API Key Section - Brutal Card */}
         <div className={`mb-6 p-6 ${BRUTAL_CARD_VARIANTS.default}`}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-2xl font-bold text-black">Clé API</h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-2xl font-bold text-black">Clé API</h2>
+              {/* Help tooltip */}
+              <div className="relative group">
+                <span className="inline-flex items-center justify-center w-5 h-5 text-xs font-bold text-black bg-gray-200 border-2 border-black rounded-full cursor-help hover:bg-orange-200 transition-colors">
+                  ?
+                </span>
+                <div className="absolute left-0 top-full mt-2 w-80 p-4 bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-sm text-black opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  <p className="font-bold mb-2">Comment obtenir une clé API Mistral ?</p>
+                  <ol className="list-decimal list-inside space-y-1 text-gray-700 mb-3">
+                    <li>Créez un compte sur <a href="https://console.mistral.ai" target="_blank" rel="noopener noreferrer" className="text-orange-500 underline hover:text-orange-600">console.mistral.ai</a></li>
+                    <li>Choisissez le plan <strong>"Experiment"</strong> (gratuit)</li>
+                    <li>Vérifiez votre numéro de téléphone</li>
+                    <li>Créez une clé API dans "API keys"</li>
+                  </ol>
+                  <p className="text-xs text-gray-500">
+                    <strong>Plan Experiment :</strong> 1M tokens/mois gratuits. Limites : 1 req/s, 500K tokens/min.
+                  </p>
+                </div>
+              </div>
+            </div>
             {user?.has_api_key && (
               <span className="flex items-center text-green-600 text-sm font-bold px-3 py-1 bg-green-100 border-2 border-black">
                 <svg className="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">

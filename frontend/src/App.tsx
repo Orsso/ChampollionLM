@@ -8,6 +8,7 @@ import { Register } from './pages/Register';
 import { Dashboard } from './pages/Dashboard';
 import { ProjectDetail } from './pages/ProjectDetail';
 import { Settings } from './pages/Settings';
+import { AdminPanel } from './pages/AdminPanel';
 
 function App() {
   return (
@@ -46,6 +47,16 @@ function App() {
               <ProtectedRoute>
                 <Layout>
                   <Settings />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AdminPanel />
                 </Layout>
               </ProtectedRoute>
             }

@@ -2,11 +2,14 @@ from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from mistralai import Mistral
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import auth_backend, current_active_user, fastapi_users, get_user_manager, UserManager
 from app.core.security import decrypt_api_key
+from app.api.deps import get_db_session
 from app.models import User
 from app.schemas.user import UserCreate, UserRead, UserUpdate
+from app.services.demo_access import DemoAccessService
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -21,8 +24,25 @@ router.include_router(
 
 
 @router.get("/users/me", response_model=UserRead)
-async def read_current_user(user: User = Depends(current_active_user)) -> User:
-    return user
+async def read_current_user(
+    user: User = Depends(current_active_user),
+    session: AsyncSession = Depends(get_db_session),
+) -> dict[str, Any]:
+    """Get current user with demo access status."""
+    service = DemoAccessService(session)
+    demo_access = await service.get_active_demo_access(user.id)
+    
+    return {
+        "id": user.id,
+        "email": user.email,
+        "is_active": user.is_active,
+        "is_superuser": user.is_superuser,
+        "is_verified": user.is_verified,
+        "created_at": user.created_at,
+        "api_key_encrypted": user.api_key_encrypted,
+        "is_demo_user": demo_access is not None,
+        "demo_expires_at": demo_access.expires_at if demo_access else None,
+    }
 
 
 @router.patch("/users/me", response_model=UserRead)

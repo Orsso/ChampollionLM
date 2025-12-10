@@ -9,6 +9,8 @@ export interface User {
   is_superuser: boolean;
   is_verified: boolean;
   has_api_key: boolean;
+  is_demo_user: boolean;
+  demo_expires_at: string | null;
 }
 
 export interface LoginCredentials {
@@ -145,4 +147,28 @@ export interface TokenEstimation {
   context_percentage: number;
   context_limit: number;
   source_count: number;
+}
+
+// Admin types
+export interface DemoAccess {
+  id: number;
+  user_id: number;
+  user_email: string;
+  granted_at: string;
+  expires_at: string;
+  revoked_at: string | null;
+  granted_by: string;
+  notes: string | null;
+  is_active: boolean;
+}
+
+export interface UserAdmin {
+  id: number;
+  email: string;
+  is_active: boolean;
+  is_superuser: boolean;
+  is_verified: boolean;
+  has_api_key: boolean;
+  created_at: string;
+  demo_access: DemoAccess | null;
 }

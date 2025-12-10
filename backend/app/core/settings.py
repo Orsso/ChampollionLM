@@ -84,6 +84,12 @@ class AppSettings(BaseSettings):
     # YouTube Proxy URL to avoid IP blocks
     youtube_proxy_url: str | None = Field(default=None, description="Proxy URL for YouTube requests")
 
+    # Demo access - shared API key for demo users
+    demo_mistral_api_key: SecretStr | None = Field(
+        default=None,
+        description="Mistral API key shared with demo users"
+    )
+
     model_config = {
         "env_file": ".env",
         "case_sensitive": False,

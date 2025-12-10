@@ -71,10 +71,10 @@ export const BRUTAL_BUTTON_VARIANTS = {
  * Example: <div className={BRUTAL_CARD_VARIANTS.default}>
  */
 export const BRUTAL_CARD_VARIANTS = {
-  default: 'bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]',
-  colored: 'bg-orange-100 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]',
-  dark: 'bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black',
-  accent: 'bg-orange-500 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-white',
+  default: 'bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black p-6',
+  colored: 'bg-orange-100 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black p-6',
+  dark: 'bg-slate-900 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-white p-6',
+  accent: 'bg-orange-500 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-white p-6',
 } as const;
 
 /**
