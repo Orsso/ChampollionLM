@@ -68,11 +68,8 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
           setDocModalOpen(false);
         }
         await mutateProject();
-      } catch (err) {
-        let errorMessage = 'Erreur lors de la suppression';
-        if (err instanceof Error) errorMessage = err.message;
-        else if (typeof err === 'string') errorMessage = err;
-        setError(errorMessage);
+      } catch {
+        setError("Failed to load project details");
       }
     }, documentId);
   };
@@ -81,7 +78,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
     try {
       await updateDocument(Number(projectId), documentId, title);
       await mutateProject();
-    } catch (err) {
+    } catch {
       throw new Error('Echec du renommage');
     }
   };

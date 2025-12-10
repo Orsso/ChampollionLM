@@ -31,6 +31,8 @@ export const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputPro
   ({ label, type = 'text', darkMode = true, className = '', required = false, ...props }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
     const [internalValue, setInternalValue] = useState(props.value || '');
+    const uniqueId = React.useId();
+    const inputId = props.id || uniqueId;
 
     const hasValue = props.value || internalValue;
     const isLabelFloating = isFocused || hasValue;
@@ -58,6 +60,7 @@ export const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputPro
       <div className={`relative ${className}`}>
         <input
           ref={ref}
+          id={inputId}
           type={type}
           {...props}
           onChange={handleChange}
@@ -68,9 +71,10 @@ export const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputPro
           placeholder=" "
         />
         <label
+          htmlFor={inputId}
           className={`absolute left-4 transition-all ${TRANSITIONS.fast} pointer-events-none font-bold ${isLabelFloating
-              ? `-top-2.5 text-xs ${labelBgClass} ${labelFocusClass} px-2`
-              : `top-3.5 text-base ${labelClass}`
+            ? `-top-2.5 text-xs ${labelBgClass} ${labelFocusClass} px-2`
+            : `top-3.5 text-base ${labelClass}`
             }`}
         >
           {label}

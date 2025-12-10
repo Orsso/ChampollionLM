@@ -19,7 +19,7 @@ from app.models import (
     User,
 )
 from app.generators import GeneratorRegistry
-from app.processors import TranscriptionRegistry
+from app.processors.registry import TranscriptionRegistry
 from app.services.file import FileService
 from app.services.processing_job import ProcessingJobService
 from app.services.generation_job import GenerationJobService

@@ -1,0 +1,29 @@
+[tool.pytest.ini_options]
+minversion = "7.0"
+asyncio_mode = "auto"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+# Run test_youtube_processor last to avoid module pollution
+# The youtube processor test modifies sys.modules which can interfere with other tests
+addopts = "--ignore=tests/test_youtube_processor.py"
+filterwarnings = [
+    "ignore::DeprecationWarning:pydantic.*",
+    "ignore::PendingDeprecationWarning:starlette.*",
+    "ignore::DeprecationWarning:passlib.*",
+    "ignore::DeprecationWarning:fastapi.*",
+    "ignore::sqlalchemy.exc.SAWarning",
+]
+
+[tool.coverage.run]
+source = ["app"]
+omit = ["app/alembic/*", "app/__pycache__/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]

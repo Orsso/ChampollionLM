@@ -47,10 +47,13 @@ def generate_upload_filename(original_name: str, *, prefix: str = "upload") -> s
 
 def compute_duration_seconds(path: Path) -> int:
     """Compute audio duration using mutagen (works for MP3, WAV, M4A)."""
-    audio = MutagenFile(str(path))
-    if audio is None or not audio.info or not hasattr(audio.info, 'length'):
-        raise ValueError("Unable to determine audio duration")
-    return int(audio.info.length)
+    try:
+        audio = MutagenFile(str(path))
+        if audio is None or not audio.info or not hasattr(audio.info, 'length'):
+            raise ValueError("Unable to determine audio duration")
+        return int(audio.info.length)
+    except Exception as exc:
+        raise ValueError(f"Invalid audio file: {str(exc)}") from exc
 
 
 def convert_webm_to_mp3(input_path: Path, output_path: Path) -> None:
