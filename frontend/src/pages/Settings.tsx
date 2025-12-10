@@ -18,7 +18,7 @@ interface PasswordFormData {
 }
 
 export function Settings() {
-  const { user, updateApiKey, changePassword, testApiKey } = useAuth();
+  const { user, updateApiKey, changePassword, testApiKey, deleteAccount } = useAuth();
 
   // API Key form state
   const [apiKeyError, setApiKeyError] = useState<string | null>(null);
@@ -30,6 +30,12 @@ export function Settings() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [passwordSuccess, setPasswordSuccess] = useState<string | null>(null);
   const [isPasswordLoading, setIsPasswordLoading] = useState(false);
+
+  // Delete account state
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
   const {
     register: registerApiKey,
@@ -90,6 +96,27 @@ export function Settings() {
       setApiKeyError(err instanceof Error ? err.message : 'Erreur lors du test de la clé API');
     } finally {
       setIsTestingApiKey(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!showDeleteConfirm) {
+      setShowDeleteConfirm(true);
+      return;
+    }
+
+    if (deleteConfirmText !== 'SUPPRIMER') {
+      setDeleteError('Veuillez taper SUPPRIMER pour confirmer');
+      return;
+    }
+
+    setDeleteError(null);
+    setIsDeleting(true);
+    try {
+      await deleteAccount();
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Erreur lors de la suppression du compte');
+      setIsDeleting(false);
     }
   };
 
@@ -295,6 +322,52 @@ export function Settings() {
               <p className="text-black font-medium text-lg">{user?.email}</p>
             </div>
           </div>
+        </div>
+
+        {/* Danger Zone - Brutal Card with Red Accent */}
+        <div className={`mt-6 p-6 ${BRUTAL_CARD_VARIANTS.default} border-red-500`}>
+          <h2 className="text-2xl font-bold text-red-600 mb-2">Zone de Danger</h2>
+          <p className="text-gray-600 font-medium mb-4">
+            La suppression de votre compte est irréversible. Toutes vos données (projets, sources, documents) seront définitivement supprimées.
+          </p>
+
+          {deleteError && <Alert variant="error" message={deleteError} />}
+
+          {showDeleteConfirm && (
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-gray-700 mb-2">
+                Tapez <span className="text-red-600 font-mono">SUPPRIMER</span> pour confirmer
+              </label>
+              <input
+                type="text"
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                className="w-full px-4 py-2 border-3 border-black bg-white text-black font-medium focus:outline-none focus:ring-2 focus:ring-red-500"
+                placeholder="SUPPRIMER"
+                autoComplete="off"
+              />
+            </div>
+          )}
+
+          <Button
+            type="button"
+            onClick={handleDeleteAccount}
+            className="bg-red-500 hover:bg-red-600 text-white"
+            disabled={isDeleting || (showDeleteConfirm && deleteConfirmText !== 'SUPPRIMER')}
+          >
+            {isDeleting ? 'Suppression...' : showDeleteConfirm ? 'Confirmer la suppression' : 'Supprimer mon compte'}
+          </Button>
+
+          {showDeleteConfirm && (
+            <Button
+              type="button"
+              onClick={() => { setShowDeleteConfirm(false); setDeleteConfirmText(''); setDeleteError(null); }}
+              className="ml-3 bg-gray-200 hover:bg-gray-300 text-black"
+              disabled={isDeleting}
+            >
+              Annuler
+            </Button>
+          )}
         </div>
       </div>
     </div>

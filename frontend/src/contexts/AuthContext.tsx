@@ -14,6 +14,7 @@ interface AuthContextType {
   updateApiKey: (apiKey: string) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   testApiKey: () => Promise<{ success: boolean; message: string }>;
+  deleteAccount: () => Promise<void>;
 }
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -170,6 +171,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return result;
   };
 
+  const deleteAccount = async () => {
+    await fetcher('/api/auth/users/me', {
+      method: 'DELETE',
+    });
+    removeToken();
+    setTokenState(null);
+    setUser(null);
+    window.location.href = '/';
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -183,6 +194,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         updateApiKey,
         changePassword,
         testApiKey,
+        deleteAccount,
       }}
     >
       {children}

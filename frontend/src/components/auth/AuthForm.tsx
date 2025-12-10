@@ -19,6 +19,7 @@ interface AuthFormProps {
 interface FormData {
   email: string;
   password: string;
+  confirmPassword?: string;
 }
 
 /**
@@ -31,7 +32,8 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+  const { register, handleSubmit, formState: { errors }, watch } = useForm<FormData>();
+  const password = watch('password');
 
   const onSubmit = async (data: FormData) => {
     setError(null);
@@ -110,6 +112,25 @@ export function AuthForm({ mode }: AuthFormProps) {
               <p className="text-red-500 text-sm mt-1 font-bold">{errors.password.message}</p>
             )}
           </div>
+
+          {mode === 'register' && (
+            <div>
+              <AnimatedInput
+                label="Confirmer le mot de passe"
+                type="password"
+                autoComplete="new-password"
+                {...register('confirmPassword', {
+                  required: 'Confirmation requise',
+                  validate: (value) =>
+                    value === password || 'Les mots de passe ne correspondent pas'
+                })}
+                darkMode={false}
+              />
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1 font-bold">{errors.confirmPassword.message}</p>
+              )}
+            </div>
+          )}
 
           {error && <Alert variant="error" message={error} />}
 
