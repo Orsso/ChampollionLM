@@ -7,6 +7,8 @@ from .source import Source, SourceType
 from .document import Document
 from .document_source import DocumentSource
 from .chat_message import ChatMessage
+from .project_chat_message import ProjectChatMessage
+from .project_chat_session import ProjectChatSession
 from .job import GenerationJob, ProcessingJob
 from .enums import (
     JobStatus,
@@ -27,6 +29,8 @@ __all__ = [
     "Document",
     "DocumentSource",
     "ChatMessage",
+    "ProjectChatMessage",
+    "ProjectChatSession",
     "ProcessingJob",
     "GenerationJob",
     # Legacy enums (still in their original files for backward compat)

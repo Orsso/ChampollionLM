@@ -35,6 +35,8 @@ interface BrutalPageHeaderProps {
   action?: ReactNode;
   /** Additional CSS classes */
   className?: string;
+  /** compact mode */
+  compact?: boolean;
 }
 
 export function BrutalPageHeader({
@@ -44,6 +46,7 @@ export function BrutalPageHeader({
   subtitleVariant = 'default',
   action,
   className = '',
+  compact = false,
 }: BrutalPageHeaderProps) {
   const variantClasses = {
     default: 'bg-white',
@@ -52,6 +55,7 @@ export function BrutalPageHeader({
   };
 
   const titleColorClass = variant === 'accent' ? 'text-white' : 'text-black';
+  const borderClass = compact ? BRUTAL_BORDERS.normal : BRUTAL_BORDERS.thick;
 
   const subtitleClasses = subtitleVariant === 'highlight'
     ? 'text-xl font-bold text-orange-500 uppercase tracking-wide'
@@ -61,15 +65,15 @@ export function BrutalPageHeader({
 
   return (
     <div
-      className={`relative mb-6 md:mb-8 -mx-4 px-4 md:px-6 py-4 md:py-5 ${variantClasses[variant]} ${BRUTAL_BORDERS.thick} border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${className}`}
+      className={`relative ${compact ? 'mb-0 py-2' : 'mb-6 md:mb-8 py-4 md:py-5'} -mx-4 px-4 md:px-6 ${variantClasses[variant]} ${borderClass} border-black shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] ${className}`}
     >
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-center">
         <div className="flex-1">
-          <h1 className={`text-3xl md:text-5xl font-bold ${titleColorClass} mb-1 tracking-tight`}>
+          <h1 className={`${compact ? 'text-lg md:text-xl' : 'text-3xl md:text-5xl'} font-bold ${titleColorClass} mb-0 tracking-tight`}>
             {title}
           </h1>
           {subtitle && (
-            <p className={`${subtitleClasses} mt-2`}>
+            <p className={`${subtitleClasses} ${compact ? 'mt-0 text-sm' : 'mt-2'}`}>
               {subtitle}
             </p>
           )}

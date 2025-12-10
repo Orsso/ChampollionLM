@@ -46,17 +46,6 @@ const SearchIcon = () => (
     </svg>
 );
 
-const ListIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-        <line x1="8" y1="6" x2="21" y2="6" />
-        <line x1="8" y1="12" x2="21" y2="12" />
-        <line x1="8" y1="18" x2="21" y2="18" />
-        <line x1="3" y1="6" x2="3.01" y2="6" />
-        <line x1="3" y1="12" x2="3.01" y2="12" />
-        <line x1="3" y1="18" x2="3.01" y2="18" />
-    </svg>
-);
-
 const ChatBubbleIcon = () => (
     <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
@@ -136,18 +125,6 @@ export function DocumentChatPanel({
         }
     };
 
-    // Quick action buttons
-    const quickActions = [
-        { id: 'explain' as const, label: 'Expliquer', icon: <SearchIcon />, prompt: 'Que signifie ce document ?' },
-        { id: 'summarize' as const, label: 'Résumer', icon: <ListIcon />, prompt: 'Donne-moi un résumé de ce document.' },
-    ];
-
-    const handleQuickAction = async (action: typeof quickActions[0]) => {
-        if (isStreaming) return;
-        shouldScrollRef.current = true;
-        await sendMessage(action.prompt, { action: action.id });
-    };
-
     return (
         <div className={`
       flex flex-col h-full w-[400px] min-w-[360px]
@@ -214,41 +191,16 @@ export function DocumentChatPanel({
               mb-6 p-4
               ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal}
               bg-white ${BRUTAL_SHADOWS.small}
-              text-slate-400
+              text-orange-500
             `}>
                             <ChatBubbleIcon />
                         </div>
-                        <p className="text-black font-bold mb-1">
+                        <p className="text-black font-black mb-1">
                             Discutez avec votre document
                         </p>
-                        <p className="text-slate-500 text-sm mb-8">
+                        <p className="text-black font-medium text-sm">
                             Posez des questions ou demandez des explications
                         </p>
-
-                        {/* Quick actions for empty state */}
-                        <div className="flex flex-col gap-3 w-full max-w-[280px]">
-                            {quickActions.map(action => (
-                                <button
-                                    key={action.id}
-                                    onClick={() => handleQuickAction(action)}
-                                    disabled={isStreaming}
-                                    className={`
-                    flex items-center gap-3 px-4 py-3 
-                    text-sm font-bold text-left
-                    ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal}
-                    bg-white hover:bg-orange-50 ${TRANSITIONS.fast}
-                    ${BRUTAL_SHADOWS.small}
-                    hover:translate-x-[-2px] hover:translate-y-[-2px]
-                    hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]
-                    disabled:opacity-50 disabled:cursor-not-allowed
-                    disabled:hover:translate-x-0 disabled:hover:translate-y-0
-                  `}
-                                >
-                                    <span className="text-orange-500">{action.icon}</span>
-                                    <span>{action.label}</span>
-                                </button>
-                            ))}
-                        </div>
                     </div>
                 ) : (
                     <div className="space-y-4">
@@ -277,7 +229,7 @@ export function DocumentChatPanel({
                                     <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                                     <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                                 </div>
-                                <span className="text-sm text-slate-500 font-medium">
+                                <span className="text-sm text-black font-medium">
                                     {searchStatus.isSearching
                                         ? `Recherche: ${searchStatus.query || '...'}`
                                         : 'Réflexion...'}

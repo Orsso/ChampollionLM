@@ -22,3 +22,6 @@ class Project(Base):
     documents = relationship("Document", back_populates="project", cascade="all, delete-orphan")
     processing_job = relationship("ProcessingJob", back_populates="project", uselist=False, cascade="all, delete-orphan")
     generation_job = relationship("GenerationJob", back_populates="project", uselist=False, cascade="all, delete-orphan")
+    chat_messages = relationship("ProjectChatMessage", back_populates="project", cascade="all, delete-orphan")
+    chat_sessions = relationship("ProjectChatSession", back_populates="project", cascade="all, delete-orphan", order_by="ProjectChatSession.updated_at.desc()")
+

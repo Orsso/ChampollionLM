@@ -4,10 +4,9 @@
  * Shows sources used when RAG search was performed
  */
 
-import { useMemo, useState } from 'react';
-import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+import { useState } from 'react';
 import { BRUTAL_SHADOWS, BRUTAL_BORDERS, BRUTAL_RADIUS } from '../../../constants/styles';
+import { useMarkdown } from '../../../lib/useMarkdown';
 
 interface ChunkPreview {
     source: string;
@@ -112,21 +111,8 @@ function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; 
 }
 
 export function ChatMessage({ role, content, metadata, isStreaming }: ChatMessageProps) {
-    // Configure marked for chat messages
-    marked.setOptions({ gfm: true, breaks: true });
-
-    const htmlContent = useMemo(() => {
-        if (!content) return '';
-        try {
-            const rawHtml = marked.parse(content) as string;
-            return DOMPurify.sanitize(rawHtml, {
-                ALLOWED_TAGS: ['p', 'strong', 'em', 'code', 'pre', 'ul', 'ol', 'li', 'a', 'br', 'blockquote', 'h1', 'h2', 'h3', 'h4'],
-                ALLOWED_ATTR: ['href', 'class']
-            });
-        } catch {
-            return content;
-        }
-    }, [content]);
+    // Use shared markdown hook for rich rendering
+    const htmlContent = useMarkdown(content);
 
     const isUser = role === 'user';
     const isAssistant = role === 'assistant';
@@ -175,7 +161,7 @@ export function ChatMessage({ role, content, metadata, isStreaming }: ChatMessag
                         <div
                             dangerouslySetInnerHTML={{ __html: htmlContent }}
                             className="
-                                text-black text-sm leading-relaxed
+                                text-black text-sm leading-relaxed markdown-content
                                 [&>p]:mb-3 [&>p:last-child]:mb-0
                                 [&>pre]:bg-slate-100 [&>pre]:p-3 [&>pre]:rounded [&>pre]:text-xs [&>pre]:overflow-x-auto [&>pre]:mb-3
                                 [&>code]:bg-slate-100 [&>code]:px-1.5 [&>code]:py-0.5 [&>code]:rounded [&>code]:text-xs [&>code]:font-mono
@@ -184,7 +170,13 @@ export function ChatMessage({ role, content, metadata, isStreaming }: ChatMessag
                                 [&>h1]:text-lg [&>h1]:font-black [&>h1]:mb-2
                                 [&>h2]:text-base [&>h2]:font-bold [&>h2]:mb-2
                                 [&>h3]:text-sm [&>h3]:font-bold [&>h3]:mb-2
+                                [&>h4]:text-sm [&>h4]:font-semibold [&>h4]:mb-2
                                 [&>blockquote]:border-l-4 [&>blockquote]:border-orange-400 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-slate-600
+                                [&>hr]:my-4 [&>hr]:border-t-2 [&>hr]:border-black
+                                [&>del]:line-through [&>del]:text-slate-500
+                                [&>table]:w-full [&>table]:mb-3 [&>table]:border-collapse [&>table]:border-2 [&>table]:border-black
+                                [&_th]:bg-orange-100 [&_th]:p-2 [&_th]:text-left [&_th]:font-bold [&_th]:border [&_th]:border-black
+                                [&_td]:p-2 [&_td]:border [&_td]:border-black
                             "
                         />
                     ) : (

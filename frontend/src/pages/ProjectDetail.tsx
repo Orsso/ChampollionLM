@@ -4,10 +4,11 @@ import { useProject } from '../hooks/useProjects';
 import { Spinner } from '../components/ui/feedback';
 import { SourcesPanel } from '../components/project/SourcesPanel';
 import { StudioPanel } from '../components/project/StudioPanel';
+import { ProjectChatPanel } from '../components/project/ProjectChatPanel';
 import { BrutalPageHeader } from '../components/ui/layout';
 import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS, BRUTAL_BUTTON_VARIANTS, TRANSITIONS } from '../constants/styles';
 
-type TabType = 'recording' | 'notes';
+type TabType = 'recording' | 'chat' | 'notes';
 
 export function ProjectDetail() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -53,30 +54,34 @@ export function ProjectDetail() {
 
   const tabs: { id: TabType; label: string }[] = [
     { id: 'recording', label: 'Sources' },
+    { id: 'chat', label: 'Chat' },
     { id: 'notes', label: 'Studio' },
   ];
 
   return (
     <div className="flex-1">
       <div className="max-w-7xl mx-auto w-full">
-        {/* Back button with brutal styling */}
-        <div className="mb-4">
+        {/* Header and Back button aligned */}
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mb-8">
           <button
             onClick={() => navigate('/dashboard')}
-            className={`inline-flex items-center gap-2 px-4 py-2.5 bg-white text-orange-500 ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_SHADOWS.small} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:bg-orange-50`}
+            className={`flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 bg-white text-orange-500 ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_SHADOWS.small} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none hover:bg-orange-50`}
           >
             <span className="text-xl">←</span>
             <span className="hidden sm:inline">Retour aux projets</span>
             <span className="sm:hidden">Retour</span>
           </button>
-        </div>
 
-        {/* Page header with brutal styling */}
-        <BrutalPageHeader
-          title={project.title}
-          subtitle={project.description}
-          variant="colored"
-        />
+          <div className="flex-grow">
+            <BrutalPageHeader
+              title={project.title}
+              subtitle={project.description}
+              variant="colored"
+              compact
+              className="!mb-0 !mx-0 w-full"
+            />
+          </div>
+        </div>
 
         {/* Brutal tabs with global button style */}
         <div className="mb-8">
@@ -86,8 +91,8 @@ export function ProjectDetail() {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm uppercase tracking-wide whitespace-nowrap ${BRUTAL_RADIUS.normal} ${activeTab === tab.id
-                    ? `${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_SHADOWS.medium} active:translate-x-[2px] active:translate-y-[2px] active:shadow-none`
-                    : `${BRUTAL_BUTTON_VARIANTS.secondary} ${BRUTAL_SHADOWS.medium} active:translate-x-[2px] active:translate-y-[2px] active:shadow-none`
+                  ? `${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_SHADOWS.medium} active:translate-x-[2px] active:translate-y-[2px] active:shadow-none`
+                  : `${BRUTAL_BUTTON_VARIANTS.secondary} ${BRUTAL_SHADOWS.medium} active:translate-x-[2px] active:translate-y-[2px] active:shadow-none`
                   }`}
               >
                 {tab.label}
@@ -104,6 +109,12 @@ export function ProjectDetail() {
               sources={project.sources || []}
               processingStatus={project.processing_status}
               onMutate={mutate}
+            />
+          )}
+          {activeTab === 'chat' && (
+            <ProjectChatPanel
+              projectId={project.id}
+              sources={project.sources || []}
             />
           )}
           {activeTab === 'notes' && (

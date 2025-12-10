@@ -2,6 +2,7 @@ export { ProjectList } from './ProjectList';
 export { CreateProjectModal } from './CreateProjectModal';
 export { SourcesPanel } from './SourcesPanel';
 export { StudioPanel } from './StudioPanel';
+export { ProjectChatPanel } from './ProjectChatPanel';
 
 // Sub-components
 export { AudioUploadZone } from './AudioUploadZone';
@@ -11,3 +12,4 @@ export { GenerationControls } from './GenerationControls';
 export { DocumentCard } from './DocumentCard';
 export { DocumentsList } from './DocumentsList';
 export { SourceCard } from './SourceCard';
+

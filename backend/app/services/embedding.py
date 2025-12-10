@@ -284,3 +284,166 @@ class EmbeddingService:
                 ))
         
         return chunks
+
+    async def index_project_sources(self, project_id: int, sources: list["Source"]) -> str:
+        """Index sources for a project (for project-level chat).
+        
+        Similar to index_sources but uses project_id for collection naming.
+        
+        Args:
+            project_id: ID of the project
+            sources: List of sources to index
+            
+        Returns:
+            Collection name
+        """
+        collection_name = f"project_{project_id}"
+        
+        # Check if already indexed with same sources
+        source_hash = _source_hash(sources)
+        if collection_name in self._collections:
+            existing = self._collections[collection_name]
+            if existing.metadata and existing.metadata.get("source_hash") == source_hash:
+                logger.debug("Project sources already indexed", extra={"project_id": project_id})
+                return collection_name
+        
+        # Create new collection
+        try:
+            self._client.delete_collection(collection_name)
+        except Exception:
+            pass  # Collection doesn't exist
+            
+        collection = self._client.create_collection(
+            name=collection_name,
+            metadata={"source_hash": source_hash}
+        )
+        
+        # Prepare chunks from all sources
+        all_chunks: list[str] = []
+        all_ids: list[str] = []
+        all_metadatas: list[dict] = []
+        
+        for source in sources:
+            content = source.processed_content or source.content
+            if not content:
+                continue
+                
+            chunks = _chunk_text(content)
+            for i, chunk in enumerate(chunks):
+                all_chunks.append(chunk)
+                all_ids.append(f"{source.id}_{i}")
+                all_metadatas.append({
+                    "source_id": source.id,
+                    "source_title": source.title,
+                    "chunk_index": i
+                })
+        
+        if not all_chunks:
+            logger.warning("No content to index for project", extra={"project_id": project_id})
+            self._collections[collection_name] = collection
+            return collection_name
+        
+        # Get embeddings
+        embeddings = await self._embed_texts(all_chunks)
+        
+        # Add to collection
+        collection.add(
+            ids=all_ids,
+            embeddings=embeddings,
+            documents=all_chunks,
+            metadatas=all_metadatas
+        )
+        
+        self._collections[collection_name] = collection
+        logger.info("Indexed project sources", extra={
+            "project_id": project_id,
+            "chunk_count": len(all_chunks),
+            "source_count": len(sources)
+        })
+        
+        return collection_name
+
+    async def search_project(
+        self,
+        project_id: int,
+        query: str,
+        top_k: int = 3
+    ) -> list[ChunkResult]:
+        """Search for relevant chunks in project sources.
+        
+        Args:
+            project_id: ID of the project
+            query: Search query
+            top_k: Number of results to return
+            
+        Returns:
+            List of relevant chunks with scores
+        """
+        collection_name = f"project_{project_id}"
+        
+        if collection_name not in self._collections:
+            logger.warning("Project collection not found", extra={"project_id": project_id})
+            return []
+        
+        collection = self._collections[collection_name]
+        
+        # Get all chunks for keyword search
+        all_data = collection.get(include=["documents", "metadatas"])
+        
+        logger.info("Project RAG Search starting", extra={
+            "query": query,
+            "collection": collection_name,
+            "total_chunks": len(all_data["documents"]) if all_data["documents"] else 0
+        })
+        
+        # Keyword search: find chunks containing the query (case insensitive)
+        query_lower = query.lower()
+        keyword_matches: list[ChunkResult] = []
+        
+        if all_data["documents"]:
+            for i, doc in enumerate(all_data["documents"]):
+                if query_lower in doc.lower():
+                    metadata = all_data["metadatas"][i] if all_data["metadatas"] else {}
+                    keyword_matches.append(ChunkResult(
+                        source_id=metadata.get("source_id", 0),
+                        source_title=metadata.get("source_title", "Unknown"),
+                        content=doc,
+                        score=1.0  # Perfect match
+                    ))
+        
+        # If we found keyword matches, return them prioritized
+        if keyword_matches:
+            logger.info("Returning keyword matches for project", extra={"count": len(keyword_matches), "query": query})
+            return keyword_matches[:top_k]
+        
+        logger.info("No keyword matches for project, falling back to semantic search", extra={"query": query})
+        
+        # Fall back to semantic search
+        query_embedding = await self._embed_texts([query])
+        if not query_embedding:
+            return []
+        
+        # Search
+        results = collection.query(
+            query_embeddings=query_embedding,
+            n_results=top_k,
+            include=["documents", "metadatas", "distances"]
+        )
+        
+        # Format results
+        chunks: list[ChunkResult] = []
+        
+        if results["documents"] and results["documents"][0]:
+            for i, doc in enumerate(results["documents"][0]):
+                metadata = results["metadatas"][0][i] if results["metadatas"] else {}
+                distance = results["distances"][0][i] if results["distances"] else 0
+                
+                chunks.append(ChunkResult(
+                    source_id=metadata.get("source_id", 0),
+                    source_title=metadata.get("source_title", "Unknown"),
+                    content=doc,
+                    score=1 - distance  # Convert distance to similarity
+                ))
+        
+        return chunks
+

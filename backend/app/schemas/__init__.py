@@ -12,7 +12,11 @@ from .project import (
 )
 from .source import SourceCreate, SourceDetail, SourceRead, SourceUpdate
 from .user import UserCreate, UserRead, UserUpdate
-from .chat import ChatMessageCreate, ChatMessageRead, ChatHistoryResponse
+from .chat import (
+    ChatMessageCreate, ChatMessageRead, ChatHistoryResponse,
+    ProjectChatMessageCreate, ProjectChatHistoryResponse,
+    ChatSessionCreate, ChatSessionRead, ChatSessionListResponse
+)
 
 __all__ = [
     "UserRead",
@@ -35,4 +39,9 @@ __all__ = [
     "ChatMessageCreate",
     "ChatMessageRead",
     "ChatHistoryResponse",
+    "ProjectChatMessageCreate",
+    "ProjectChatHistoryResponse",
+    "ChatSessionCreate",
+    "ChatSessionRead",
+    "ChatSessionListResponse",
 ]
