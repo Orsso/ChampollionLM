@@ -72,6 +72,22 @@ global.IntersectionObserver = vi.fn().mockImplementation(() => ({
 // Mock scrollTo
 window.scrollTo = vi.fn();
 
+// Mock window.location to prevent JSDOM navigation errors
+const locationMock = {
+  href: '',
+  origin: 'http://localhost:3000',
+  pathname: '/',
+  search: '',
+  hash: '',
+  assign: vi.fn(),
+  reload: vi.fn(),
+  replace: vi.fn(),
+};
+Object.defineProperty(window, 'location', {
+  value: locationMock,
+  writable: true,
+});
+
 // MSW Server setup
 beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
 afterEach(() => {
