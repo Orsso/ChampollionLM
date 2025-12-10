@@ -1,7 +1,7 @@
 /**
  * Tests for AuthContext and AuthProvider.
  */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { AuthProvider, AuthContext } from './AuthContext';
@@ -24,9 +24,21 @@ function useAuthContext() {
 }
 
 describe('AuthContext', () => {
+  const originalLocation = window.location;
+
   beforeEach(() => {
     localStorage.clear();
     vi.restoreAllMocks();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    delete (window as any).location;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.location = { ...originalLocation, href: '' } as any;
+  });
+
+  afterEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    window.location = originalLocation as any;
   });
 
   describe('Initial State', () => {
@@ -223,12 +235,6 @@ describe('AuthContext', () => {
     it('clears user state and token', async () => {
       localStorage.setItem('token', 'mock-jwt-token');
 
-      // Mock window.location
-      const originalLocation = window.location;
-      Object.defineProperty(window, 'location', {
-        value: { href: '' },
-        writable: true,
-      });
 
       const { result } = renderHook(() => useAuthContext(), { wrapper });
 
@@ -246,11 +252,7 @@ describe('AuthContext', () => {
       expect(localStorage.getItem('token')).toBeNull();
       expect(window.location.href).toBe('/');
 
-      // Restore window.location
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-      });
+      expect(window.location.href).toBe('/');
     });
   });
 
@@ -323,12 +325,6 @@ describe('AuthContext', () => {
     it('deletes account and clears state', async () => {
       localStorage.setItem('token', 'mock-jwt-token');
 
-      // Mock window.location
-      const originalLocation = window.location;
-      Object.defineProperty(window, 'location', {
-        value: { href: '' },
-        writable: true,
-      });
 
       const { result } = renderHook(() => useAuthContext(), { wrapper });
 
@@ -346,11 +342,7 @@ describe('AuthContext', () => {
       expect(localStorage.getItem('token')).toBeNull();
       expect(window.location.href).toBe('/');
 
-      // Restore
-      Object.defineProperty(window, 'location', {
-        value: originalLocation,
-        writable: true,
-      });
+      expect(window.location.href).toBe('/');
     });
   });
 
