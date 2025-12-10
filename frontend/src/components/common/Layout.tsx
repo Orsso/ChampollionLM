@@ -94,7 +94,7 @@ export function Layout({ children }: LayoutProps) {
             {/* Logo with Beta badge */}
             <div className="relative flex-shrink-0">
               <img src="/logo.svg" alt="Champollion" className="w-[55px] h-[55px] mt-[10px]" />
-              <span className="absolute bottom-[5px] right-[-2px] px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-yellow-300 text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded -rotate-12">
+              <span className="absolute bottom-[0px] right-[-0px] px-1.5 py-0.5 text-[8px] font-black uppercase tracking-wider bg-yellow-300 text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded">
                 Beta
               </span>
             </div>

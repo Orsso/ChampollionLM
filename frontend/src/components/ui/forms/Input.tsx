@@ -43,18 +43,12 @@ export const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputPro
     };
 
     const bgClass = darkMode ? 'bg-slate-900' : 'bg-white';
-    const borderClass = darkMode
-      ? isFocused
-        ? 'border-orange-500'
-        : 'border-slate-600'
-      : isFocused
-        ? 'border-orange-500'
-        : 'border-gray-600';
+    const borderClass = darkMode ? 'border-slate-600' : 'border-gray-600';
     const textClass = darkMode ? 'text-slate-100' : 'text-gray-900';
     const labelClass = darkMode ? 'text-slate-300' : 'text-gray-700';
     const labelBgClass = darkMode ? 'bg-slate-900' : 'bg-white';
-    const labelFocusClass = darkMode ? 'text-slate-300' : 'text-orange-500';
-    const shadowClass = isFocused ? BRUTAL_SHADOWS.orange : 'shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]';
+    const labelFocusClass = darkMode ? 'text-slate-300' : 'text-gray-700';
+    const shadowClass = isFocused ? BRUTAL_SHADOWS.medium : BRUTAL_SHADOWS.small;
 
     return (
       <div className={`relative ${className}`}>
@@ -113,10 +107,10 @@ export const BrutalInput = React.forwardRef<HTMLInputElement, BrutalInputProps>(
     const [isFocused, setIsFocused] = useState(false);
 
     const bgClass = darkMode ? 'bg-slate-900' : 'bg-white';
-    const borderClass = isFocused ? 'border-orange-500' : 'border-black';
+    const borderClass = 'border-black';
     const textClass = darkMode ? 'text-slate-100' : 'text-black';
     const placeholderClass = darkMode ? 'placeholder:text-slate-400' : 'placeholder:text-gray-400';
-    const shadowClass = isFocused ? BRUTAL_SHADOWS.orange : 'shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]';
+    const shadowClass = isFocused ? BRUTAL_SHADOWS.medium : BRUTAL_SHADOWS.small;
 
     return (
       <input
@@ -178,10 +172,10 @@ export const BrutalTextarea = React.forwardRef<HTMLTextAreaElement, BrutalTextar
     const [isFocused, setIsFocused] = useState(false);
 
     const bgClass = darkMode ? 'bg-slate-900' : 'bg-white';
-    const borderClass = isFocused ? 'border-orange-500' : 'border-black';
+    const borderClass = 'border-black';
     const textClass = darkMode ? 'text-slate-100' : 'text-black';
     const placeholderClass = darkMode ? 'placeholder:text-slate-400' : 'placeholder:text-gray-400';
-    const shadowClass = isFocused ? BRUTAL_SHADOWS.orange : 'shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]';
+    const shadowClass = isFocused ? BRUTAL_SHADOWS.medium : BRUTAL_SHADOWS.small;
 
     return (
       <textarea

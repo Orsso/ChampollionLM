@@ -6,7 +6,7 @@
   <rect x="4" y="4" width="48" height="48" rx="6" fill="#f97316" stroke="#000000" stroke-width="3"/>
 
   <!-- Letter "C" - bold and geometric -->
-  <path d="M 38 20 L 38 16 L 18 16 L 18 44 L 38 44 L 38 40 M 22 20 L 22 40"
+  <path d="M 38 18 L 38 14 L 18 14 L 18 42 L 38 42 L 38 38 M 22 18 L 22 38"
         stroke="#000000"
         stroke-width="4"
         stroke-linecap="square"
