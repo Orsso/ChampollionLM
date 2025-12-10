@@ -2,11 +2,10 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Badge, ShinyText, Alert } from '../ui/feedback';
 import { Modal } from '../ui/layout';
-import { AnimatedInput } from '../ui/forms';
+import { AnimatedInput, SourceSelectionItem } from '../ui/forms';
 import { Button } from '../ui/buttons';
 import { useTokenEstimate } from '../../hooks/useTokens';
 import { useAuth } from '../../hooks';
-import { formatDateTime } from '../../utils/formatters';
 import type { Source } from '../../types';
 import {
   BRUTAL_BORDERS,
@@ -310,79 +309,22 @@ export function GenerationControls({
             <label className="block text-sm font-bold text-slate-800 mb-2">Selectionnez les sources a inclure</label>
             <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
               {readySources.length > 0 ? (
-                readySources.map(source => {
-                  const idNum = source.id;
-                  const checked = selectedSourceIds.includes(idNum);
-                  const isAudio = source.type === 'audio';
-
-                  const sourceIcon = isAudio ? (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
-                      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-                      <line x1="12" y1="19" x2="12" y2="23" />
-                      <line x1="8" y1="23" x2="16" y2="23" />
-                    </svg>
-                  ) : (
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                      <polyline points="14 2 14 8 20 8" />
-                      <line x1="16" y1="13" x2="8" y2="13" />
-                      <line x1="16" y1="17" x2="8" y2="17" />
-                      <polyline points="10 9 9 9 8 9" />
-                    </svg>
-                  );
-
-                  return (
-                    <label
-                      key={source.id}
-                      className={`
-                        flex items-center gap-3 p-3
-                        ${BRUTAL_BORDERS.normal}
-                        border-black
-                        ${BRUTAL_RADIUS.subtle}
-                        cursor-pointer
-                        transition-all ${TRANSITIONS.fast}
-                        ${checked
-                          ? `bg-orange-100 ${BRUTAL_SHADOWS.small}`
-                          : 'bg-white hover:bg-slate-50'
-                        }
-                      `}
-                    >
-                      <input
-                        type="checkbox"
-                        className="form-checkbox h-4 w-4 text-orange-500 rounded border-2 border-black"
-                        checked={checked}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedSourceIds(prev => Array.from(new Set([...prev, idNum])));
-                          } else {
-                            setSelectedSourceIds(prev => prev.filter(x => x !== idNum));
-                          }
-                        }}
-                      />
-                      <div className="flex-shrink-0 text-black">
-                        {sourceIcon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <p className="font-bold text-sm text-black truncate">{source.title || source.filename}</p>
-                          <span className={`
-                            inline-flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold
-                            ${BRUTAL_BORDERS.thin}
-                            border-black
-                            ${BRUTAL_RADIUS.subtle}
-                            ${isAudio ? 'bg-blue-200 text-blue-800' : 'bg-purple-200 text-purple-800'}
-                          `}>
-                            {isAudio ? 'AUDIO' : 'DOC'}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-600 truncate font-medium mt-0.5">
-                          {isAudio && source.filename ? source.filename : `Ajoute le ${formatDateTime(source.created_at)}`}
-                        </p>
-                      </div>
-                    </label>
-                  );
-                })
+                readySources.map(source => (
+                  <SourceSelectionItem
+                    key={source.id}
+                    id={source.id}
+                    title={source.title || source.filename || 'Sans titre'}
+                    type={source.type}
+                    checked={selectedSourceIds.includes(source.id)}
+                    onChange={(checked) => {
+                      if (checked) {
+                        setSelectedSourceIds(prev => Array.from(new Set([...prev, source.id])));
+                      } else {
+                        setSelectedSourceIds(prev => prev.filter(x => x !== source.id));
+                      }
+                    }}
+                  />
+                ))
               ) : (
                 <div className="text-center py-8 text-slate-600">
                   <p className="text-sm font-bold">Aucune source disponible</p>

@@ -146,7 +146,7 @@ Le titre doit capturer le sujet principal de la discussion.
 
 RÈGLES STRICTES:
 - PAS de guillemets autour du titre
-- PAS de markdown (pas de #, *, _, etc.)
+- PAS de markdown (pas de #, *, _, **, etc.)
 - PAS d'emojis
 - PAS de ponctuation spéciale
 - Texte simple uniquement

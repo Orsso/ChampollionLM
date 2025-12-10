@@ -85,6 +85,9 @@ export function Layout({ children }: LayoutProps) {
               pillTextColor="#000000"
               initialLoadAnimation={!hasPlayedAnimation}
             />
+            <span className="px-2 py-1 text-[10px] font-black uppercase tracking-wider bg-yellow-300 text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded rotate-6">
+              Beta
+            </span>
           </div>
           <button
             onClick={handleLogout}
