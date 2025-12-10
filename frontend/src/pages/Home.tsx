@@ -51,7 +51,7 @@ const features: Feature[] = [
 
 export function Home() {
   return (
-    <BrutalPage variant="grid" showShapes={true}>
+    <BrutalPage variant="grid" showShapes={false}>
       {/* Navigation Bar */}
       <nav className="relative z-20 border-b-3 border-black bg-white">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">

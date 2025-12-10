@@ -3,7 +3,7 @@ import { BrutalPage } from '../components/ui';
 
 export function Register() {
   return (
-    <BrutalPage variant="dots">
+    <BrutalPage variant="grid" showShapes={false}>
       <AuthForm mode="register" />
     </BrutalPage>
   );
