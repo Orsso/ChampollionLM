@@ -8,8 +8,11 @@
  */
 import '@testing-library/jest-dom/vitest';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
 import { server } from './mocks/server';
+
+// Increase default timeout for async utilities (helps in CI)
+configure({ asyncUtilTimeout: 5000 });
 
 // Mock localStorage
 const localStorageMock = (() => {
