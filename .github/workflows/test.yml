@@ -11,8 +11,6 @@ jobs:
     name: Backend Tests
     runs-on: ubuntu-latest
 
-    services:
-      # SQLite is used for tests - no external DB needed
 
     steps:
       - name: Checkout code
