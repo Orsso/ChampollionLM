@@ -1,8 +1,23 @@
 # Backend Dockerfile
-# Base image matching development requirement (Python 3.13)
+# Multi-stage build: Frontend + Backend in one image
+
+# ============================================
+# Stage 1: Frontend Build
+# ============================================
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app/frontend
+COPY frontend/package*.json ./
+RUN npm ci
+COPY frontend/ .
+# Build with relative API path (same origin)
+ENV VITE_API_BASE_URL=/api
+RUN npm run build
+
+# ============================================
+# Stage 2: Backend (Python)
+# ============================================
 FROM python:3.13-slim
 
-# Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1
@@ -19,21 +34,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-COPY requirements.txt .
+COPY backend/requirements.txt .
 RUN pip install -r requirements.txt
 
 # Create a non-root user and switch to it for security
 RUN useradd -m -u 1000 champollion && \
     chown -R champollion:champollion /app
 
-# Copy application code with correct ownership
-COPY --chown=champollion:champollion . .
+# Copy backend application code
+COPY --chown=champollion:champollion backend/ .
+
+# Copy frontend build artifacts from Stage 1
+COPY --from=frontend-builder --chown=champollion:champollion /app/frontend/dist /app/static
 
 # Create storage directory and ensure permissions
 RUN mkdir -p storage/audio && \
     chown -R champollion:champollion storage
 
 USER champollion
+
+EXPOSE 8000
 
 # Default command: Run migrations and start the application
 CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]

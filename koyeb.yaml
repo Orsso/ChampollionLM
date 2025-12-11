@@ -1,0 +1,34 @@
+app: champollion
+services:
+  - name: backend
+    build:
+      dockerfile: backend/Dockerfile
+    env:
+      - key: DATABASE_URL
+        value: <To be set in Secrets>
+      - key: ENVIRONMENT
+        value: prod
+      - key: SECRET_KEY
+        value: <To be set in Secrets>
+      - key: CORS_ALLOWED_ORIGINS
+        value: "*"
+    ports:
+      - port: 8000
+        path: /api/health
+    regions:
+      - fra
+    instance_types:
+      - free
+  - name: frontend
+    build:
+      dockerfile: frontend/Dockerfile
+    env:
+      - key: VITE_API_URL
+        value: <To be updated after deployment>
+    ports:
+      - port: 80
+        path: /
+    regions:
+      - fra
+    instance_types:
+      - free

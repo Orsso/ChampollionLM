@@ -2,8 +2,12 @@ import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 
+from pathlib import Path as PathlibPath
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -79,3 +83,21 @@ app.include_router(chat_routes.router, prefix="/api")
 app.include_router(project_chat_routes.router, prefix="/api")
 app.include_router(admin_routes.router, prefix="/api")
 
+# --- Frontend Static Files ---
+# Serve static assets (JS, CSS, images) from the Vite build
+STATIC_DIR = PathlibPath(__file__).parent.parent / "static"
+
+if STATIC_DIR.exists():
+    # Mount /assets for hashed static files (Vite output)
+    assets_dir = STATIC_DIR / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
+
+    # SPA fallback: serve index.html for all non-API routes
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        """Serve the React SPA for all non-API routes."""
+        index_file = STATIC_DIR / "index.html"
+        if index_file.exists():
+            return FileResponse(str(index_file))
+        return {"error": "Frontend not built"}
