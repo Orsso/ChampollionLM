@@ -10,7 +10,10 @@ import { useMarkdown } from '../../../lib/useMarkdown';
 
 interface ChunkPreview {
     source: string;
-    preview: string;
+    content?: string;    // Full chunk content (new - preferred)
+    preview?: string;    // Legacy truncated preview (backwards compatible)
+    query?: string;      // Search query that found this chunk
+    score?: number;      // Relevance score (0-1)
 }
 
 interface ChatMessageProps {
@@ -58,7 +61,7 @@ const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
     </svg>
 );
 
-// Collapsible sources section
+// Collapsible sources section with full grounding transparency
 function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; chunksFound?: ChunkPreview[] }) {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -71,7 +74,7 @@ function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; 
             >
                 <span className="flex items-center gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                     <BookIcon />
-                    Sources consultées
+                    Sources consultées ({chunksFound?.length || 0})
                     <ChevronIcon isOpen={isOpen} />
                 </span>
                 {sourcesUsed?.map((source, idx) => (
@@ -88,20 +91,32 @@ function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; 
                 ))}
             </div>
 
-            {/* Chunks preview - only when expanded */}
+            {/* Expanded: show full chunk content with metadata */}
             {isOpen && chunksFound && chunksFound.length > 0 && (
-                <div className="mt-2 space-y-2">
+                <div className="mt-2 space-y-3">
                     {chunksFound.map((chunk, idx) => (
                         <div
                             key={idx}
                             className={`
-                                p-2 text-[11px] text-slate-600
-                                ${BRUTAL_BORDERS.thin} border-slate-200 ${BRUTAL_RADIUS.subtle}
+                                p-3 ${BRUTAL_BORDERS.thin} border-slate-300 ${BRUTAL_RADIUS.subtle}
                                 bg-slate-50
                             `}
                         >
-                            <span className="font-bold text-slate-500">[{chunk.source}]</span>
-                            <p className="mt-1 italic">{chunk.preview}</p>
+                            {/* Header: source + score */}
+                            <div className="flex items-center justify-between mb-2">
+                                <span className="font-bold text-xs text-slate-700">{chunk.source}</span>
+
+                            </div>
+                            {/* Query that found this chunk */}
+                            {chunk.query && (
+                                <div className="text-[10px] text-slate-500 mb-2">
+                                    Recherche: « {chunk.query} »
+                                </div>
+                            )}
+                            {/* Full content (scrollable if too long) */}
+                            <p className="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
+                                {chunk.content || chunk.preview}
+                            </p>
                         </div>
                     ))}
                 </div>

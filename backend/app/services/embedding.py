@@ -22,8 +22,8 @@ logger = logging.getLogger(__name__)
 
 # Constants
 EMBEDDING_MODEL = "mistral-embed"
-CHUNK_SIZE = 500  # ~500 tokens per chunk
-CHUNK_OVERLAP = 50  # Overlap between chunks
+CHUNK_SIZE = 150  # ~150 words per chunk for focused semantic signal
+CHUNK_OVERLAP = 30  # 20% overlap between chunks
 
 
 @dataclass
@@ -202,7 +202,7 @@ class EmbeddingService:
         self,
         document_id: int,
         query: str,
-        top_k: int = 3
+        top_k: int = 5
     ) -> list[ChunkResult]:
         """Search for relevant chunks in indexed sources.
         
@@ -279,12 +279,14 @@ class EmbeddingService:
                 metadata = results["metadatas"][0][i] if results["metadatas"] else {}
                 distance = results["distances"][0][i] if results["distances"] else 0
                 
-                chunks.append(ChunkResult(
-                    source_id=metadata.get("source_id", 0),
-                    source_title=metadata.get("source_title", "Unknown"),
-                    content=doc,
-                    score=1 - distance  # Convert distance to similarity
-                ))
+                # Filter out low relevance chunks (score < 0.5)
+                if (1 - distance) >= 0.5:
+                    chunks.append(ChunkResult(
+                        source_id=metadata.get("source_id", 0),
+                        source_title=metadata.get("source_title", "Unknown"),
+                        content=doc,
+                        score=1 - distance  # Convert distance to similarity
+                    ))
         
         return chunks
 
@@ -370,7 +372,7 @@ class EmbeddingService:
         self,
         project_id: int,
         query: str,
-        top_k: int = 3
+        top_k: int = 5
     ) -> list[ChunkResult]:
         """Search for relevant chunks in project sources.
         
@@ -416,7 +418,11 @@ class EmbeddingService:
         
         # If we found keyword matches, return them prioritized
         if keyword_matches:
-            logger.info("Returning keyword matches for project", extra={"count": len(keyword_matches), "query": query})
+            logger.info("Returning keyword matches for project", extra={
+                "count": len(keyword_matches), 
+                "query": query,
+                "chunk_previews": [m.content[:150] for m in keyword_matches[:3]]
+            })
             return keyword_matches[:top_k]
         
         logger.info("No keyword matches for project, falling back to semantic search", extra={"query": query})
@@ -440,13 +446,16 @@ class EmbeddingService:
             for i, doc in enumerate(results["documents"][0]):
                 metadata = results["metadatas"][0][i] if results["metadatas"] else {}
                 distance = results["distances"][0][i] if results["distances"] else 0
+                score = 1 - distance
                 
-                chunks.append(ChunkResult(
-                    source_id=metadata.get("source_id", 0),
-                    source_title=metadata.get("source_title", "Unknown"),
-                    content=doc,
-                    score=1 - distance  # Convert distance to similarity
-                ))
+                # Filter out low relevance chunks (score < 0.5)
+                if score >= 0.5:
+                    chunks.append(ChunkResult(
+                        source_id=metadata.get("source_id", 0),
+                        source_title=metadata.get("source_title", "Unknown"),
+                        content=doc,
+                        score=score
+                    ))
         
         return chunks
 

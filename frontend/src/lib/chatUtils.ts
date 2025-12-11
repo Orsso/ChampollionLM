@@ -11,11 +11,14 @@ export interface ToolEvent {
 }
 
 /**
- * Chunk preview for search results
+ * Chunk preview for search results - includes full grounding data
  */
 export interface ChunkPreview {
     source: string;
-    preview: string;
+    content?: string;    // Full chunk content (new - preferred)
+    preview?: string;    // Legacy truncated preview (backwards compatible)
+    query?: string;      // Search query that found this chunk
+    score?: number;      // Relevance score (0-1)
 }
 
 /**

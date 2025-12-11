@@ -120,9 +120,21 @@ class BaseChatService(ABC):
                         except json.JSONDecodeError:
                             query = tool_call.function.arguments
 
+                        # === DEBUG LOGGING: RAG QUERY ===
+                        print(f"\n2. RAG QUERY (from LLM tool call):")
+                        print("-"*40)
+                        print(query)
+                        print("-"*40)
+
                         yield f'[EVENT:search_start:{json.dumps({"query": query})}]'
 
                         results, source_titles, chunks_preview = await self._search_sources(context_id, query)
+
+                        # === DEBUG LOGGING: RAG RESPONSE ===
+                        print(f"\n3. RAG RESPONSE ({len(chunks_preview)} chunks found):")
+                        print("-"*40)
+                        print(results)  # FULL RAG RESULTS sent to LLM
+                        print("-"*40)
 
                         yield f'[EVENT:search_complete:{json.dumps({"sources": source_titles, "chunks": chunks_preview})}]'
 
@@ -180,32 +192,29 @@ class BaseChatService(ABC):
             query: Original search query
             
         Returns:
-            Tuple of (formatted text for LLM, source titles, chunk previews)
+            Tuple of (formatted text for LLM, source titles, chunk details for UI)
         """
         if not results:
             return "Aucun résultat trouvé dans les sources.", [], []
 
         source_titles = list(dict.fromkeys(chunk.source_title for chunk in results))
 
-        query_lower = query.lower()
-        chunks_preview = []
+        # For UI: include FULL content, query, and score for true grounding transparency
+        chunks_detail = []
         for chunk in results:
-            content = chunk.content
-            idx = content.lower().find(query_lower)
-            if idx != -1:
-                start = max(0, idx - 100)
-                end = min(len(content), idx + len(query) + 150)
-                preview = ("..." if start > 0 else "") + content[start:end] + ("..." if end < len(content) else "")
-            else:
-                preview = content[:200] + ("..." if len(content) > 200 else "")
-            chunks_preview.append({
+            chunks_detail.append({
                 "source": chunk.source_title,
-                "preview": preview
+                "content": chunk.content,  # FULL content, not preview
+                "query": query,            # Which query found this chunk
+                "score": round(chunk.score, 2)  # Relevance score
             })
 
+        # For LLM: same as before
         parts = ["Extraits pertinents des sources:"]
         for i, chunk in enumerate(results, 1):
             parts.append(f"\n[{i}] {chunk.source_title}:")
             parts.append(chunk.content)
 
-        return "\n".join(parts), source_titles, chunks_preview
+        llm_text = "\n".join(parts)
+
+        return llm_text, source_titles, chunks_detail

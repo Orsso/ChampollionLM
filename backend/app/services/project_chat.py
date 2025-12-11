@@ -270,18 +270,50 @@ Titre:"""
         # Build messages for Mistral
         messages = self._build_messages(project, sources, history, message, action, selected_text)
 
-        # Agentic loop - capture sources for saving
+        # === DEBUG LOGGING: START OF RAG FLOW ===
+        print("\n" + "="*80)
+        print("RAG FLOW DEBUG - START")
+        print("="*80)
+        print(f"\n1. USER QUESTION:")
+        print("-"*40)
+        print(message)
+        print("-"*40)
+        if action:
+            print(f"   Action: {action}")
+        if selected_text:
+            print(f"   Selected text: {selected_text}")
+        print(f"   Sources available: {len(sources)}")
+        print()
+
+        # Agentic loop - capture sources for saving (accumulate across all searches)
         full_response = ""
-        sources_used: list[str] = []
-        chunks_found: list[dict] = []
+        all_sources_used: list[str] = []
+        all_chunks_found: list[dict] = []
         
         async for chunk in self._agentic_loop(project_id, messages):
             if chunk.startswith("[EVENT:search_complete:"):
                 try:
                     payload_str = chunk[23:-1]
                     payload = json.loads(payload_str)
-                    sources_used = payload.get("sources", [])
-                    chunks_found = payload.get("chunks", [])
+                    new_sources = payload.get("sources", [])
+                    new_chunks = payload.get("chunks", [])
+                    
+                    # Accumulate sources (deduplicate by name)
+                    for src in new_sources:
+                        if src not in all_sources_used:
+                            all_sources_used.append(src)
+                    
+                    # Accumulate chunks (deduplicate by content prefix)
+                    # Use 'content' field (new format) or fall back to 'preview' (old format)
+                    existing_contents = {
+                        c.get("content", c.get("preview", ""))[:100] 
+                        for c in all_chunks_found
+                    }
+                    for chunk_data in new_chunks:
+                        chunk_content = chunk_data.get("content", chunk_data.get("preview", ""))
+                        if chunk_content[:100] not in existing_contents:
+                            all_chunks_found.append(chunk_data)
+                            existing_contents.add(chunk_content[:100])
                 except Exception:
                     pass
             elif not chunk.startswith("[EVENT:"):
@@ -290,13 +322,38 @@ Titre:"""
 
         clean_response = self.clean_response(full_response)
 
+        # === DEBUG LOGGING: END OF RAG FLOW ===
+        print(f"\n4. LLM RESPONSE:")
+        print("-"*40)
+        print(clean_response)
+        print("-"*40)
+        
+        print(f"\n5. RAG CHUNKS FOUND ({len(all_chunks_found)} total):")
+        print("-"*40)
+        for i, chunk in enumerate(all_chunks_found):
+            print(f"\n[CHUNK {i+1}] Source: {chunk.get('source', 'Unknown')}")
+            print(f"           Query: {chunk.get('query', 'N/A')}")
+            print(f"           Score: {chunk.get('score', 'N/A')}")
+            print(f"           FULL CONTENT:")
+            print(chunk.get('content', chunk.get('preview', 'NO CONTENT')))
+        print("-"*40)
+        
+        print("\n" + "="*80)
+        print("RAG FLOW DEBUG - END")
+        print("="*80 + "\n")
+
         # Save assistant response
         assistant_metadata = None
-        if sources_used or chunks_found:
+        if all_sources_used or all_chunks_found:
             assistant_metadata = {
-                "sources_used": sources_used,
-                "chunks_found": chunks_found
+                "sources_used": all_sources_used,
+                "chunks_found": all_chunks_found
             }
+            logger.info("RAG metadata being saved", extra={
+                "sources_count": len(all_sources_used),
+                "chunks_count": len(all_chunks_found),
+                "chunk_previews": [c.get("content", "")[:100] for c in all_chunks_found[:3]]
+            })
 
         assistant_msg = ProjectChatMessage(
             project_id=project_id,
