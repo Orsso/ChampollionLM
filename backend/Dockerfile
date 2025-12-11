@@ -1,5 +1,6 @@
 # Backend Dockerfile
 # Multi-stage build: Frontend + Backend in one image
+# Build context: Repository root
 
 # ============================================
 # Stage 1: Frontend Build
@@ -33,7 +34,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Install Python dependencies (path from repo root)
 COPY backend/requirements.txt .
 RUN pip install -r requirements.txt
 
@@ -41,7 +42,7 @@ RUN pip install -r requirements.txt
 RUN useradd -m -u 1000 champollion && \
     chown -R champollion:champollion /app
 
-# Copy backend application code
+# Copy backend application code (path from repo root)
 COPY --chown=champollion:champollion backend/ .
 
 # Copy frontend build artifacts from Stage 1
