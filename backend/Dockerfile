@@ -56,5 +56,5 @@ USER champollion
 
 EXPOSE 8000
 
-# Default command: Run migrations and start the application
-CMD ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+# Default command: Start the application (migrations already applied via Direct Connection locally)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

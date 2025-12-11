@@ -1,6 +1,9 @@
 # Test files
 mp3/
 
+# Agent workflows (local only)
+.agent/
+
 # Playwright MCP
 .playwright-mcp/
 
