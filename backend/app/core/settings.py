@@ -28,36 +28,17 @@ class AppSettings(BaseSettings):
     @field_validator("database_url", mode="after")
     @classmethod
     def normalize_database_url(cls, v: str) -> str:
-        """Convert Fly.io postgres:// to postgresql+asyncpg:// for async SQLAlchemy.
-        
-        Also disables SSL for Fly.io internal connections (private network).
-        """
-        import re
-        
+        """Convert postgres:// to postgresql+asyncpg:// for async SQLAlchemy."""
         # Skip if not postgres
         if not v.startswith(("postgres://", "postgresql://")):
             return v
-        
+
         # Convert dialect
         if v.startswith("postgres://"):
             v = v.replace("postgres://", "postgresql+asyncpg://", 1)
         elif v.startswith("postgresql://") and "+asyncpg" not in v:
             v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
-        
-        # Remove any existing sslmode parameter
-        v = re.sub(r"[?&]sslmode=[^&]*", "", v)
-        
-        # Clean up trailing ? if present
-        if v.endswith("?"):
-            v = v[:-1]
-        
-        # Add ssl=disable for Fly.io internal connections
-        # asyncpg uses ssl= parameter, not sslmode=
-        if "?" in v:
-            v += "&ssl=disable"
-        else:
-            v += "?ssl=disable"
-        
+
         return v
 
     fernet_secret_key: SecretStr = Field(..., description="Base64 Fernet key")
