@@ -1,5 +1,24 @@
+# Unified Docker Compose with profiles
+#
+# LOCAL (test Docker build):
+#   docker compose --profile local up -d --build
+#   Access: http://localhost:8000
+#
+# PRODUCTION (Scaleway with Traefik + SSL):
+#   docker compose --profile prod up -d --build
+#   Access: https://${DOMAIN}
+#
+# Prerequisites for prod:
+#   - Create .env from .env.scaleway.example
+#   - Create backend/.env with API keys
+#   - Point domain DNS to server IP
+
 services:
+  # ============================================================
+  # LOCAL PROFILE - For testing Docker build locally
+  # ============================================================
   db:
+    profiles: ["local"]
     image: postgres:16-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -17,36 +36,89 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
+  app-local:
+    profiles: ["local"]
     build:
       context: .
       dockerfile: backend/Dockerfile
     ports:
       - "8000:8000"
     environment:
-      # Database connection using the internal docker network alias 'db'
       - DATABASE_URL=postgresql+asyncpg://champollion:champollion@db:5432/champollion
-      # Ensure storage root matches the volume mount
       - AUDIO_STORAGE_ROOT=/app/storage/audio
-      # Production settings
-      - ENVIRONMENT=prod
-      # Allow localhost access for testing the prod build locally
-      - CORS_ALLOWED_ORIGINS=["http://localhost:5173","http://127.0.0.1:5173","http://localhost:3000"]
+      - ENVIRONMENT=dev
+      - CORS_ALLOWED_ORIGINS=["http://localhost:8000","http://localhost:5173"]
     env_file:
       - ./backend/.env
     volumes:
       - audio_storage:/app/storage/audio
+      - chroma_data:/app/chroma_data
     depends_on:
       db:
         condition: service_healthy
     networks:
       - champollion-net
 
+  # ============================================================
+  # PROD PROFILE - Production with Traefik + Let's Encrypt SSL
+  # ============================================================
+  traefik:
+    profiles: ["prod"]
+    image: traefik:v3.2
+    command:
+      - "--api.insecure=false"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.websecure.address=:443"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=${ACME_EMAIL}"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--entrypoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entrypoint.scheme=https"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - letsencrypt:/letsencrypt
+    restart: unless-stopped
+    networks:
+      - champollion-net
+
+  app:
+    profiles: ["prod"]
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+      - ENVIRONMENT=prod
+      - CORS_ALLOWED_ORIGINS=["https://${DOMAIN}"]
+      - AUDIO_STORAGE_ROOT=/app/storage/audio
+    env_file:
+      - ./backend/.env
+    volumes:
+      - audio_storage:/app/storage/audio
+      - chroma_data:/app/chroma_data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`${DOMAIN}`)"
+      - "traefik.http.routers.app.entrypoints=websecure"
+      - "traefik.http.routers.app.tls.certresolver=letsencrypt"
+      - "traefik.http.services.app.loadbalancer.server.port=8000"
+    restart: unless-stopped
+    networks:
+      - champollion-net
+
 volumes:
   postgres_data:
   audio_storage:
+  chroma_data:
+  letsencrypt:
 
 networks:
   champollion-net:
     driver: bridge
-
