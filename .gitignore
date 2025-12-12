@@ -4,6 +4,10 @@ mp3/
 # Agent workflows (local only)
 .agent/
 
+# Koyeb CLI (temporary)
+.koyeb-config.yaml
+.koyeb-tmp/
+
 # Playwright MCP
 .playwright-mcp/
 
