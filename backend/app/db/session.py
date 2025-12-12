@@ -7,9 +7,13 @@ def create_engine() -> AsyncEngine:
     # Build connect_args for asyncpg SSL configuration
     connect_args = {}
     
-    # Disable SSL for Fly.io internal connections (private network)
+    # Configure for PostgreSQL + asyncpg
     if "postgresql+asyncpg" in settings.database_url:
+        # Disable SSL for internal/pooled connections
         connect_args["ssl"] = False
+        # Disable prepared statement cache for Supabase Transaction Pooler (Supavisor)
+        # Required because Supavisor in transaction mode doesn't support prepared statements
+        connect_args["prepared_statement_cache_size"] = 0
     
     return create_async_engine(
         settings.database_url, 
