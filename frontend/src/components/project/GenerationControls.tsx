@@ -53,8 +53,8 @@ export function GenerationControls({
   };
 
   const handleLaunchGeneration = async () => {
-    // Check if API key is configured before proceeding
-    if (!user?.has_api_key) {
+    // Check if API key is configured or user has demo access before proceeding
+    if (!user?.has_api_key && !user?.is_demo_user) {
       setApiKeyError(true);
       return;
     }

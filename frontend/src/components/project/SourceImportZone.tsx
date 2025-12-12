@@ -71,8 +71,8 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             setUploadProgress(100);
             onMutate?.();
 
-            // Show warning if no API key (source saved but processing will fail)
-            if (!user?.has_api_key) {
+            // Show warning if no API key and no demo access (source saved but processing will fail)
+            if (!user?.has_api_key && !user?.is_demo_user) {
                 setApiKeyWarning(true);
             }
 

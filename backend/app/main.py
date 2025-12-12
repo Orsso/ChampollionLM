@@ -93,10 +93,17 @@ if STATIC_DIR.exists():
     if assets_dir.exists():
         app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="assets")
 
-    # SPA fallback: serve index.html for all non-API routes
+    # SPA fallback: serve static files or index.html for all non-API routes
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
-        """Serve the React SPA for all non-API routes."""
+        """Serve static files or the React SPA for all non-API routes."""
+        # First, try to serve the file directly (for logo.svg, favicon, etc.)
+        if full_path:
+            static_file = STATIC_DIR / full_path
+            if static_file.exists() and static_file.is_file():
+                return FileResponse(str(static_file))
+
+        # Fallback to index.html for SPA routing
         index_file = STATIC_DIR / "index.html"
         if index_file.exists():
             return FileResponse(str(index_file))
