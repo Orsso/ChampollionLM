@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Constants
 EMBEDDING_MODEL = "mistral-embed"
 CHUNK_SIZE = 150  # ~150 words per chunk for focused semantic signal
-CHUNK_OVERLAP = 30  # 20% overlap between chunks
+CHUNK_OVERLAP = 30  # 30% overlap between chunks
 
 
 @dataclass
