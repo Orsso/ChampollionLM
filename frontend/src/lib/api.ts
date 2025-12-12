@@ -3,7 +3,9 @@
  * Base URL and fetcher functions for API calls
  */
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+// In production (monorepo), VITE_API_BASE_URL is empty string for same-origin requests
+// In development, it defaults to localhost:8000
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000';
 
 /**
  * Get auth token from localStorage
