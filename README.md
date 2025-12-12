@@ -5,11 +5,7 @@
   </p>
 </p>
 
-<p align="center">
-  <a href="https://champollion-app.fly.dev">
-    <img src="https://img.shields.io/badge/Try_it_live-champollion--app.fly.dev-FF6B35?style=for-the-badge&logo=fly.io&logoColor=white" alt="Live Demo">
-  </a>
-</p>
+
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React 19">
@@ -167,7 +163,7 @@ cd frontend && npm run build
 
 ## Deployment
 
-Fly.io configurations included in `fly.toml` files. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for details.
+Docker-based deployment. See [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for details.
 
 ---
 

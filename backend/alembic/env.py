@@ -88,7 +88,7 @@ async def run_async_migrations() -> None:
     connect_args = {}
     db_url = settings.database_url
     
-    # Disable SSL for Fly.io internal connections (private network)
+    # Disable SSL for internal Docker network connections
     if "postgresql+asyncpg" in db_url:
         connect_args["ssl"] = False
     
