@@ -10,8 +10,8 @@ WORKDIR /app/frontend
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ .
-# Build with relative API path (same origin)
-ENV VITE_API_BASE_URL=/api
+# Build with empty base URL (paths already include /api prefix)
+ENV VITE_API_BASE_URL=
 RUN npm run build
 
 # ============================================

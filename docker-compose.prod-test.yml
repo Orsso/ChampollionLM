@@ -1,14 +1,23 @@
+# Docker Compose for testing production-like setup locally
+# Uses PostgreSQL directly (for PgBouncer testing, connect to Supabase directly)
+#
+# Usage:
+#   docker compose -f docker-compose.prod-test.yml build
+#   docker compose -f docker-compose.prod-test.yml up
+#
+# Access: http://localhost:8000
+
 services:
   db:
     image: postgres:16-alpine
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_test:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=champollion
       - POSTGRES_PASSWORD=champollion
       - POSTGRES_DB=champollion
     ports:
-      - "5432:5432"
+      - "5433:5432"
     networks:
       - champollion-net
     healthcheck:
@@ -17,25 +26,23 @@ services:
       timeout: 5s
       retries: 5
 
-  backend:
+  app:
     build:
       context: .
       dockerfile: backend/Dockerfile
     ports:
       - "8000:8000"
     environment:
-      # Database connection using the internal docker network alias 'db'
+      # Direct PostgreSQL connection
       - DATABASE_URL=postgresql+asyncpg://champollion:champollion@db:5432/champollion
-      # Ensure storage root matches the volume mount
       - AUDIO_STORAGE_ROOT=/app/storage/audio
-      # Production settings
-      - ENVIRONMENT=prod
-      # Allow localhost access for testing the prod build locally
-      - CORS_ALLOWED_ORIGINS=["http://localhost:5173","http://127.0.0.1:5173","http://localhost:3000"]
+      # Use dev to auto-create tables, or prod to test with migrations
+      - ENVIRONMENT=dev
+      - CORS_ALLOWED_ORIGINS=["http://localhost:8000"]
     env_file:
       - ./backend/.env
     volumes:
-      - audio_storage:/app/storage/audio
+      - audio_storage_test:/app/storage/audio
     depends_on:
       db:
         condition: service_healthy
@@ -43,10 +50,9 @@ services:
       - champollion-net
 
 volumes:
-  postgres_data:
-  audio_storage:
+  postgres_data_test:
+  audio_storage_test:
 
 networks:
   champollion-net:
     driver: bridge
-
