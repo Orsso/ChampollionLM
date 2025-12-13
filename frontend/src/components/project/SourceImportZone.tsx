@@ -8,7 +8,7 @@ import { Modal } from '../ui/layout';
 import { useRecordingAnimations } from '../../hooks/useRecordingAnimations';
 import { useAudioRecorder } from '../../hooks/useAudioRecorder';
 import { useAuth } from '../../hooks';
-import { uploadAudioSource, importYouTubeSource } from '../../hooks/useSources';
+import { uploadAudioSource, uploadPDFSource, importYouTubeSource } from '../../hooks/useSources';
 import { formatDuration } from '../../utils/formatters';
 import { MicrophoneIcon, LinkIcon, FileIcon } from '../ui/icons';
 import {
@@ -42,6 +42,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
     const [youtubeLoading, setYoutubeLoading] = useState(false);
     const [youtubeError, setYoutubeError] = useState<string | null>(null);
     const [apiKeyWarning, setApiKeyWarning] = useState(false);
+    const [uploadError, setUploadError] = useState<string | null>(null);
 
     const { user } = useAuth();
     const navigate = useNavigate();
@@ -59,13 +60,31 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
 
     const handleUploadInternal = async (file: File) => {
         setUploadProgress(0);
+        setUploadError(null);
+
+        // Client-side file size validation (50 MB max)
+        const MAX_FILE_SIZE_MB = 50;
+        const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024;
+
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+            const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
+            setUploadError(`Fichier trop volumineux: ${fileSizeMB} MB (maximum ${MAX_FILE_SIZE_MB} MB)`);
+            return;
+        }
 
         const progressInterval = setInterval(() => {
             setUploadProgress((prev) => Math.min(prev + 10, 90));
         }, 200);
 
         try {
-            await uploadAudioSource(projectId, file);
+            // Determine upload function based on file type
+            if (file.type.startsWith('audio/') || file.name.match(/\.(mp3|wav|m4a|webm)$/i)) {
+                await uploadAudioSource(projectId, file);
+            } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
+                await uploadPDFSource(projectId, file);
+            } else {
+                throw new Error('Type de fichier non supporté');
+            }
 
             clearInterval(progressInterval);
             setUploadProgress(100);
@@ -82,6 +101,8 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
         } catch (error) {
             clearInterval(progressInterval);
             setUploadProgress(0);
+            const errorMessage = error instanceof Error ? error.message : 'Échec de l\'upload';
+            setUploadError(errorMessage);
             console.error("Upload failed", error);
         }
     };
@@ -206,7 +227,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
     const tabs = [
         { id: 'audio' as const, label: 'Audio', icon: MicrophoneIcon },
         { id: 'link' as const, label: 'Lien', icon: LinkIcon },
-        { id: 'file' as const, label: 'Fichier', icon: FileIcon, disabled: true },
+        { id: 'file' as const, label: 'PDF', icon: FileIcon },
     ];
 
     return (
@@ -221,7 +242,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             <input
                 ref={fileInputRef}
                 type="file"
-                accept=".mp3,.wav,.m4a,.webm"
+                accept={importMode === 'audio' ? '.mp3,.wav,.m4a,.webm' : '.pdf'}
                 onChange={handleFileSelect}
                 className="hidden"
             />
@@ -239,10 +260,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                             variant={isActive ? 'primary' : 'secondary'}
                             size="md"
                             active={isActive}
-                            onClick={() => !tab.disabled && setImportMode(tab.id)}
-                            disabled={tab.disabled}
-                            title={tab.disabled ? 'Bientôt disponible' : undefined}
-                            className={tab.disabled ? 'opacity-40 cursor-not-allowed hover:translate-x-0 hover:translate-y-0 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]' : ''}
+                            onClick={() => setImportMode(tab.id)}
                         >
                             <Icon size={16} />
                             {tab.label}
@@ -396,19 +414,23 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                 </div>
             )}
 
-            {/* File mode content (coming soon) */}
+            {/* File mode content (PDF upload) */}
             {importMode === 'file' && (
-                <div className={`
-          p-8 text-center
-          ${BORDERS.normal}
-          border-dashed
-          border-gray-300
-          ${RADIUS.normal}
-          bg-gray-50
-        `}>
-                    <FileIcon size={48} className="mx-auto mb-4 text-gray-300" />
-                    <p className="text-gray-400 font-medium">
-                        PDF & PowerPoint — bientôt disponible
+                <div className="space-y-4">
+                    <Button
+                        onClick={handleImportClick}
+                        disabled={uploadProgress > 0}
+                        variant="primary"
+                        size="lg"
+                        className="w-full py-4"
+                    >
+                        <FileIcon size={20} />
+                        Sélectionner un PDF
+                    </Button>
+
+                    <p className="text-sm text-gray-600">
+                        Importez un fichier PDF pour extraire automatiquement le texte via OCR.
+                        Taille maximale : 50 MB.
                     </p>
                 </div>
             )}
@@ -420,6 +442,20 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                         className=""
                         color="orange"
                     />
+                </div>
+            )}
+
+            {/* Upload Error Message */}
+            {uploadError && (
+                <div className={`
+                    mt-4 px-4 py-3
+                    bg-red-100
+                    ${BORDERS.normal}
+                    border-red-500
+                    ${RADIUS.subtle}
+                    text-red-700 font-medium text-sm
+                `}>
+                    {uploadError}
                 </div>
             )}
 

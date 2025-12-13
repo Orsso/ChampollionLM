@@ -163,6 +163,83 @@ export function SourceModal({
       );
     }
 
+    // PDF source
+    if (source.type === 'pdf') {
+      return (
+        <div className="space-y-6">
+          {/* Extracted OCR Content */}
+          {hasProcessedContent && (
+            <div>
+              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
+                Texte extrait (OCR)
+              </h3>
+              <MarkdownViewer
+                markdown={source.processed_content || ''}
+              />
+            </div>
+          )}
+
+          {/* Processing status */}
+          {isProcessing && (
+            <div className="flex items-center justify-center p-4 bg-orange-50 rounded-lg border-2 border-black">
+              <Badge color="amber">
+                <ShinyText size="sm">Extraction OCR en cours...</ShinyText>
+              </Badge>
+            </div>
+          )}
+
+          {/* Failed processing */}
+          {!hasProcessedContent && !isProcessing && source.jobStatus === 'failed' && (
+            <div className={`
+              p-4 bg-red-50 rounded-lg
+              ${BORDERS.normal}
+              border-red-500
+              space-y-3
+            `}>
+              <div className="flex items-start gap-2">
+                <svg className="w-5 h-5 text-red-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className="flex-1">
+                  <p className="text-red-700 font-semibold text-sm">
+                    Échec de l'extraction OCR
+                  </p>
+                  <p className="text-red-600 text-sm mt-1">
+                    Une erreur s'est produite lors du traitement du PDF. Vérifiez que le fichier est valide et réessayez.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  // Trigger reprocessing via API
+                  fetch(`/api/projects/${source.project_id}/sources/${source.id}/reprocess`, {
+                    method: 'POST',
+                    credentials: 'include'
+                  }).then(() => window.location.reload());
+                }}
+                className={`
+                  px-3 py-1.5 text-sm font-medium
+                  bg-red-600 text-white
+                  ${BORDERS.normal}
+                  border-red-700
+                  ${RADIUS.subtle}
+                  hover:bg-red-700
+                  transition-colors
+                `}
+              >
+                Réessayer
+              </button>
+            </div>
+          )}
+
+          {/* No content yet */}
+          {!hasProcessedContent && !isProcessing && source.jobStatus !== 'failed' && (
+            <p className="text-slate-600 text-sm font-semibold">Aucun contenu extrait</p>
+          )}
+        </div>
+      );
+    }
+
     // Unknown type fallback
     return (
       <p className="text-slate-600 text-sm font-semibold">
@@ -198,6 +275,16 @@ export function SourceModal({
           <line x1="16" y1="13" x2="8" y2="13" />
           <line x1="16" y1="17" x2="8" y2="17" />
           <polyline points="10 9 9 9 8 9" />
+        </svg>
+      );
+    }
+    if (source.type === 'pdf') {
+      return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <path d="M10 12h4" />
+          <path d="M10 16h4" />
         </svg>
       );
     }

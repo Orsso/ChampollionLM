@@ -37,7 +37,7 @@ export function SourceCard({
   const isJobFailed = jobStatus === 'failed';
   const isProcessing = !hasProcessedContent && isJobActive;
 
-  // Source icon (audio vs document vs youtube)
+  // Source icon (audio vs document vs youtube vs pdf)
   const sourceIcon = source.type === 'audio' ? (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
@@ -49,6 +49,13 @@ export function SourceCard({
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
       <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+    </svg>
+  ) : source.type === 'pdf' ? (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <path d="M10 12h4" />
+      <path d="M10 16h4" />
     </svg>
   ) : (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -93,6 +100,9 @@ export function SourceCard({
     if (language) parts.push(language.toUpperCase());
     if (transcript_type) parts.push(transcript_type === 'auto-generated' ? 'Auto' : 'Manuel');
     metadata = parts.length > 0 ? `Transcript ${parts.join(' · ')}` : 'YouTube';
+  } else if (source.type === 'pdf' && source.created_at) {
+    // PDF: show file added date
+    metadata = `PDF ajouté le ${formatDateShort(source.created_at)}`;
   } else if (source.type === 'document' && source.created_at) {
     metadata = `Document ajouté le ${formatDateShort(source.created_at)}`;
   }

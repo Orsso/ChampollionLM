@@ -337,12 +337,71 @@ class ProjectService:
             content=url,  # Store original URL
             processed_content=result.processed_content,
             token_count=estimate_tokens(result.processed_content) if result.processed_content else None,
-            source_metadata=metadata,
+            source_metadata=metadata.model_dump(),  # Convert Pydantic → dict for JSON column
             status=SourceStatus.PROCESSED,  # Already processed
         )
         await save_and_refresh(self.session, youtube_source)
 
         return SourceRead.model_validate(youtube_source, from_attributes=True)
+
+    async def add_pdf_source(self, project_id: int, file: UploadFile) -> SourceRead:
+        """
+        Add PDF document source to project.
+
+        Delegates file I/O (validation, storage) to FileService.
+
+        Args:
+            project_id: ID of project to add source to
+            file: Uploaded PDF file
+
+        Returns:
+            SourceRead schema with PDF source details
+
+        Raises:
+            HTTPException: If file is invalid, unsupported format, or too large
+        """
+        project = await self.get_project(project_id)
+        if not file.filename:
+            raise_invalid_request("Filename is required")
+
+        try:
+            # Delegate file operations to FileService
+            file.file.seek(0)
+            file_path, metadata = await self.file_service.save_pdf_document(
+                file_content=file.file,
+                filename=file.filename,
+                user_id=self.user.id,
+                project_id=project.id,
+            )
+        except ValueError as exc:
+            # Convert validation errors to HTTP exceptions
+            message = str(exc)
+            status_code = (
+                status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+                if "too large" in message.lower() or "maximum allowed size" in message.lower()
+                else status.HTTP_400_BAD_REQUEST
+            )
+            await file.close()
+            raise HTTPException(status_code=status_code, detail=message) from exc
+        finally:
+            await file.close()
+
+        # Use original client filename as default title
+        from pathlib import Path
+        default_title = Path(file.filename).name
+
+        # Create PDF source in database
+        pdf_source = Source(
+            project_id=project.id,
+            type=SourceType.PDF,
+            title=default_title,
+            file_path=file_path,
+            source_metadata=metadata,
+            status=SourceStatus.UPLOADED,
+        )
+        await save_and_refresh(self.session, pdf_source)
+
+        return SourceRead.model_validate(pdf_source, from_attributes=True)
 
     async def start_document_job(self, project_id: int, provider: str, document_type: str = "cours") -> JobStatusRead:
         """Start document generation job."""

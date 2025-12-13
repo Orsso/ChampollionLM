@@ -19,7 +19,7 @@ from app.models import (
     User,
 )
 from app.generators import GeneratorRegistry
-from app.processors.registry import TranscriptionRegistry
+from app.processors.registry import ProcessorRegistry
 from app.services.file import FileService
 from app.services.processing_job import ProcessingJobService
 from app.services.generation_job import GenerationJobService
@@ -73,18 +73,19 @@ async def _run_processing_job_impl(
         logger.error("Project not found", extra={"project_id": project_id})
         return
 
-    # Get all audio sources without processed content (not yet transcribed)
-    audio_sources = [
+    # Get all audio AND PDF sources without processed content
+    sources_to_process = [
         s for s in (project.sources or [])
-        if getattr(s, 'type', None) == SourceType.AUDIO and not s.processed_content
+        if getattr(s, 'type', None) in [SourceType.AUDIO, SourceType.PDF] and not s.processed_content
     ]
-    logger.info("Found audio sources to transcribe", extra={
+    logger.info("Found sources to process", extra={
         "project_id": project_id,
-        "count": len(audio_sources)
+        "count": len(sources_to_process),
+        "types": [getattr(s, 'type', None) for s in sources_to_process]
     })
 
-    if not audio_sources:
-        logger.info("No pending audio sources", extra={"project_id": project_id})
+    if not sources_to_process:
+        logger.info("No pending sources to process", extra={"project_id": project_id})
         job = await job_svc.get_or_create_job(project_id)
         await job_svc.mark_succeeded(job.id)
         await session.commit()
@@ -95,27 +96,31 @@ async def _run_processing_job_impl(
     job_id = job.id
     await job_svc.mark_in_progress(job_id)
     await session.commit()
-    logger.info("Transcription job marked as IN_PROGRESS", extra={"project_id": project_id})
+    logger.info("Processing job marked as IN_PROGRESS", extra={"project_id": project_id})
 
-    # Process audio sources sequentially
-    for idx, source in enumerate(audio_sources, 1):
+    # Process sources sequentially
+    for idx, source in enumerate(sources_to_process, 1):
         src_name = getattr(source, 'title', f"source#{getattr(source, 'id', '?')}")
-        logger.info("Transcribing source", extra={
+        src_type = getattr(source, 'type', 'unknown')
+        logger.info("Processing source", extra={
             "project_id": project_id,
             "source_idx": idx,
-            "total_sources": len(audio_sources),
-            "source_title": src_name
+            "total_sources": len(sources_to_process),
+            "source_title": src_name,
+            "source_type": src_type
         })
         try:
             await _transcribe_audio_source(session, source, provider)
-            logger.info("Successfully transcribed source", extra={
-                "project_id": project_id,
-                "source_title": src_name
-            })
-        except Exception as exc:  # pragma: no cover - defensive catch
-            logger.error("Error transcribing source", extra={
+            logger.info("Successfully processed source", extra={
                 "project_id": project_id,
                 "source_title": src_name,
+                "source_type": src_type
+            })
+        except Exception as exc:  # pragma: no cover - defensive catch
+            logger.error("Error processing source", extra={
+                "project_id": project_id,
+                "source_title": src_name,
+                "source_type": src_type,
                 "error": str(exc)
             })
             await session.rollback()
@@ -123,11 +128,11 @@ async def _run_processing_job_impl(
             await session.commit()
             return
 
-    # All sources transcribed successfully
-    logger.info("All audio sources transcribed successfully", extra={"project_id": project_id})
+    # All sources processed successfully
+    logger.info("All sources processed successfully", extra={"project_id": project_id})
     await job_svc.mark_succeeded(job_id)
     await session.commit()
-    logger.info("Transcription job completed successfully", extra={"project_id": project_id})
+    logger.info("Processing job completed successfully", extra={"project_id": project_id})
 
 
 async def run_document_job(
@@ -242,7 +247,7 @@ async def _run_document_job_impl(
 
 
 async def _transcribe_audio_source(session: AsyncSession, source: Source, provider: str) -> None:
-    """Transcribe a single audio source and save the transcript."""
+    """Process a single source (audio or PDF) and save the result."""
     provider_lower = provider.lower()
 
     # Get the project and owner
@@ -260,11 +265,28 @@ async def _transcribe_audio_source(session: AsyncSession, source: Source, provid
     if not api_key:
         raise STTProviderError("API key not configured and no active demo access")
 
-    # Currently, only Mistral provider supports audio transcription
-    # We use TranscriptionRegistry to get the processor class
-    processor_class = TranscriptionRegistry.get_processor(provider_lower)
+    # Use ProcessorRegistry to get the processor class based on source format
+    # Get source format/MIME type
+    source_format = None
+    if source.type == SourceType.AUDIO:
+        # Audio sources use MIME type like 'audio/mpeg'
+        source_format = getattr(source, 'source_metadata', {}).get('format') if hasattr(source, 'source_metadata') else None
+        if not source_format:
+            # Fallback: guess from file extension
+            import mimetypes
+            from pathlib import Path
+            if source.file_path:
+                source_format, _ = mimetypes.guess_type(source.file_path)
+        if not source_format:
+            source_format = "audio/mpeg"  # Default fallback
+    elif source.type == SourceType.PDF:
+        source_format = "application/pdf"
+    else:
+        raise STTProviderError(f"Unsupported source type: {source.type}")
+
+    processor_class = ProcessorRegistry.get_processor(source_format)
     if not processor_class:
-        raise STTProviderError(f"Unsupported transcription provider: {provider}")
+        raise STTProviderError(f"No processor found for format: {source_format}")
 
     # Configure processor with the resolved API key
     try:
@@ -273,22 +295,23 @@ async def _transcribe_audio_source(session: AsyncSession, source: Source, provid
     except Exception as exc:
         raise STTProviderError(f"Configuration failed for provider {provider}: {str(exc)}")
 
-    # Perform transcription
+    # Perform processing
     processor = processor_class(config)
 
     if not getattr(source, 'file_path', None):
-        raise STTProviderError("Audio source missing file path")
+        source_type_str = str(getattr(source, 'type', 'UNKNOWN')).upper()
+        raise STTProviderError(f"{source_type_str} source missing file path")
 
     from pathlib import Path
     result = await processor.process(file_path=Path(source.file_path))
 
     if not result.success:
-        raise STTProviderError(result.error or "Transcription failed")
+        raise STTProviderError(result.error or "Processing failed")
 
     if not result.processed_content or not result.processed_content.strip():
-        raise STTProviderError("Speech-to-text provider returned empty result")
+        raise STTProviderError("Processor returned empty result")
 
-    # Store transcription in source.processed_content
+    # Store result in source.processed_content
     source.processed_content = result.processed_content.strip()
     source.token_count = estimate_tokens(source.processed_content)
     await session.commit()

@@ -90,6 +90,66 @@ class FileService:
 
         return str(destination.resolve()), metadata
 
+    async def save_pdf_document(
+        self,
+        file_content: BinaryIO,
+        filename: str,
+        user_id: int,
+        project_id: int,
+    ) -> tuple[str, dict]:
+        """
+        Save PDF document.
+
+        Args:
+            file_content: Binary file stream from UploadFile
+            filename: Original filename from client
+            user_id: ID of user uploading the file
+            project_id: ID of project the PDF belongs to
+
+        Returns:
+            Tuple of (file_path, metadata) where:
+                - file_path: Absolute path to saved file
+                - metadata: Dict with file info (size_bytes, filename)
+
+        Raises:
+            ValueError: If file validation fails (unsupported format, size, etc.)
+        """
+        # Validate filename extension
+        if not filename.lower().endswith('.pdf'):
+            extension = Path(filename).suffix or "(none)"
+            raise ValueError(f"Unsupported file extension. Expected .pdf, got: {extension}")
+
+        # Generate unique filename
+        final_filename = generate_upload_filename(filename)
+
+        # Build file path (using pdf subdirectory)
+        # Build file path (using pdf subdirectory)
+        storage_root = Path(settings.audio_storage_root)
+        destination = storage_root / str(user_id) / str(project_id) / "pdf" / final_filename
+
+        # Write uploaded file
+        size_bytes = self._write_file(destination, file_content)
+
+        # Validate size (50MB max for PDFs)
+        max_size_mb = 50
+        max_size_bytes = max_size_mb * 1024 * 1024
+        if size_bytes > max_size_bytes:
+            # Clean up file
+            destination.unlink(missing_ok=True)
+            raise ValueError(
+                f"PDF file too large: {size_bytes / (1024 * 1024):.1f}MB "
+                f"(maximum allowed size: {max_size_mb}MB)"
+            )
+
+        # Return file path and metadata
+        metadata = {
+            "filename": filename,
+            "size_bytes": size_bytes,
+            "format": "pdf",
+        }
+
+        return str(destination.resolve()), metadata
+
     def delete_project_storage(self, user_id: int, project_id: int) -> None:
         """
         Delete all project files from disk.

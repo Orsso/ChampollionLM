@@ -87,15 +87,19 @@ export interface ProcessedContent {
 // New naming convention
 export type CreateProjectData = ProjectCreate;
 
-export type SourceType = 'audio' | 'document' | 'youtube';
+export type SourceType = 'audio' | 'document' | 'youtube' | 'pdf';
+export type SourceStatus = 'pending' | 'processing' | 'ready' | 'failed';
 
 export interface Source {
   id: number;
+  project_id: number;
   type: SourceType;
+  status: SourceStatus;
   title: string;
-  created_at: string;
-  has_processed_content: boolean;
+  content?: string;
   processed_content?: string;
+  created_at: string;
+  jobStatus?: 'pending' | 'in_progress' | 'completed' | 'failed';
   // Audio-specific fields (optional)
   filename?: string;
   duration_seconds?: number;
@@ -109,10 +113,6 @@ export interface Source {
     format?: string;
     bitrate?: number;
   };
-  // Document-specific fields (optional)
-  content?: string;
-  file_path?: string;
-  metadata?: string | Record<string, unknown>;
   // YouTube-specific fields (optional)
   youtube_metadata?: {
     video_id: string;
@@ -122,6 +122,14 @@ export interface Source {
     thumbnail_url?: string;
     language?: string;
     transcript_type?: string;
+  };
+  // Document-specific fields (optional)
+  document_metadata?: {
+    pages?: number;
+    word_count?: number;
+    size_bytes?: number;
+    format?: string;
+    language?: string;
   };
 }
 

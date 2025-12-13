@@ -22,6 +22,7 @@ const TYPE_STYLES: Record<SourceType, { bg: string; label: string }> = {
     audio: { bg: 'bg-purple-200 text-purple-800', label: 'AUDIO' },
     youtube: { bg: 'bg-red-200 text-red-800', label: 'YOUTUBE' },
     document: { bg: 'bg-blue-200 text-blue-800', label: 'DOC' },
+    pdf: { bg: 'bg-orange-200 text-orange-800', label: 'PDF' },
 };
 
 // Source type icons
@@ -41,6 +42,16 @@ const TypeIcon = ({ type, size = 18 }: { type: SourceType; size?: number }) => {
             <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
                 <path d="m10 15 5-3-5-3z" />
+            </svg>
+        );
+    }
+    if (type === 'pdf') {
+        return (
+            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <path d="M10 12h4" />
+                <path d="M10 16h4" />
             </svg>
         );
     }

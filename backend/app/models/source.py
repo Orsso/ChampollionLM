@@ -11,24 +11,32 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base
 from .enums import SourceStatus
-from .metadata import AudioMetadata, DocumentMetadata, YouTubeMetadata
+from .metadata import AudioMetadata, DocumentMetadata, YouTubeMetadata, PDFMetadata
 
 
 class SourceType(str, Enum):
     """
     High-level source type classification for user-facing categorization.
 
-    This enum provides simple categories (audio, document, youtube) for UI display
-    and routing logic. For precise format handling (MIME types like audio/mp3,
-    application/pdf, etc.), internal processing uses file extensions and content type
-    detection rather than a separate enum.
-
-    Design Decision: Kept simple for now. SourceFormat (models/enums.py) is defined
-    for future use if granular format tracking becomes necessary.
+    This enum provides simple categories for UI display and routing logic:
+    
+    - AUDIO: Audio files (mp3, wav, m4a, etc.) requiring speech-to-text transcription
+    - DOCUMENT: Text-based document files (docx, txt, md, etc.) with direct text extraction
+    - YOUTUBE: YouTube videos with transcript import from YouTube API
+    - PDF: Portable Document Format files requiring OCR (Optical Character Recognition)
+    
+    Note: DOCUMENT and PDF are distinct because they use different processing:
+    - DOCUMENT: Direct text extraction from text-based formats
+    - PDF: OCR-based text extraction from binary/scanned documents
+    
+    For precise format handling (MIME types like audio/mp3, application/pdf, etc.),
+    internal processing uses file extensions and content type detection rather than
+    this enum. SourceFormat (models/enums.py) is defined for future granular tracking.
     """
     AUDIO = "audio"
     DOCUMENT = "document"
     YOUTUBE = "youtube"
+    PDF = "pdf"
 
 
 class Source(Base):
@@ -135,6 +143,22 @@ class Source(Base):
             return None
         try:
             return YouTubeMetadata(**self.source_metadata)
+        except (KeyError, ValueError, TypeError):
+            # Graceful fallback for invalid/legacy metadata
+            return None
+
+    @property
+    def pdf_metadata(self) -> Optional[PDFMetadata]:
+        """
+        Safely extract PDF metadata if this is a PDF source.
+
+        Returns:
+            PDFMetadata object if valid PDF source with metadata, else None
+        """
+        if self.type != SourceType.PDF or not self.source_metadata:
+            return None
+        try:
+            return PDFMetadata(**self.source_metadata)
         except (KeyError, ValueError, TypeError):
             # Graceful fallback for invalid/legacy metadata
             return None

@@ -101,6 +101,43 @@ class DocumentMetadata(BaseModel):
         }
 
 
+class PDFMetadata(BaseModel):
+    """Metadata for PDF sources.
+
+    Contains information about PDF file characteristics
+    extracted during OCR processing.
+    """
+    file_size_bytes: Optional[int] = Field(
+        None,
+        description="File size in bytes",
+        ge=0
+    )
+    page_count: Optional[int] = Field(
+        None,
+        description="Number of pages in the PDF",
+        ge=1
+    )
+    model: Optional[str] = Field(
+        None,
+        description="OCR model used (e.g., 'mistral-ocr-latest')"
+    )
+    provider: Optional[str] = Field(
+        None,
+        description="OCR provider (e.g., 'mistral')"
+    )
+
+    class Config:
+        """Pydantic model configuration."""
+        json_schema_extra = {
+            "example": {
+                "file_size_bytes": 127646,
+                "page_count": 5,
+                "model": "mistral-ocr-latest",
+                "provider": "mistral"
+            }
+        }
+
+
 class YouTubeMetadata(BaseModel):
     """Metadata for YouTube video sources.
 

@@ -55,6 +55,15 @@ export async function uploadAudioSource(projectId: string | number, file: File):
 }
 
 /**
+ * Upload a PDF source (creates Source of type 'pdf' and triggers OCR processing)
+ */
+export async function uploadPDFSource(projectId: string | number, file: File): Promise<Source> {
+  const formData = new FormData();
+  formData.append('file', file);
+  return uploadFetcher<Source>(`/api/projects/${projectId}/sources/pdf`, formData);
+}
+
+/**
  * Update a source (e.g., title/content)
  */
 export async function updateSource(projectId: string | number, sourceId: number, data: Partial<Pick<Source, 'title'>> & { content?: string }): Promise<Source> {

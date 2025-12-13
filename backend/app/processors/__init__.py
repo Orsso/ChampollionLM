@@ -17,11 +17,13 @@ from app.processors.registry import ProcessorRegistry, TranscriptionRegistry
 # Import implemented processors
 from app.processors.audio import MistralAudioConfig, MistralAudioProcessor
 from app.processors.youtube import YouTubeProcessor, YouTubeProcessorConfig
+from app.processors.pdf import MistralPDFProcessor, MistralPDFConfig
 
 
 # Auto-register implemented processors
 ProcessorRegistry.register(MistralAudioProcessor)
 ProcessorRegistry.register(YouTubeProcessor)
+ProcessorRegistry.register(MistralPDFProcessor)
 TranscriptionRegistry.register("mistral", MistralAudioProcessor)
 
 
@@ -34,4 +36,6 @@ __all__ = [
     "MistralAudioConfig",
     "YouTubeProcessor",
     "YouTubeProcessorConfig",
+    "MistralPDFProcessor",
+    "MistralPDFConfig",
 ]

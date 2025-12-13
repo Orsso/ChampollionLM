@@ -187,6 +187,63 @@ async def import_youtube_source(
     return await service.add_youtube_source(project_id, payload.url)
 
 
+@router.post("/{project_id}/sources/pdf", response_model=SourceRead, status_code=status.HTTP_201_CREATED)
+# Rate limited globally by slowapi (200/minute default)
+async def upload_pdf_source(
+    project_id: int,
+    background_tasks: BackgroundTasks,
+    file: UploadFile = File(...),
+    service: ProjectService = Depends(get_project_service),
+) -> SourceRead:
+    """
+    Upload PDF document for OCR processing.
+    
+    The PDF will be processed using Mistral OCR API to extract text.
+    Processing happens asynchronously and status can be polled.
+    
+    Limits:
+    - Maximum file size: 50MB
+    - Supported format: PDF only
+    """
+    # Validate file type
+    if not file.content_type or not file.content_type.startswith("application/pdf"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file type. Only PDF files are supported."
+        )
+    
+    if not file.filename or not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file extension. Only .pdf files are supported."
+        )
+    
+    # Validate file size (50MB max)
+    MAX_FILE_SIZE_MB = 50
+    MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
+    
+    # Read file to check size
+    file_content = await file.read()
+    file_size = len(file_content)
+    
+    if file_size > MAX_FILE_SIZE_BYTES:
+        file_size_mb = file_size / (1024 * 1024)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"File too large: {file_size_mb:.1f}MB (maximum {MAX_FILE_SIZE_MB}MB)"
+        )
+    
+    # Reset file pointer for service to read
+    await file.seek(0)
+    
+    source = await service.add_pdf_source(project_id, file)
+    # Automatically trigger OCR processing for the uploaded PDF source
+    # Use 'mistral' as provider (OCR processing uses ProcessorRegistry)
+    default_provider = "mistral"
+    background_tasks.add_task(run_processing_job, project_id, default_provider)
+    return source
+
+
 
 @router.get("/{project_id}/tokens/estimate", response_model=TokenEstimation)
 async def estimate_tokens_endpoint(
