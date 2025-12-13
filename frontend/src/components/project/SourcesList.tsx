@@ -6,9 +6,9 @@ import { useAuth, useConfirmDelete } from '../../hooks';
 import { API_BASE_URL } from '../../lib/api';
 import type { Source, JobStatus } from '../../types';
 import {
-  BRUTAL_BORDERS,
-  BRUTAL_SHADOWS,
-  BRUTAL_RADIUS
+  BORDERS,
+  SHADOWS,
+  RADIUS
 } from '../../constants/styles';
 
 interface SourcesListProps {
@@ -127,10 +127,10 @@ export function SourcesList({ projectId, sources, processingStatus, onMutate }: 
 
   return (
     <div className={`
-      ${BRUTAL_BORDERS.thick}
+      ${BORDERS.thick}
       border-black
-      ${BRUTAL_RADIUS.normal}
-      ${BRUTAL_SHADOWS.medium}
+      ${RADIUS.normal}
+      ${SHADOWS.medium}
       bg-white
       p-6
     `}>

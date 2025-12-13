@@ -1,5 +1,5 @@
 import { type ReactNode, useState, useRef, useEffect, cloneElement, isValidElement } from 'react';
-import { BRUTAL_BORDERS, BRUTAL_RADIUS } from '../../../constants/styles';
+import { BORDERS, RADIUS } from '../../../constants/styles';
 
 interface TooltipProps {
   content: string;
@@ -104,7 +104,7 @@ export function Tooltip({
           className={`absolute z-[100] ${positionClasses[position]} pointer-events-none`}
           role="tooltip"
         >
-          <div className={`px-2.5 py-1.5 bg-black text-white text-xs font-bold ${BRUTAL_RADIUS.subtle} ${BRUTAL_BORDERS.thin} border-white whitespace-nowrap`}>
+          <div className={`px-2.5 py-1.5 bg-black text-white text-xs font-bold ${RADIUS.subtle} ${BORDERS.thin} border-white whitespace-nowrap`}>
             {content}
           </div>
           {/* Arrow */}

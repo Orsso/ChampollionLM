@@ -7,7 +7,7 @@ import { Badge, ShinyText } from '../feedback';
 import { AnimatedInput } from '../forms';
 import { Button, ConfirmDeleteButton } from '../buttons';
 import { formatDateSimple, formatSize, formatDuration } from '../../../utils/formatters';
-import { BRUTAL_BORDERS, BRUTAL_RADIUS, BRUTAL_SHADOWS, TRANSITIONS } from '../../../constants/styles';
+import { BORDERS, RADIUS, SHADOWS, TRANSITIONS } from '../../../constants/styles';
 import type { Source } from '../../../types';
 
 interface SourceModalProps {
@@ -24,27 +24,9 @@ interface SourceModalProps {
 /**
  * SourceModal Component
  *
- * Generic modal for displaying source content based on type with Neo-Brutalist styling.
+ * Generic modal for displaying source content based on type.
  * Supports audio (with player + transcript) and document (markdown viewer).
  * Extensible via type-specific renderers.
- *
- * Features:
- * - Brutal badges for type indicators
- * - Bold typography for headers
- * - Thick borders for separators
- * - IconButtons with brutal styling
- *
- * @example
- * ```tsx
- * <SourceModal
- *   isOpen={true}
- *   onClose={() => setOpen(false)}
- *   source={audioSource}
- *   fileUrl={audioUrl}
- *   onRename={handleRename}
- *   onDelete={handleDelete}
- * />
- * ```
  */
 export function SourceModal({
   isOpen,
@@ -88,7 +70,7 @@ export function SourceModal({
           {/* Audio Player */}
           {fileUrl ? (
             <div>
-              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BRUTAL_BORDERS.thin} border-b-black`}>
+              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
                 Lecture audio
               </h3>
               <AudioPlayer src={fileUrl} duration={source.duration_seconds} />
@@ -103,7 +85,7 @@ export function SourceModal({
           {/* Processed Content / Transcript */}
           {hasProcessedContent && (
             <div>
-              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BRUTAL_BORDERS.thin} border-b-black`}>
+              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
                 Transcription
               </h3>
               <TranscriptView
@@ -132,14 +114,14 @@ export function SourceModal({
           {/* Video link and thumbnail */}
           {videoId && (
             <div>
-              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BRUTAL_BORDERS.thin} border-b-black`}>
+              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
                 Vidéo source
               </h3>
               <a
                 href={`https://www.youtube.com/watch?v=${videoId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white font-bold ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.subtle} ${BRUTAL_SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none`}
+                className={`inline-flex items-center gap-2 px-4 py-2 bg-red-500 text-white font-bold ${BORDERS.normal} border-black ${RADIUS.subtle} ${SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none`}
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
@@ -153,7 +135,7 @@ export function SourceModal({
           {/* Transcript */}
           {hasProcessedContent && (
             <div>
-              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BRUTAL_BORDERS.thin} border-b-black`}>
+              <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
                 Transcription
               </h3>
               <TranscriptView
@@ -169,7 +151,7 @@ export function SourceModal({
     if (source.type === 'document') {
       return (
         <div className="space-y-4">
-          <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide pb-2 ${BRUTAL_BORDERS.thin} border-b-black`}>
+          <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide pb-2 ${BORDERS.thin} border-b-black`}>
             Contenu du document
           </h3>
           {source.content ? (
@@ -229,7 +211,7 @@ export function SourceModal({
         onClose={onClose}
         title={(
           <div className="flex items-center gap-3">
-            <span className={`inline-flex h-10 w-10 items-center justify-center bg-orange-500 text-white ${BRUTAL_BORDERS.thin} border-black`}>
+            <span className={`inline-flex h-10 w-10 items-center justify-center bg-orange-500 text-white ${BORDERS.thin} border-black`}>
               {getTypeIcon()}
             </span>
             <div>
@@ -246,7 +228,7 @@ export function SourceModal({
             {onRename && (
               <button
                 onClick={handleRenameClick}
-                className={`p-2 ${BRUTAL_BORDERS.normal} border-black bg-white hover:bg-orange-50 text-black ${BRUTAL_RADIUS.subtle} ${BRUTAL_SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-bold`}
+                className={`p-2 ${BORDERS.normal} border-black bg-white hover:bg-orange-50 text-black ${RADIUS.subtle} ${SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-bold`}
                 aria-label="Renommer"
                 title="Renommer"
               >
@@ -269,8 +251,8 @@ export function SourceModal({
         )}
         maxWidth="max-w-4xl"
       >
-        {/* Metadata bar with brutal styling */}
-        <div className={`flex items-center gap-4 mb-6 pb-3 text-sm text-slate-700 font-semibold ${BRUTAL_BORDERS.thin} border-b-black`}>
+        {/* Metadata bar */}
+        <div className={`flex items-center gap-4 mb-6 pb-3 text-sm text-slate-700 font-semibold ${BORDERS.thin} border-b-black`}>
           {source.type === 'audio' && source.duration_seconds && (
             <span>
               Durée: {formatDuration(source.duration_seconds)}

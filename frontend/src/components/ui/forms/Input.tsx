@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS, TRANSITIONS } from '../../../constants/styles';
+import { BORDERS, SHADOWS, RADIUS, TRANSITIONS } from '../../../constants/styles';
 
 /**
  * AnimatedInput Component
  *
- * Neo-brutalist input with animated label that moves up on focus or when filled.
+ * Input with animated label that moves up on focus or when filled.
  * Bold borders and hard orange shadow on focus.
  *
  * @example
@@ -48,7 +48,7 @@ export const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputPro
     const labelClass = darkMode ? 'text-slate-300' : 'text-gray-700';
     const labelBgClass = darkMode ? 'bg-slate-900' : 'bg-white';
     const labelFocusClass = darkMode ? 'text-slate-300' : 'text-gray-700';
-    const shadowClass = isFocused ? BRUTAL_SHADOWS.medium : BRUTAL_SHADOWS.small;
+    const shadowClass = isFocused ? SHADOWS.medium : SHADOWS.small;
 
     return (
       <div className={`relative ${className}`}>
@@ -61,7 +61,7 @@ export const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputPro
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
           required={required}
-          className={`w-full px-4 py-3 ${bgClass} ${BRUTAL_BORDERS.normal} ${borderClass} ${BRUTAL_RADIUS.normal} ${textClass} ${shadowClass} transition-all ${TRANSITIONS.fast} focus:outline-none font-medium`}
+          className={`w-full px-4 py-3 ${bgClass} ${BORDERS.normal} ${borderClass} ${RADIUS.normal} ${textClass} ${shadowClass} transition-all ${TRANSITIONS.fast} focus:outline-none font-medium`}
           placeholder=" "
         />
         <label
@@ -82,15 +82,15 @@ export const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputPro
 AnimatedInput.displayName = 'AnimatedInput';
 
 /**
- * BrutalInput Component
+ * StyledInput Component
  *
- * Neo-brutalist input with bold borders and orange shadow on focus.
+ * Input with bold borders and orange shadow on focus.
  * Simpler than AnimatedInput - no floating label, just placeholder.
  * Perfect for search bars, inline inputs, and forms that don't need labels.
  *
  * @example
  * ```tsx
- * <BrutalInput
+ * <StyledInput
  *   placeholder="Rechercher..."
  *   value={search}
  *   onChange={(e) => setSearch(e.target.value)}
@@ -98,11 +98,11 @@ AnimatedInput.displayName = 'AnimatedInput';
  * ```
  */
 
-interface BrutalInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+interface StyledInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   darkMode?: boolean;
 }
 
-export const BrutalInput = React.forwardRef<HTMLInputElement, BrutalInputProps>(
+export const StyledInput = React.forwardRef<HTMLInputElement, StyledInputProps>(
   ({ darkMode = false, className = '', ...props }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
 
@@ -110,7 +110,7 @@ export const BrutalInput = React.forwardRef<HTMLInputElement, BrutalInputProps>(
     const borderClass = 'border-black';
     const textClass = darkMode ? 'text-slate-100' : 'text-black';
     const placeholderClass = darkMode ? 'placeholder:text-slate-400' : 'placeholder:text-gray-400';
-    const shadowClass = isFocused ? BRUTAL_SHADOWS.medium : BRUTAL_SHADOWS.small;
+    const shadowClass = isFocused ? SHADOWS.medium : SHADOWS.small;
 
     return (
       <input
@@ -127,9 +127,9 @@ export const BrutalInput = React.forwardRef<HTMLInputElement, BrutalInputProps>(
         className={`
           w-full px-4 py-3
           ${bgClass}
-          ${BRUTAL_BORDERS.normal}
+          ${BORDERS.normal}
           ${borderClass}
-          ${BRUTAL_RADIUS.normal}
+          ${RADIUS.normal}
           ${textClass}
           ${placeholderClass}
           ${shadowClass}
@@ -144,17 +144,21 @@ export const BrutalInput = React.forwardRef<HTMLInputElement, BrutalInputProps>(
   }
 );
 
-BrutalInput.displayName = 'BrutalInput';
+StyledInput.displayName = 'StyledInput';
+
+// Legacy alias for backward compatibility
+/** @deprecated Use StyledInput instead */
+export const BrutalInput = StyledInput;
 
 /**
- * BrutalTextarea Component
+ * Textarea Component
  *
- * Neo-brutalist textarea with bold borders and orange shadow on focus.
- * Same styling as BrutalInput but for multi-line text entry.
+ * Textarea with bold borders and orange shadow on focus.
+ * Same styling as StyledInput but for multi-line text entry.
  *
  * @example
  * ```tsx
- * <BrutalTextarea
+ * <Textarea
  *   placeholder="Posez une question..."
  *   value={message}
  *   onChange={(e) => setMessage(e.target.value)}
@@ -163,11 +167,11 @@ BrutalInput.displayName = 'BrutalInput';
  * ```
  */
 
-interface BrutalTextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   darkMode?: boolean;
 }
 
-export const BrutalTextarea = React.forwardRef<HTMLTextAreaElement, BrutalTextareaProps>(
+export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
   ({ darkMode = false, className = '', ...props }, ref) => {
     const [isFocused, setIsFocused] = useState(false);
 
@@ -175,7 +179,7 @@ export const BrutalTextarea = React.forwardRef<HTMLTextAreaElement, BrutalTextar
     const borderClass = 'border-black';
     const textClass = darkMode ? 'text-slate-100' : 'text-black';
     const placeholderClass = darkMode ? 'placeholder:text-slate-400' : 'placeholder:text-gray-400';
-    const shadowClass = isFocused ? BRUTAL_SHADOWS.medium : BRUTAL_SHADOWS.small;
+    const shadowClass = isFocused ? SHADOWS.medium : SHADOWS.small;
 
     return (
       <textarea
@@ -192,9 +196,9 @@ export const BrutalTextarea = React.forwardRef<HTMLTextAreaElement, BrutalTextar
         className={`
           w-full px-4 py-3
           ${bgClass}
-          ${BRUTAL_BORDERS.normal}
+          ${BORDERS.normal}
           ${borderClass}
-          ${BRUTAL_RADIUS.normal}
+          ${RADIUS.normal}
           ${textClass}
           ${placeholderClass}
           ${shadowClass}
@@ -210,4 +214,8 @@ export const BrutalTextarea = React.forwardRef<HTMLTextAreaElement, BrutalTextar
   }
 );
 
-BrutalTextarea.displayName = 'BrutalTextarea';
+Textarea.displayName = 'Textarea';
+
+// Legacy alias for backward compatibility
+/** @deprecated Use Textarea instead */
+export const BrutalTextarea = Textarea;

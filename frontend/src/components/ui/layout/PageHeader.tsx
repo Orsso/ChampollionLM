@@ -1,20 +1,20 @@
 import type { ReactNode } from 'react';
-import { BRUTAL_BORDERS } from '../../../constants/styles';
+import { BORDERS } from '../../../constants/styles';
 
 /**
- * BrutalPageHeader Component
+ * PageHeader Component
  *
- * Reusable page header with neo-brutalist styling.
+ * Reusable page header with bold styling.
  * Features bold borders, hard shadow, and optional colored background.
  *
  * @example
  * ```tsx
- * <BrutalPageHeader
+ * <PageHeader
  *   title="Projets"
  *   subtitle="Gérez tous vos projets Champollion"
  * />
  *
- * <BrutalPageHeader
+ * <PageHeader
  *   title="Paramètres"
  *   subtitle="Configurez votre compte"
  *   variant="colored"
@@ -22,7 +22,7 @@ import { BRUTAL_BORDERS } from '../../../constants/styles';
  * ```
  */
 
-interface BrutalPageHeaderProps {
+interface PageHeaderProps {
   /** Main title text */
   title: string;
   /** Optional subtitle/description */
@@ -39,7 +39,7 @@ interface BrutalPageHeaderProps {
   compact?: boolean;
 }
 
-export function BrutalPageHeader({
+export function PageHeader({
   title,
   subtitle,
   variant = 'default',
@@ -47,7 +47,7 @@ export function BrutalPageHeader({
   action,
   className = '',
   compact = false,
-}: BrutalPageHeaderProps) {
+}: PageHeaderProps) {
   const variantClasses = {
     default: 'bg-white',
     colored: 'bg-orange-50',
@@ -55,7 +55,7 @@ export function BrutalPageHeader({
   };
 
   const titleColorClass = variant === 'accent' ? 'text-white' : 'text-black';
-  const borderClass = compact ? BRUTAL_BORDERS.normal : BRUTAL_BORDERS.thick;
+  const borderClass = compact ? BORDERS.normal : BORDERS.thick;
 
   const subtitleClasses = subtitleVariant === 'highlight'
     ? 'text-xl font-bold text-orange-500 uppercase tracking-wide'
@@ -84,3 +84,6 @@ export function BrutalPageHeader({
   );
 }
 
+// Legacy alias for backward compatibility
+/** @deprecated Use PageHeader instead */
+export const BrutalPageHeader = PageHeader;

@@ -1,9 +1,9 @@
 import { type SVGProps } from 'react';
 
 /**
- * Neo-Brutalist Icon Components
+ * Icon Components
  *
- * Icons with thicker stroke widths (2.5px) for bold, brutal aesthetics.
+ * Icons with thicker stroke widths (2.5px) for bold aesthetics.
  */
 
 type IconProps = SVGProps<SVGSVGElement> & {

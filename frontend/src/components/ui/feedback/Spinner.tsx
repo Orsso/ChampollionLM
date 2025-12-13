@@ -1,8 +1,8 @@
 /**
  * Spinner Component
  *
- * Neo-brutalist loading spinner with thick borders.
- * Geometric rotation animation with bold colors.
+ * Loading spinner with thick borders and bold styling.
+ * Geometric rotation animation with saturated colors.
  *
  * @example
  * ```tsx

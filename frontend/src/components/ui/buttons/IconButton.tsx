@@ -1,6 +1,6 @@
 import { type ReactNode, forwardRef } from 'react';
 import { Tooltip } from '../feedback';
-import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS, TRANSITIONS } from '../../../constants/styles';
+import { BORDERS, SHADOWS, RADIUS, TRANSITIONS } from '../../../constants/styles';
 
 interface IconButtonProps {
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -47,9 +47,9 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(({
         ${sizeClasses[size]}
         ${variantClasses[variant]}
         flex items-center justify-center
-        ${BRUTAL_RADIUS.subtle}
-        ${BRUTAL_BORDERS.normal}
-        ${BRUTAL_SHADOWS.small}
+        ${RADIUS.subtle}
+        ${BORDERS.normal}
+        ${SHADOWS.small}
         transition-all ${TRANSITIONS.fast}
         disabled:opacity-50 disabled:cursor-not-allowed
         hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]

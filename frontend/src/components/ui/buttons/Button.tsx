@@ -1,16 +1,16 @@
 import React from 'react';
 import { 
-  BRUTAL_BUTTON_BASE, 
-  BRUTAL_BUTTON_SECONDARY, 
-  BRUTAL_BUTTON_DANGER,
-  BRUTAL_BUTTON_VARIANTS,
-  BRUTAL_SHADOWS
+  BUTTON_BASE, 
+  BUTTON_SECONDARY, 
+  BUTTON_DANGER,
+  BUTTON_VARIANTS,
+  SHADOWS
 } from '../../../constants/styles';
 
 /**
  * Button Component
  *
- * Unified button component with consistent Neo-Brutalist styling.
+ * Unified button component with consistent styling.
  * Single source of truth for all button styles in the application.
  *
  * @example
@@ -48,13 +48,13 @@ export function Button({
   let buttonClasses = '';
   
   if (variant === 'secondary') {
-    buttonClasses = BRUTAL_BUTTON_SECONDARY;
+    buttonClasses = BUTTON_SECONDARY;
   } else if (variant === 'danger') {
-    buttonClasses = BRUTAL_BUTTON_DANGER;
+    buttonClasses = BUTTON_DANGER;
   } else {
-    // For primary and ghost, use BRUTAL_BUTTON_VARIANTS
-    const variantClasses = BRUTAL_BUTTON_VARIANTS[variant];
-    buttonClasses = `${BRUTAL_BUTTON_BASE} ${BRUTAL_SHADOWS.medium} ${variantClasses}`;
+    // For primary and ghost, use BUTTON_VARIANTS
+    const variantClasses = BUTTON_VARIANTS[variant];
+    buttonClasses = `${BUTTON_BASE} ${SHADOWS.medium} ${variantClasses}`;
   }
 
   return (
@@ -68,4 +68,3 @@ export function Button({
     </button>
   );
 }
-

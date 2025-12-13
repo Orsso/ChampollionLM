@@ -5,7 +5,7 @@ import { Spinner } from '../components/ui/feedback';
 import { SourcesPanel } from '../components/project/SourcesPanel';
 import { StudioPanel } from '../components/project/StudioPanel';
 import { ProjectChatPanel } from '../components/project/ProjectChatPanel';
-import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS, BRUTAL_BUTTON_VARIANTS, TRANSITIONS } from '../constants/styles';
+import { BORDERS, SHADOWS, RADIUS, BUTTON_VARIANTS, TRANSITIONS } from '../constants/styles';
 
 type TabType = 'recording' | 'chat' | 'notes';
 
@@ -65,9 +65,9 @@ export function ProjectDetail() {
         <button
           key={tab.id}
           onClick={() => setActiveTab(tab.id)}
-          className={`px-4 py-2 text-xs sm:text-sm uppercase tracking-wide font-bold ${BRUTAL_RADIUS.normal} ${activeTab === tab.id
-            ? `${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_SHADOWS.medium}`
-            : `${BRUTAL_BUTTON_VARIANTS.secondary} ${BRUTAL_SHADOWS.medium}`
+          className={`px-4 py-2 text-xs sm:text-sm uppercase tracking-wide font-bold ${RADIUS.normal} ${activeTab === tab.id
+            ? `${BUTTON_VARIANTS.primary} ${SHADOWS.medium}`
+            : `${BUTTON_VARIANTS.secondary} ${SHADOWS.medium}`
             }`}
         >
           {tab.label}
@@ -85,12 +85,12 @@ export function ProjectDetail() {
           <div className="flex items-center gap-3 flex-shrink-0">
             <button
               onClick={() => navigate('/dashboard')}
-              className={`inline-flex items-center gap-2 px-3 py-2 bg-white text-orange-500 ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_SHADOWS.small} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:bg-orange-50 ${BRUTAL_RADIUS.subtle}`}
+              className={`inline-flex items-center gap-2 px-3 py-2 bg-white text-orange-500 ${BORDERS.normal} border-black ${SHADOWS.small} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:bg-orange-50 ${RADIUS.subtle}`}
             >
               <span className="text-lg">←</span>
               <span className="hidden sm:inline text-sm">Retour</span>
             </button>
-            <div className={`px-4 py-2 bg-orange-50 ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_SHADOWS.medium} ${BRUTAL_RADIUS.subtle}`}>
+            <div className={`px-4 py-2 bg-orange-50 ${BORDERS.normal} border-black ${SHADOWS.medium} ${RADIUS.subtle}`}>
               <h1 className="font-bold text-base sm:text-lg text-black truncate max-w-[180px] sm:max-w-xs tracking-tight">
                 {project.title}
               </h1>

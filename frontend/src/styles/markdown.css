@@ -1,4 +1,4 @@
-/* ===== NEO-BRUTALIST MARKDOWN CONTENT STYLES ===== */
+/* ===== MARKDOWN CONTENT STYLES ===== */
 .markdown-content {
   color: rgb(15 23 42);
   line-height: 1.75;
@@ -106,7 +106,7 @@
   border: 2px solid black;
 }
 
-/* Code Blocks - Thick border, brutal shadow, saturated background */
+/* Code Blocks - Thick border, shadow, saturated background */
 .markdown-content pre {
   background-color: #fef3c7;
   border: 3px solid black;
@@ -211,14 +211,14 @@
   background-color: #ffedd5;
 }
 
-/* Horizontal Rule - Thick brutal line */
+/* Horizontal Rule - Thick line */
 .markdown-content hr {
   border: none;
   border-top: 3px solid black;
   margin: 2.5rem 0;
 }
 
-/* Images - Brutal borders and shadow */
+/* Images - Thick borders and shadow */
 .markdown-content img {
   max-width: 100%;
   height: auto;

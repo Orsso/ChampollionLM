@@ -6,9 +6,9 @@ import { useDeleteProject } from '../../hooks/useProjects';
 import { useConfirmDelete } from '../../hooks';
 import { formatDate } from '../../utils/formatters';
 import {
-  BRUTAL_BORDERS,
-  BRUTAL_RADIUS,
-  BRUTAL_CARD_VARIANTS,
+  BORDERS,
+  RADIUS,
+  CARD_VARIANTS,
   TRANSITIONS
 } from '../../constants/styles';
 
@@ -103,8 +103,8 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
           key={project.id}
           onClick={() => navigate(`/projects/${project.id}`)}
           className={`
-            ${BRUTAL_CARD_VARIANTS.default}
-            ${BRUTAL_RADIUS.normal}
+            ${CARD_VARIANTS.default}
+            ${RADIUS.normal}
             p-6
             cursor-pointer
             transition-all ${TRANSITIONS.fast}
@@ -117,7 +117,7 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
           <div className="flex items-center gap-6">
             <div className={`
               flex-shrink-0 w-16 h-16 flex items-center justify-center
-              bg-orange-500 ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.subtle}
+              bg-orange-500 ${BORDERS.normal} border-black ${RADIUS.subtle}
               text-4xl
             `}>
               📁
@@ -162,4 +162,3 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
     </div>
   );
 }
-

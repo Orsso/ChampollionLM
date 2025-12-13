@@ -1,10 +1,10 @@
 import type { ReactNode } from 'react';
-import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS } from '../../../constants/styles';
+import { BORDERS, SHADOWS, RADIUS } from '../../../constants/styles';
 
 /**
  * Alert Component
  *
- * Neo-brutalist alert component for displaying error, success, warning, and info messages.
+ * Alert component for displaying error, success, warning, and info messages.
  * Opaque backgrounds with colored borders and hard shadows.
  *
  * @example
@@ -25,12 +25,12 @@ const variantStyles = {
   error: {
     container: 'bg-red-100 border-red-500',
     text: 'text-red-900',
-    shadow: BRUTAL_SHADOWS.red,
+    shadow: SHADOWS.red,
   },
   success: {
     container: 'bg-green-100 border-green-500',
     text: 'text-green-900',
-    shadow: BRUTAL_SHADOWS.green,
+    shadow: SHADOWS.green,
   },
   warning: {
     container: 'bg-amber-100 border-amber-500',
@@ -51,7 +51,7 @@ export function Alert({ variant, message, children, className = '' }: AlertProps
   if (!content) return null;
 
   return (
-    <div className={`p-3 ${styles.container} ${BRUTAL_BORDERS.normal} ${BRUTAL_RADIUS.normal} ${styles.shadow} ${className}`}>
+    <div className={`p-3 ${styles.container} ${BORDERS.normal} ${RADIUS.normal} ${styles.shadow} ${className}`}>
       <p className={`${styles.text} text-sm font-bold`}>{content}</p>
     </div>
   );

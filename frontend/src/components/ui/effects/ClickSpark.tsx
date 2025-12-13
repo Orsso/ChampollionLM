@@ -4,12 +4,7 @@ import { useRef, useEffect, useCallback } from 'react';
  * ClickSpark - Global click spark effect component
  *
  * Canvas-based implementation for optimal performance.
- * Creates neo-brutalist geometric particles on every click globally.
- *
- * Adapted from reactbits.dev with neo-brutalist styling:
- * - Multiple colors (orange, black, red, yellow)
- * - Thicker lines (lineWidth: 3)
- * - Sharp angles and bold presence
+ * Creates geometric particles on every click globally.
  *
  * Features:
  * - Canvas rendering (GPU-accelerated, performant)
@@ -27,7 +22,7 @@ interface Spark {
   color: string;
 }
 
-const BRUTAL_COLORS = [
+const SPARK_COLORS = [
   '#f97316', // orange-500 (primary)
   '#ea580c', // orange-600
   '#000000', // black
@@ -45,7 +40,7 @@ export function ClickSpark() {
   const sparkRadius = 30; // Distance sparks travel
   const sparkCount = 8; // Number of sparks per click
   const duration = 500; // Animation duration in ms
-  const lineWidth = 3; // Neo-brutalist thick lines
+  const lineWidth = 3; // Thick lines
 
   // Ease-out function for smooth deceleration
   const easeOut = useCallback((t: number) => t * (2 - t), []);
@@ -94,10 +89,10 @@ export function ClickSpark() {
         const x2 = spark.x + (distance + lineLength) * Math.cos(spark.angle);
         const y2 = spark.y + (distance + lineLength) * Math.sin(spark.angle);
 
-        // Draw spark line with brutal thickness
+        // Draw spark line with thick stroke
         ctx.strokeStyle = spark.color;
         ctx.lineWidth = lineWidth;
-        ctx.lineCap = 'square'; // Sharp ends (brutal!)
+        ctx.lineCap = 'square'; // Sharp ends
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
@@ -141,7 +136,7 @@ export function ClickSpark() {
         y,
         angle: (2 * Math.PI * i) / sparkCount,
         startTime: now,
-        color: BRUTAL_COLORS[Math.floor(Math.random() * BRUTAL_COLORS.length)],
+        color: SPARK_COLORS[Math.floor(Math.random() * SPARK_COLORS.length)],
       }));
 
       sparksRef.current.push(...newSparks);

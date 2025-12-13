@@ -2,8 +2,8 @@ import { useState, useMemo } from 'react';
 import { useProjectsWithPolling } from '../hooks/useProjectsWithPolling';
 import { ProjectList } from '../components/project/ProjectList';
 import { CreateProjectModal } from '../components/project/CreateProjectModal';
-import { BrutalPageHeader } from '../components/ui/layout';
-import { BrutalInput } from '../components/ui/forms';
+import { PageHeader } from '../components/ui/layout';
+import { StyledInput } from '../components/ui/forms';
 
 export function Dashboard() {
   const { projects, isLoading } = useProjectsWithPolling();
@@ -24,16 +24,16 @@ export function Dashboard() {
   return (
     <div className="flex-1">
       <div className="max-w-7xl mx-auto">
-        {/* Page header with brutal styling */}
-        <BrutalPageHeader
+        {/* Page header */}
+        <PageHeader
           title="Projets"
           subtitle="Gérez tous vos projets Champollion"
           variant="colored"
         />
 
-        {/* Search bar with brutal styling */}
+        {/* Search bar */}
         <div className="mb-6">
-          <BrutalInput
+          <StyledInput
             type="search"
             placeholder="Rechercher un projet..."
             className="md:w-96"
@@ -42,7 +42,7 @@ export function Dashboard() {
           />
         </div>
 
-        {/* Project list (already brutal from Phase 4) */}
+        {/* Project list */}
         <ProjectList projects={filteredProjects} isLoading={isLoading} />
       </div>
 

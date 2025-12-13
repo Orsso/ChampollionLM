@@ -1,6 +1,6 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { useAudioPlayer } from '../../../hooks/useAudioPlayer';
-import { TRANSITIONS, BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_CARD_VARIANTS } from '../../../constants/styles';
+import { TRANSITIONS, BORDERS, SHADOWS, CARD_VARIANTS } from '../../../constants/styles';
 
 interface AudioPlayerProps {
   src: string;
@@ -11,11 +11,9 @@ interface AudioPlayerProps {
 /**
  * AudioPlayer Component
  *
- * Audio player with Neo-Brutalist styling.
- *
  * Features:
  * - Thick borders and hard shadows
- * - Brutal seek bar with thick borders
+ * - Styled seek bar with thick borders
  * - Square/bold buttons with press-down effect
  * - Bold typography for time display
  * - Saturated orange color scheme
@@ -90,10 +88,10 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
   // Don't show loading state if we have initial duration - show full player
   // Only show minimal loading if no duration is available
 
-  // Show error with brutal styling
+  // Show error with styled formatting
   if (state.error) {
     return (
-      <div className={`flex items-center gap-3 p-4 bg-red-100 ${BRUTAL_BORDERS.normal} border-red-600 ${BRUTAL_SHADOWS.red} ${className}`}>
+      <div className={`flex items-center gap-3 p-4 bg-red-100 ${BORDERS.normal} border-red-600 ${SHADOWS.red} ${className}`}>
         <svg
           width="20"
           height="20"
@@ -115,18 +113,18 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
   }
 
   return (
-    <div className={`relative flex items-center gap-4 p-4 ${BRUTAL_CARD_VARIANTS.default} ${BRUTAL_SHADOWS.medium} ${className}`}>
-      {/* Brutal loading indicator when metadata is loading but duration is known */}
+    <div className={`relative flex items-center gap-4 p-4 ${CARD_VARIANTS.default} ${SHADOWS.medium} ${className}`}>
+      {/* Loading indicator when metadata is loading but duration is known */}
       {state.isLoading && state.duration > 0 && (
         <div className="absolute top-0 left-0 right-0 h-1 bg-orange-300 border-b-2 border-black">
           <div className="h-full w-1/3 bg-orange-500 animate-pulse"></div>
         </div>
       )}
-      {/* Play/Pause Button - Brutal square style */}
+      {/* Play/Pause Button - Square style */}
       <button
         onClick={controls.toggle}
         disabled={state.isLoading && state.duration === 0}
-        className={`flex-shrink-0 w-12 h-12 flex items-center justify-center bg-orange-500 hover:bg-orange-600 disabled:bg-slate-400 disabled:cursor-not-allowed text-white ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_SHADOWS.small} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all ${TRANSITIONS.fast} focus:outline-none`}
+        className={`flex-shrink-0 w-12 h-12 flex items-center justify-center bg-orange-500 hover:bg-orange-600 disabled:bg-slate-400 disabled:cursor-not-allowed text-white ${BORDERS.normal} border-black ${SHADOWS.small} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all ${TRANSITIONS.fast} focus:outline-none`}
         aria-label={state.isPlaying ? 'Pause' : 'Lecture'}
       >
         {state.isLoading && state.duration === 0 ? (
@@ -168,12 +166,12 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
           </span>
         </div>
 
-        {/* Progress Bar - Brutal style with thick borders */}
+        {/* Progress Bar - Styled with thick borders */}
         <div
           ref={progressBarRef}
           onClick={handleProgressClick}
           onMouseDown={handleMouseDown}
-          className={`relative h-3 bg-slate-200 ${BRUTAL_BORDERS.thin} border-black cursor-pointer group`}
+          className={`relative h-3 bg-slate-200 ${BORDERS.thin} border-black cursor-pointer group`}
           role="slider"
           aria-label="Barre de progression"
           aria-valuemin={0}
@@ -194,19 +192,19 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
 
           {/* Progress Handle - Square/bold style */}
           <div
-            className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-orange-500 ${BRUTAL_BORDERS.thin} border-black opacity-0 group-hover:opacity-100 transition-opacity ${TRANSITIONS.fast} shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`}
+            className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-orange-500 ${BORDERS.thin} border-black opacity-0 group-hover:opacity-100 transition-opacity ${TRANSITIONS.fast} shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`}
             style={{ left: `${progress}%`, transform: 'translate(-50%, -50%)' }}
           />
         </div>
       </div>
 
-      {/* Volume Control - Brutal button style */}
+      {/* Volume Control - Button style */}
       <div className="flex-shrink-0 hidden md:block">
         <button
           onClick={() => {
             controls.setVolume(state.volume > 0 ? 0 : 1);
           }}
-          className={`w-10 h-10 flex items-center justify-center ${BRUTAL_BORDERS.thin} border-black bg-white hover:bg-slate-100 text-slate-900 transition-colors ${TRANSITIONS.fast}`}
+          className={`w-10 h-10 flex items-center justify-center ${BORDERS.thin} border-black bg-white hover:bg-slate-100 text-slate-900 transition-colors ${TRANSITIONS.fast}`}
           aria-label={state.volume > 0 ? 'Couper le son' : 'Activer le son'}
         >
           {state.volume > 0 ? (

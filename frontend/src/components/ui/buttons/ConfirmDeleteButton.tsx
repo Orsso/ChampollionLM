@@ -1,11 +1,11 @@
 import { useRef, useEffect } from 'react';
 import { gsap } from 'gsap';
-import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS, TRANSITIONS } from '../../../constants/styles';
+import { BORDERS, SHADOWS, RADIUS, TRANSITIONS } from '../../../constants/styles';
 
 /**
  * ConfirmDeleteButton Component
  *
- * Neo-brutalist button with two-step confirmation for delete actions.
+ * Button with two-step confirmation for delete actions.
  * Uses GSAP animation to expand and show "Confirmer ?" text.
  * Bold borders and hard red shadow on confirm state.
  *
@@ -94,10 +94,10 @@ export function ConfirmDeleteButton({
         e.stopPropagation();
         onDelete();
       }}
-      className={`relative h-10 flex items-center justify-center text-sm font-bold ${BRUTAL_RADIUS.subtle} ${BRUTAL_BORDERS.normal} transition-all ${TRANSITIONS.fast} flex-shrink-0 overflow-hidden ${
+      className={`relative h-10 flex items-center justify-center text-sm font-bold ${RADIUS.subtle} ${BORDERS.normal} transition-all ${TRANSITIONS.fast} flex-shrink-0 overflow-hidden ${
         isConfirming
-          ? `bg-red-500 hover:bg-red-600 text-white border-black ${BRUTAL_SHADOWS.red} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(239,68,68)]`
-          : `bg-white hover:bg-orange-50 text-black border-black ${BRUTAL_SHADOWS.small} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none`
+          ? `bg-red-500 hover:bg-red-600 text-white border-black ${SHADOWS.red} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(239,68,68)]`
+          : `bg-white hover:bg-orange-50 text-black border-black ${SHADOWS.small} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none`
       } ${className}`}
       style={{ width: 40 }}
       aria-label={ariaLabel}

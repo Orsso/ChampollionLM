@@ -1,2 +1,2 @@
 export { Modal } from './Modal';
-export { BrutalPageHeader } from './BrutalPageHeader';
+export { PageHeader, BrutalPageHeader } from './PageHeader';

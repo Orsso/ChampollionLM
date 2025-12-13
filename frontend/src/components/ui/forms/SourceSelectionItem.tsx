@@ -1,11 +1,10 @@
 /**
  * SourceSelectionItem Component
  * Reusable source checkbox item for selection lists
- * Neo-Brutalist styling with orange theme
  * Matches the detailed design from GenerationControls modal
  */
 
-import { BRUTAL_BORDERS, BRUTAL_RADIUS, BRUTAL_SHADOWS, TRANSITIONS } from '../../../constants/styles';
+import { BORDERS, RADIUS, SHADOWS, TRANSITIONS } from '../../../constants/styles';
 import type { SourceType } from '../../../types';
 
 interface SourceSelectionItemProps {
@@ -71,9 +70,9 @@ export function SourceSelectionItem({
         <label
             className={`
                 flex items-center gap-3 cursor-pointer
-                ${compact ? BRUTAL_BORDERS.thin : BRUTAL_BORDERS.normal}
-                border-black ${BRUTAL_RADIUS.subtle}
-                ${checked ? `bg-orange-100 ${BRUTAL_SHADOWS.small}` : 'bg-white hover:bg-slate-50'}
+                ${compact ? BORDERS.thin : BORDERS.normal}
+                border-black ${RADIUS.subtle}
+                ${checked ? `bg-orange-100 ${SHADOWS.small}` : 'bg-white hover:bg-slate-50'}
                 ${compact ? 'p-2' : 'p-3'}
                 transition-all ${TRANSITIONS.fast}
             `}
@@ -90,7 +89,7 @@ export function SourceSelectionItem({
             <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                     <p className={`font-bold text-black truncate ${compact ? 'text-xs' : 'text-sm'}`}>{title}</p>
-                    <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold ${BRUTAL_BORDERS.thin} border-black ${BRUTAL_RADIUS.subtle} ${typeStyle.bg} flex-shrink-0`}>
+                    <span className={`inline-flex items-center px-1.5 py-0.5 text-[10px] font-bold ${BORDERS.thin} border-black ${RADIUS.subtle} ${typeStyle.bg} flex-shrink-0`}>
                         {typeStyle.label}
                     </span>
                 </div>

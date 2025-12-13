@@ -1,5 +1,5 @@
 import { Waveform } from './Waveform';
-import { BRUTAL_BORDERS, BRUTAL_RADIUS, BRUTAL_SHADOWS } from '../../../constants/styles';
+import { BORDERS, RADIUS, SHADOWS } from '../../../constants/styles';
 
 interface AudioVisualizerProps {
   audioData: Uint8Array | null;
@@ -11,12 +11,12 @@ export function AudioVisualizer({ audioData, isRecording, micGain }: AudioVisual
   return (
     <div className={`
       relative h-32 max-w-2xl mx-auto
-      ${BRUTAL_BORDERS.thick}
+      ${BORDERS.thick}
       border-black
-      ${BRUTAL_RADIUS.normal}
+      ${RADIUS.normal}
       bg-white
       overflow-hidden
-      ${BRUTAL_SHADOWS.medium}
+      ${SHADOWS.medium}
     `}>
       <Waveform
         audioData={audioData || undefined}
@@ -27,4 +27,3 @@ export function AudioVisualizer({ audioData, isRecording, micGain }: AudioVisual
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-import { BRUTAL_SHADOWS, BRUTAL_CARD_VARIANTS } from '../../../constants/styles';
+import { SHADOWS, CARD_VARIANTS } from '../../../constants/styles';
 import { useMarkdown } from '../../../lib/useMarkdown';
 
 interface MarkdownViewerProps {
@@ -9,7 +9,7 @@ interface MarkdownViewerProps {
 /**
  * MarkdownViewer Component
  *
- * Renders markdown content as sanitized HTML with Neo-Brutalist styling.
+ * Renders markdown content as sanitized HTML with styled formatting.
  * Used in SourceModal for document sources and in StudioPanel.
  *
  * Features:
@@ -23,7 +23,7 @@ export function MarkdownViewer({ markdown, className = '' }: MarkdownViewerProps
 
   return (
     <div
-      className={`${BRUTAL_CARD_VARIANTS.default} ${BRUTAL_SHADOWS.medium} p-6 markdown-content ${className}`}
+      className={`${CARD_VARIANTS.default} ${SHADOWS.medium} p-6 markdown-content ${className}`}
       dangerouslySetInnerHTML={{ __html: htmlContent }}
     />
   );

@@ -4,8 +4,8 @@ import { useAuth } from '../hooks';
 import { AnimatedInput } from '../components/ui/forms';
 import { Button } from '../components/ui/buttons';
 import { Alert } from '../components/ui/feedback';
-import { BrutalPageHeader } from '../components/ui/layout';
-import { BRUTAL_CARD_VARIANTS, BRUTAL_BORDERS } from '../constants/styles';
+import { PageHeader } from '../components/ui/layout';
+import { CARD_VARIANTS, BORDERS } from '../constants/styles';
 
 interface ApiKeyFormData {
   apiKey: string;
@@ -123,8 +123,8 @@ export function Settings() {
   return (
     <div className="flex-1">
       <div className="max-w-4xl mx-auto">
-        {/* Page header with brutal styling */}
-        <BrutalPageHeader
+        {/* Page header */}
+        <PageHeader
           title="Paramètres"
           subtitle="Configurez votre compte et vos préférences"
           variant="colored"
@@ -132,7 +132,7 @@ export function Settings() {
 
         {/* Demo Access Info - Only visible to demo users */}
         {user?.is_demo_user && (
-          <div className={`mb-6 ${BRUTAL_CARD_VARIANTS.colored} bg-cyan-100`}>
+          <div className={`mb-6 ${CARD_VARIANTS.colored} bg-cyan-100`}>
             <h2 className="text-xl font-bold text-black mb-2">Accès Demo</h2>
             <p className="text-gray-700 mb-3">
               Vous bénéficiez actuellement d'un accès demo gratuit à Champollion.
@@ -147,8 +147,8 @@ export function Settings() {
           </div>
         )}
 
-        {/* API Key Section - Brutal Card */}
-        <div className={`mb-6 p-6 ${BRUTAL_CARD_VARIANTS.default}`}>
+        {/* API Key Section */}
+        <div className={`mb-6 p-6 ${CARD_VARIANTS.default}`}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold text-black">Clé API</h2>
@@ -230,8 +230,8 @@ export function Settings() {
           </form>
         </div>
 
-        {/* Password Change Section - Brutal Card */}
-        <div className={`mb-6 p-6 ${BRUTAL_CARD_VARIANTS.default}`}>
+        {/* Password Change Section */}
+        <div className={`mb-6 p-6 ${CARD_VARIANTS.default}`}>
           <h2 className="text-2xl font-bold text-black mb-4">Mot de passe</h2>
           <p className="text-gray-600 font-medium mb-4">
             Modifiez votre mot de passe de connexion
@@ -313,19 +313,19 @@ export function Settings() {
           </form>
         </div>
 
-        {/* Profile Section - Brutal Card */}
-        <div className={`p-6 ${BRUTAL_CARD_VARIANTS.default}`}>
+        {/* Profile Section */}
+        <div className={`p-6 ${CARD_VARIANTS.default}`}>
           <h2 className="text-2xl font-bold text-black mb-4">Profil</h2>
           <div className="space-y-4">
-            <div className={`pb-3 ${BRUTAL_BORDERS.normal} border-b-gray-300`}>
+            <div className={`pb-3 ${BORDERS.normal} border-b-gray-300`}>
               <p className="text-gray-500 text-sm font-bold uppercase tracking-wide mb-1">Email</p>
               <p className="text-black font-medium text-lg">{user?.email}</p>
             </div>
           </div>
         </div>
 
-        {/* Danger Zone - Brutal Card with Red Accent */}
-        <div className={`mt-6 p-6 ${BRUTAL_CARD_VARIANTS.default} border-red-500`}>
+        {/* Danger Zone */}
+        <div className={`mt-6 p-6 ${CARD_VARIANTS.default} border-red-500`}>
           <h2 className="text-2xl font-bold text-red-600 mb-2">Zone de Danger</h2>
           <p className="text-gray-600 font-medium mb-4">
             La suppression de votre compte est irréversible. Toutes vos données (projets, sources, documents) seront définitivement supprimées.
@@ -373,4 +373,3 @@ export function Settings() {
     </div>
   );
 }
-

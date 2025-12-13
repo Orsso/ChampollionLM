@@ -6,9 +6,9 @@ import { useAudioRecorder } from '../../hooks/useAudioRecorder';
 import { uploadAudioSource } from '../../hooks/useSources';
 import { formatDuration } from '../../utils/formatters';
 import {
-  BRUTAL_BORDERS,
-  BRUTAL_SHADOWS,
-  BRUTAL_RADIUS,
+  BORDERS,
+  SHADOWS,
+  RADIUS,
   TRANSITIONS
 } from '../../constants/styles';
 
@@ -179,10 +179,10 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
 
   return (
     <div className={`
-      ${BRUTAL_BORDERS.thick}
+      ${BORDERS.thick}
       border-black
-      ${BRUTAL_RADIUS.normal}
-      ${BRUTAL_SHADOWS.medium}
+      ${RADIUS.normal}
+      ${SHADOWS.medium}
       bg-orange-100
       p-6
     `}>
@@ -206,10 +206,10 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
               className={`
                 flex-1 flex items-center justify-center gap-3 px-6 py-4
                 bg-orange-500
-                ${BRUTAL_BORDERS.normal}
+                ${BORDERS.normal}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
-                ${BRUTAL_SHADOWS.small}
+                ${RADIUS.subtle}
+                ${SHADOWS.small}
                 text-white font-bold
                 transition-all ${TRANSITIONS.fast}
                 hover:translate-x-[2px] hover:translate-y-[2px]
@@ -243,10 +243,10 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
               className={`
                 flex-1 flex items-center justify-center gap-3 px-6 py-4
                 bg-white
-                ${BRUTAL_BORDERS.normal}
+                ${BORDERS.normal}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
-                ${BRUTAL_SHADOWS.small}
+                ${RADIUS.subtle}
+                ${SHADOWS.small}
                 text-black font-bold
                 transition-all ${TRANSITIONS.fast}
                 hover:translate-x-[2px] hover:translate-y-[2px]
@@ -293,10 +293,10 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
                 <div className="flex items-center justify-center gap-4">
                   <button
                     onClick={isRecording ? stopRecording : startRecording}
-                    className={`relative w-20 h-20 flex items-center justify-center transition-all ${TRANSITIONS.normal} ${BRUTAL_BORDERS.thick} border-black ${
+                    className={`relative w-20 h-20 flex items-center justify-center transition-all ${TRANSITIONS.normal} ${BORDERS.thick} border-black ${
                       isRecording
-                        ? `bg-red-500 hover:bg-red-600 ${BRUTAL_SHADOWS.red} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(239,68,68)]`
-                        : `bg-orange-500 hover:bg-orange-600 ${BRUTAL_SHADOWS.orange} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(249,115,22)]`
+                        ? `bg-red-500 hover:bg-red-600 ${SHADOWS.red} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(239,68,68)]`
+                        : `bg-orange-500 hover:bg-orange-600 ${SHADOWS.orange} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(249,115,22)]`
                     }`}
                     aria-label={isRecording ? 'Arrêter l\'enregistrement' : 'Commencer l\'enregistrement'}
                   >
@@ -325,9 +325,9 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
                   {isRecording && (
                     <div className={`
                       bg-black
-                      ${BRUTAL_BORDERS.normal}
+                      ${BORDERS.normal}
                       border-black
-                      ${BRUTAL_RADIUS.normal}
+                      ${RADIUS.normal}
                       px-6 py-3
                     `}>
                       <span className="text-white font-mono text-xl font-bold">

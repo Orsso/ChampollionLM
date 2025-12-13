@@ -1,11 +1,10 @@
 import { AuthForm } from '../components/auth/AuthForm';
-import { BrutalPage } from '../components/ui';
+import { PageWrapper } from '../components/ui';
 
 export function Register() {
   return (
-    <BrutalPage variant="grid" showShapes={false}>
+    <PageWrapper variant="grid" showShapes={false}>
       <AuthForm mode="register" />
-    </BrutalPage>
+    </PageWrapper>
   );
 }
-

@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Alert } from '../ui/feedback';
 import { Button } from '../ui/buttons';
-import { AnimatedInput, BrutalTextarea } from '../ui/forms';
+import { AnimatedInput, Textarea } from '../ui/forms';
 import { useCreateProject } from '../../hooks/useProjects';
 import {
-  BRUTAL_SHADOWS,
-  BRUTAL_RADIUS,
-  BRUTAL_CARD_VARIANTS,
+  SHADOWS,
+  RADIUS,
+  CARD_VARIANTS,
 } from '../../constants/styles';
 
 interface CreateProjectModalProps {
@@ -54,9 +54,9 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
       className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] px-4"
     >
       <div className={`
-        ${BRUTAL_CARD_VARIANTS.default}
-        ${BRUTAL_RADIUS.normal}
-        ${BRUTAL_SHADOWS.large}
+        ${CARD_VARIANTS.default}
+        ${RADIUS.normal}
+        ${SHADOWS.large}
         w-full max-w-md p-8
       `}>
         <h2 className="text-3xl font-black text-black mb-6">Nouveau projet</h2>
@@ -77,7 +77,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
             <label className="block text-sm font-bold text-black mb-2">
               Description (optionnel)
             </label>
-            <BrutalTextarea
+            <Textarea
               {...register('description')}
               rows={3}
               placeholder="Decrivez votre projet..."
@@ -107,4 +107,3 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
     </div>
   );
 }
-

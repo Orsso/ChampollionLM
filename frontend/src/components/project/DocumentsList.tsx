@@ -5,9 +5,9 @@ import { deleteDocument } from '../../lib/api';
 import { useConfirmDelete } from '../../hooks';
 import type { Document } from '../../types';
 import {
-    BRUTAL_BORDERS,
-    BRUTAL_SHADOWS,
-    BRUTAL_RADIUS
+    BORDERS,
+    SHADOWS,
+    RADIUS
 } from '../../constants/styles';
 
 interface DocumentsListProps {
@@ -54,10 +54,10 @@ export function DocumentsList({
 
     return (
         <div className={`
-      ${BRUTAL_BORDERS.thick}
+      ${BORDERS.thick}
       border-black
-      ${BRUTAL_RADIUS.normal}
-      ${BRUTAL_SHADOWS.medium}
+      ${RADIUS.normal}
+      ${SHADOWS.medium}
       bg-white
       p-6
     `}>
@@ -67,10 +67,10 @@ export function DocumentsList({
                 {/* Show generating placeholder as a card */}
                 {isGenerating && (
                     <div className={`
-                        ${BRUTAL_BORDERS.normal}
+                        ${BORDERS.normal}
                         border-black
-                        ${BRUTAL_RADIUS.subtle}
-                        ${BRUTAL_SHADOWS.small}
+                        ${RADIUS.subtle}
+                        ${SHADOWS.small}
                         bg-white
                         p-4
                     `}>
@@ -115,4 +115,3 @@ export function DocumentsList({
         </div>
     );
 }
-

@@ -2,7 +2,7 @@ import { useRef, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AudioVisualizer } from '../ui/media/AudioVisualizer';
 import { ProgressBar } from '../ui/feedback';
-import { BrutalInput } from '../ui/forms';
+import { StyledInput } from '../ui/forms';
 import { Button } from '../ui/buttons';
 import { Modal } from '../ui/layout';
 import { useRecordingAnimations } from '../../hooks/useRecordingAnimations';
@@ -12,9 +12,9 @@ import { uploadAudioSource, importYouTubeSource } from '../../hooks/useSources';
 import { formatDuration } from '../../utils/formatters';
 import { MicrophoneIcon, LinkIcon, FileIcon } from '../ui/icons';
 import {
-    BRUTAL_BORDERS,
-    BRUTAL_SHADOWS,
-    BRUTAL_RADIUS,
+    BORDERS,
+    SHADOWS,
+    RADIUS,
     TRANSITIONS
 } from '../../constants/styles';
 
@@ -211,10 +211,10 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
 
     return (
         <div className={`
-      ${BRUTAL_BORDERS.thick}
+      ${BORDERS.thick}
       border-black
-      ${BRUTAL_RADIUS.normal}
-      ${BRUTAL_SHADOWS.medium}
+      ${RADIUS.normal}
+      ${SHADOWS.medium}
       bg-orange-100
       p-6
     `}>
@@ -240,14 +240,14 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                             disabled={tab.disabled}
                             className={`
                 flex items-center gap-2 px-4 py-2
-                ${BRUTAL_BORDERS.normal}
+                ${BORDERS.normal}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
+                ${RADIUS.subtle}
                 font-bold text-sm
                 transition-all ${TRANSITIONS.fast}
                 ${isActive
                                     ? 'bg-orange-500 text-white shadow-none translate-x-[2px] translate-y-[2px]'
-                                    : `bg-white text-black ${BRUTAL_SHADOWS.small} hover:bg-orange-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none`
+                                    : `bg-white text-black ${SHADOWS.small} hover:bg-orange-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none`
                                 }
                 ${tab.disabled ? 'opacity-40 cursor-not-allowed hover:translate-x-0 hover:translate-y-0 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]' : ''}
               `}
@@ -272,10 +272,10 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                 className={`
                   flex-1 flex items-center justify-center gap-3 px-6 py-4
                   bg-orange-500
-                  ${BRUTAL_BORDERS.normal}
+                  ${BORDERS.normal}
                   border-black
-                  ${BRUTAL_RADIUS.subtle}
-                  ${BRUTAL_SHADOWS.small}
+                  ${RADIUS.subtle}
+                  ${SHADOWS.small}
                   text-white font-bold
                   transition-all ${TRANSITIONS.fast}
                   hover:translate-x-[2px] hover:translate-y-[2px]
@@ -295,10 +295,10 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                 className={`
                   flex-1 flex items-center justify-center gap-3 px-6 py-4
                   bg-white
-                  ${BRUTAL_BORDERS.normal}
+                  ${BORDERS.normal}
                   border-black
-                  ${BRUTAL_RADIUS.subtle}
-                  ${BRUTAL_SHADOWS.small}
+                  ${RADIUS.subtle}
+                  ${SHADOWS.small}
                   text-black font-bold
                   transition-all ${TRANSITIONS.fast}
                   hover:translate-x-[2px] hover:translate-y-[2px]
@@ -343,9 +343,9 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                     <div className="flex items-center justify-center gap-4">
                                         <button
                                             onClick={isRecording ? stopRecording : startRecording}
-                                            className={`relative w-20 h-20 flex items-center justify-center transition-all ${TRANSITIONS.normal} ${BRUTAL_BORDERS.thick} border-black ${isRecording
-                                                ? `bg-red-500 hover:bg-red-600 ${BRUTAL_SHADOWS.red} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(239,68,68)]`
-                                                : `bg-orange-500 hover:bg-orange-600 ${BRUTAL_SHADOWS.orange} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(249,115,22)]`
+                                            className={`relative w-20 h-20 flex items-center justify-center transition-all ${TRANSITIONS.normal} ${BORDERS.thick} border-black ${isRecording
+                                                ? `bg-red-500 hover:bg-red-600 ${SHADOWS.red} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(239,68,68)]`
+                                                : `bg-orange-500 hover:bg-orange-600 ${SHADOWS.orange} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(249,115,22)]`
                                                 }`}
                                             aria-label={isRecording ? 'Arrêter l\'enregistrement' : 'Commencer l\'enregistrement'}
                                         >
@@ -359,9 +359,9 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                         {isRecording && (
                                             <div className={`
                         bg-black
-                        ${BRUTAL_BORDERS.normal}
+                        ${BORDERS.normal}
                         border-black
-                        ${BRUTAL_RADIUS.normal}
+                        ${RADIUS.normal}
                         px-6 py-3
                       `}>
                                                 <span className="text-white font-mono text-xl font-bold">
@@ -383,7 +383,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             {importMode === 'link' && (
                 <div className="space-y-4">
                     <div className="flex gap-3 items-center">
-                        <BrutalInput
+                        <StyledInput
                             type="url"
                             value={youtubeUrl}
                             onChange={(e) => {
@@ -399,10 +399,10 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                             className={`
                 flex items-center gap-2 px-6 py-3
                 bg-orange-500
-                ${BRUTAL_BORDERS.normal}
+                ${BORDERS.normal}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
-                ${BRUTAL_SHADOWS.small}
+                ${RADIUS.subtle}
+                ${SHADOWS.small}
                 text-white font-bold
                 transition-all ${TRANSITIONS.fast}
                 hover:translate-x-[2px] hover:translate-y-[2px]
@@ -423,9 +423,9 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                         <div className={`
               px-4 py-3
               bg-red-100
-              ${BRUTAL_BORDERS.normal}
+              ${BORDERS.normal}
               border-red-500
-              ${BRUTAL_RADIUS.subtle}
+              ${RADIUS.subtle}
               text-red-700 font-medium text-sm
             `}>
                             {youtubeError}
@@ -443,10 +443,10 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             {importMode === 'file' && (
                 <div className={`
           p-8 text-center
-          ${BRUTAL_BORDERS.normal}
+          ${BORDERS.normal}
           border-dashed
           border-gray-300
-          ${BRUTAL_RADIUS.normal}
+          ${RADIUS.normal}
           bg-gray-50
         `}>
                     <FileIcon size={48} className="mx-auto mb-4 text-gray-300" />

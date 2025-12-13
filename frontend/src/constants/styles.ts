@@ -1,9 +1,9 @@
 /**
- * Shared Tailwind class constants for Neo-Brutalist design system
+ * Shared Tailwind class constants for the design system
  */
 
 /**
- * Transitions - Kept for brutal animations (button press effects, etc.)
+ * Transitions - For smooth animations (button press effects, etc.)
  * Usage: Apply with transform utilities for punch effects
  */
 export const TRANSITIONS = {
@@ -13,22 +13,22 @@ export const TRANSITIONS = {
 } as const;
 
 /**
- * Neo-Brutalist Borders
+ * Border styles
  * Usage: Thick, bold borders that define element boundaries
- * Example: <div className={`${BRUTAL_BORDERS.normal} border-black`}>
+ * Example: <div className={`${BORDERS.normal} border-black`}>
  */
-export const BRUTAL_BORDERS = {
+export const BORDERS = {
   thin: 'border-2',
   normal: 'border-3',
   thick: 'border-4',
 } as const;
 
 /**
- * Neo-Brutalist Shadows (Hard shadows without blur)
+ * Hard Shadows (without blur)
  * Usage: Create depth through offset shadows instead of soft blur
- * Example: <div className={BRUTAL_SHADOWS.medium}>
+ * Example: <div className={SHADOWS.medium}>
  */
-export const BRUTAL_SHADOWS = {
+export const SHADOWS = {
   small: 'shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]',
   medium: 'shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]',
   large: 'shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]',
@@ -39,26 +39,26 @@ export const BRUTAL_SHADOWS = {
 } as const;
 
 /**
- * Neo-Brutalist Border Radius
- * Usage: Subtle rounding acceptable in neo-brutalism for accessibility
- * Example: <div className={BRUTAL_RADIUS.normal}>
+ * Border Radius
+ * Usage: Subtle rounding for accessibility
+ * Example: <div className={RADIUS.normal}>
  */
-export const BRUTAL_RADIUS = {
+export const RADIUS = {
   none: 'rounded-none',
   subtle: 'rounded',      // 4px - minimal
   normal: 'rounded-lg',   // 8px - standard
 } as const;
 
 /**
- * Neo-Brutalist Button Variants
+ * Button Variants
  * Usage: Bold, high-contrast buttons with press-down effect
- * Example: <button className={BRUTAL_BUTTON_VARIANTS.primary}>Click</button>
+ * Example: <button className={BUTTON_VARIANTS.primary}>Click</button>
  *
  * Behavior:
  * - Hover: Translates element to reduce shadow (press-in effect)
  * - Active: Full press-down with zero shadow
  */
-export const BRUTAL_BUTTON_VARIANTS = {
+export const BUTTON_VARIANTS = {
   primary: 'bg-orange-500 text-white border-3 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold',
   secondary: 'bg-white text-black border-3 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold',
   danger: 'bg-red-500 text-white border-3 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold',
@@ -66,11 +66,11 @@ export const BRUTAL_BUTTON_VARIANTS = {
 } as const;
 
 /**
- * Neo-Brutalist Card Variants
+ * Card Variants
  * Usage: Container components with bold shadows and borders
- * Example: <div className={BRUTAL_CARD_VARIANTS.default}>
+ * Example: <div className={CARD_VARIANTS.default}>
  */
-export const BRUTAL_CARD_VARIANTS = {
+export const CARD_VARIANTS = {
   default: 'bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black p-6',
   colored: 'bg-orange-100 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black p-6',
   dark: 'bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black',
@@ -78,50 +78,72 @@ export const BRUTAL_CARD_VARIANTS = {
 } as const;
 
 /**
- * Neo-Brutalist Background Patterns
+ * Background Patterns
  * Usage: Apply to page containers to create cohesive backgrounds
- * Example: <div className="brutal-bg-main brutal-bg-grid">
+ * Example: <div className="bg-main bg-pattern-grid">
  * 
  * Available patterns:
- * - brutal-bg-main: Soft gradient background with color orbs
- * - brutal-bg-grid: Subtle grid lines pattern
- * - brutal-bg-dots: Dot grid pattern
- * - brutal-bg-stripes: Diagonal stripes pattern
+ * - bg-main: Soft gradient background with color orbs
+ * - bg-pattern-grid: Subtle grid lines pattern
+ * - bg-pattern-dots: Dot grid pattern
+ * - bg-pattern-stripes: Diagonal stripes pattern
  * 
  * Geometric shapes (add as sibling divs):
- * - brutal-accent-shapes: Large geometric shapes (square, circle)
- * - brutal-shapes-extra: Additional shapes (triangle, rectangle)
- * - brutal-bg-accent-dots: Small decorative dots
+ * - accent-shapes: Large geometric shapes (square, circle)
+ * - shapes-extra: Additional shapes (triangle, rectangle)
+ * - accent-dots: Small decorative dots
  */
-export const BRUTAL_BACKGROUNDS = {
-  main: 'brutal-bg-main',
-  grid: 'brutal-bg-grid',
-  dots: 'brutal-bg-dots',
-  stripes: 'brutal-bg-stripes',
+export const BACKGROUNDS = {
+  main: 'bg-main',
+  grid: 'bg-pattern-grid',
+  dots: 'bg-pattern-dots',
+  stripes: 'bg-pattern-stripes',
 } as const;
 
-export const BRUTAL_SHAPES = {
-  accent: 'brutal-accent-shapes',
-  extra: 'brutal-shapes-extra',
-  dots: 'brutal-bg-accent-dots',
+export const SHAPES = {
+  accent: 'accent-shapes',
+  extra: 'shapes-extra',
+  dots: 'accent-dots',
 } as const;
 
 /**
- * Neo-Brutalist Button Base Styles
+ * Button Base Styles
  * Standard padding and radius for all buttons
  */
-export const BRUTAL_BUTTON_BASE = `px-6 py-3 ${BRUTAL_RADIUS.normal}` as const;
+export const BUTTON_BASE = `px-6 py-3 ${RADIUS.normal}` as const;
 
 /**
- * Neo-Brutalist Secondary Button Style
+ * Secondary Button Style
  * Usage: Cancel buttons, secondary actions
- * Example: <button className={BRUTAL_BUTTON_SECONDARY}>Annuler</button>
+ * Example: <button className={BUTTON_SECONDARY}>Annuler</button>
  */
-export const BRUTAL_BUTTON_SECONDARY = `${BRUTAL_BUTTON_BASE} ${BRUTAL_BORDERS.normal} border-black bg-white text-black hover:bg-orange-50 ${BRUTAL_SHADOWS.medium} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none` as const;
+export const BUTTON_SECONDARY = `${BUTTON_BASE} ${BORDERS.normal} border-black bg-white text-black hover:bg-orange-50 ${SHADOWS.medium} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none` as const;
 
 /**
- * Neo-Brutalist Danger Button Style
+ * Danger Button Style
  * Usage: Logout, delete actions
- * Example: <button className={BRUTAL_BUTTON_DANGER}>Déconnexion</button>
+ * Example: <button className={BUTTON_DANGER}>Déconnexion</button>
  */
-export const BRUTAL_BUTTON_DANGER = `${BRUTAL_BUTTON_BASE} ${BRUTAL_BORDERS.normal} border-black bg-white text-black hover:bg-red-500 hover:text-white ${BRUTAL_SHADOWS.medium} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none` as const;
+export const BUTTON_DANGER = `${BUTTON_BASE} ${BORDERS.normal} border-black bg-white text-black hover:bg-red-500 hover:text-white ${SHADOWS.medium} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none` as const;
+
+// Legacy aliases for backward compatibility (deprecated, will be removed)
+/** @deprecated Use BORDERS instead */
+export const BRUTAL_BORDERS = BORDERS;
+/** @deprecated Use SHADOWS instead */
+export const BRUTAL_SHADOWS = SHADOWS;
+/** @deprecated Use RADIUS instead */
+export const BRUTAL_RADIUS = RADIUS;
+/** @deprecated Use BUTTON_VARIANTS instead */
+export const BRUTAL_BUTTON_VARIANTS = BUTTON_VARIANTS;
+/** @deprecated Use CARD_VARIANTS instead */
+export const BRUTAL_CARD_VARIANTS = CARD_VARIANTS;
+/** @deprecated Use BACKGROUNDS instead */
+export const BRUTAL_BACKGROUNDS = BACKGROUNDS;
+/** @deprecated Use SHAPES instead */
+export const BRUTAL_SHAPES = SHAPES;
+/** @deprecated Use BUTTON_BASE instead */
+export const BRUTAL_BUTTON_BASE = BUTTON_BASE;
+/** @deprecated Use BUTTON_SECONDARY instead */
+export const BRUTAL_BUTTON_SECONDARY = BUTTON_SECONDARY;
+/** @deprecated Use BUTTON_DANGER instead */
+export const BRUTAL_BUTTON_DANGER = BUTTON_DANGER;

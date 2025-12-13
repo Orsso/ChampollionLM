@@ -2,8 +2,8 @@ import { ConfirmDeleteButton } from '../ui/buttons';
 import { formatDateTime } from '../../utils/formatters';
 import type { Document } from '../../types';
 import {
-    BRUTAL_CARD_VARIANTS,
-    BRUTAL_RADIUS,
+    CARD_VARIANTS,
+    RADIUS,
     TRANSITIONS
 } from '../../constants/styles';
 
@@ -36,8 +36,8 @@ export function DocumentCard({
         <div
             onClick={onClick}
             className={`
-        ${BRUTAL_CARD_VARIANTS.default}
-        ${BRUTAL_RADIUS.subtle}
+        ${CARD_VARIANTS.default}
+        ${RADIUS.subtle}
         p-4
         cursor-pointer
         transition-all ${TRANSITIONS.fast}

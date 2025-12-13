@@ -8,9 +8,9 @@ import { useTokenEstimate } from '../../hooks/useTokens';
 import { useAuth } from '../../hooks';
 import type { Source } from '../../types';
 import {
-  BRUTAL_BORDERS,
-  BRUTAL_SHADOWS,
-  BRUTAL_RADIUS,
+  BORDERS,
+  SHADOWS,
+  RADIUS,
   TRANSITIONS
 } from '../../constants/styles';
 
@@ -85,10 +85,10 @@ export function GenerationControls({
           onClick={handleGenerateClick}
           className={`
             relative group overflow-hidden
-            ${BRUTAL_BORDERS.thick}
+            ${BORDERS.thick}
             border-black
-            ${BRUTAL_RADIUS.normal}
-            ${BRUTAL_SHADOWS.medium}
+            ${RADIUS.normal}
+            ${SHADOWS.medium}
             transition-all ${TRANSITIONS.fast}
             ${tileDisabled
               ? 'opacity-60 cursor-not-allowed bg-slate-300'
@@ -101,9 +101,9 @@ export function GenerationControls({
               <div className="flex items-center gap-3">
                 <span className={`
                   inline-flex h-10 w-10 items-center justify-center
-                  ${BRUTAL_BORDERS.normal}
+                  ${BORDERS.normal}
                   border-black
-                  ${BRUTAL_RADIUS.subtle}
+                  ${RADIUS.subtle}
                   ${tileDisabled ? 'bg-slate-400 text-slate-600' : 'bg-white text-orange-500'}
                 `}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -139,10 +139,10 @@ export function GenerationControls({
               }}
               className={`
                 absolute top-3 right-3 p-2
-                ${BRUTAL_BORDERS.normal}
+                ${BORDERS.normal}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
-                ${BRUTAL_SHADOWS.small}
+                ${RADIUS.subtle}
+                ${SHADOWS.small}
                 bg-white
                 text-black
                 transition-all ${TRANSITIONS.fast}
@@ -162,10 +162,10 @@ export function GenerationControls({
         <div
           className={`
             relative overflow-hidden
-            ${BRUTAL_BORDERS.thick}
+            ${BORDERS.thick}
             border-black
-            ${BRUTAL_RADIUS.normal}
-            ${BRUTAL_SHADOWS.medium}
+            ${RADIUS.normal}
+            ${SHADOWS.medium}
             opacity-60 cursor-not-allowed bg-slate-300
           `}
         >
@@ -174,9 +174,9 @@ export function GenerationControls({
               <div className="flex items-center gap-3">
                 <span className={`
                   inline-flex h-10 w-10 items-center justify-center
-                  ${BRUTAL_BORDERS.normal}
+                  ${BORDERS.normal}
                   border-black
-                  ${BRUTAL_RADIUS.subtle}
+                  ${RADIUS.subtle}
                   bg-slate-400 text-slate-600
                 `}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -194,9 +194,9 @@ export function GenerationControls({
               </div>
               <span className={`
                 inline-flex items-center gap-1.5 px-2 py-1
-                ${BRUTAL_BORDERS.thin}
+                ${BORDERS.thin}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
+                ${RADIUS.subtle}
                 bg-slate-400 text-slate-600 font-bold text-xs
               `}>
                 Bientot disponible
@@ -208,10 +208,10 @@ export function GenerationControls({
         <div
           className={`
             relative overflow-hidden
-            ${BRUTAL_BORDERS.thick}
+            ${BORDERS.thick}
             border-black
-            ${BRUTAL_RADIUS.normal}
-            ${BRUTAL_SHADOWS.medium}
+            ${RADIUS.normal}
+            ${SHADOWS.medium}
             opacity-60 cursor-not-allowed bg-slate-300
           `}
         >
@@ -220,9 +220,9 @@ export function GenerationControls({
               <div className="flex items-center gap-3">
                 <span className={`
                   inline-flex h-10 w-10 items-center justify-center
-                  ${BRUTAL_BORDERS.normal}
+                  ${BORDERS.normal}
                   border-black
-                  ${BRUTAL_RADIUS.subtle}
+                  ${RADIUS.subtle}
                   bg-slate-400 text-slate-600
                 `}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -237,9 +237,9 @@ export function GenerationControls({
               </div>
               <span className={`
                 inline-flex items-center gap-1.5 px-2 py-1
-                ${BRUTAL_BORDERS.thin}
+                ${BORDERS.thin}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
+                ${RADIUS.subtle}
                 bg-slate-400 text-slate-600 font-bold text-xs
               `}>
                 Bientot disponible
@@ -261,10 +261,10 @@ export function GenerationControls({
               className={`
                 px-6 py-3
                 bg-white
-                ${BRUTAL_BORDERS.normal}
+                ${BORDERS.normal}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
-                ${BRUTAL_SHADOWS.medium}
+                ${RADIUS.subtle}
+                ${SHADOWS.medium}
                 font-bold text-black
                 transition-all ${TRANSITIONS.fast}
                 hover:translate-x-[2px] hover:translate-y-[2px]
@@ -278,10 +278,10 @@ export function GenerationControls({
               className={`
                 px-6 py-3
                 bg-orange-500
-                ${BRUTAL_BORDERS.normal}
+                ${BORDERS.normal}
                 border-black
-                ${BRUTAL_RADIUS.subtle}
-                ${BRUTAL_SHADOWS.medium}
+                ${RADIUS.subtle}
+                ${SHADOWS.medium}
                 font-bold text-white
                 transition-all ${TRANSITIONS.fast}
                 hover:translate-x-[2px] hover:translate-y-[2px]
@@ -347,9 +347,9 @@ export function GenerationControls({
               </div>
               <div className={`
                   w-full h-3
-                  ${BRUTAL_BORDERS.thin}
+                  ${BORDERS.thin}
                   border-black
-                  ${BRUTAL_RADIUS.subtle}
+                  ${RADIUS.subtle}
                   bg-slate-100
                   overflow-hidden
                 `}>

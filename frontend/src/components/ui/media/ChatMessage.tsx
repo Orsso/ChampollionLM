@@ -1,11 +1,11 @@
 /**
  * ChatMessage Component
- * Displays individual chat messages with Neo-Brutalist styling
+ * Displays individual chat messages with styled bubbles
  * Shows sources used when RAG search was performed
  */
 
 import { useState } from 'react';
-import { BRUTAL_SHADOWS, BRUTAL_BORDERS, BRUTAL_RADIUS } from '../../../constants/styles';
+import { SHADOWS, BORDERS, RADIUS } from '../../../constants/styles';
 import { useMarkdown } from '../../../lib/useMarkdown';
 
 interface ChunkPreview {
@@ -66,7 +66,7 @@ function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; 
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className={`mt-4 pt-3 ${BRUTAL_BORDERS.thin} border-x-0 border-b-0 border-slate-200`}>
+        <div className={`mt-4 pt-3 ${BORDERS.thin} border-x-0 border-b-0 border-slate-200`}>
             {/* Sources header - clickable to expand */}
             <div
                 className="flex flex-wrap items-center gap-2 mb-2 cursor-pointer"
@@ -82,7 +82,7 @@ function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; 
                         key={idx}
                         className={`
                             px-2 py-0.5 text-[10px] font-bold
-                            ${BRUTAL_BORDERS.thin} border-black ${BRUTAL_RADIUS.subtle}
+                            ${BORDERS.thin} border-black ${RADIUS.subtle}
                             bg-orange-50 text-black
                         `}
                     >
@@ -98,7 +98,7 @@ function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; 
                         <div
                             key={idx}
                             className={`
-                                p-3 ${BRUTAL_BORDERS.thin} border-slate-300 ${BRUTAL_RADIUS.subtle}
+                                p-3 ${BORDERS.thin} border-slate-300 ${RADIUS.subtle}
                                 bg-slate-50
                             `}
                         >
@@ -138,10 +138,10 @@ export function ChatMessage({ role, content, metadata, isStreaming }: ChatMessag
         <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
             <div
                 className={`
-                    max-w-[90%] p-4 ${BRUTAL_RADIUS.normal} ${BRUTAL_BORDERS.normal} border-black
+                    max-w-[90%] p-4 ${RADIUS.normal} ${BORDERS.normal} border-black
                     ${isUser
-                        ? 'bg-orange-100 ' + BRUTAL_SHADOWS.small
-                        : 'bg-white ' + BRUTAL_SHADOWS.small
+                        ? 'bg-orange-100 ' + SHADOWS.small
+                        : 'bg-white ' + SHADOWS.small
                     }
                     ${isStreaming ? 'relative overflow-hidden' : ''}
                 `}
@@ -151,7 +151,7 @@ export function ChatMessage({ role, content, metadata, isStreaming }: ChatMessag
                     <div className="mb-3">
                         <span className={`
                             inline-block px-2 py-1 text-[10px] font-black uppercase tracking-wider
-                            ${BRUTAL_BORDERS.thin} border-black ${BRUTAL_RADIUS.subtle}
+                            ${BORDERS.thin} border-black ${RADIUS.subtle}
                             bg-orange-300 text-black
                         `}>
                             {ACTION_LABELS[metadata.action] || metadata.action.toUpperCase()}
@@ -162,8 +162,8 @@ export function ChatMessage({ role, content, metadata, isStreaming }: ChatMessag
                 {/* Selected text preview */}
                 {metadata?.selected_text && (
                     <div className={`
-                        mb-3 p-3 ${BRUTAL_RADIUS.subtle}
-                        bg-slate-100 ${BRUTAL_BORDERS.thin} border-slate-300
+                        mb-3 p-3 ${RADIUS.subtle}
+                        bg-slate-100 ${BORDERS.thin} border-slate-300
                         text-sm text-slate-600 italic
                     `}>
                         « {metadata.selected_text.slice(0, 100)}{metadata.selected_text.length > 100 ? '...' : ''} »

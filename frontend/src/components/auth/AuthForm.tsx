@@ -5,8 +5,8 @@ import { useAuth } from '../../hooks';
 import { AnimatedInput } from '../ui/forms';
 import { Button } from '../ui/buttons';
 import { Alert } from '../ui/feedback';
-import { BrutalPageHeader } from '../ui/layout';
-import { BRUTAL_CARD_VARIANTS } from '../../constants/styles';
+import { PageHeader } from '../ui/layout';
+import { CARD_VARIANTS } from '../../constants/styles';
 
 /**
  * Props for the AuthForm component.
@@ -24,7 +24,7 @@ interface FormData {
 
 /**
  * Handles user authentication (login or registration).
- * Features neo-brutalist styling with animated inputs and form validation.
+ * Features styled inputs and form validation.
  */
 export function AuthForm({ mode }: AuthFormProps) {
   const { login, register: registerUser } = useAuth();
@@ -55,7 +55,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
-      <div className={`relative z-10 w-full max-w-md p-8 ${BRUTAL_CARD_VARIANTS.default}`}>
+      <div className={`relative z-10 w-full max-w-md p-8 ${CARD_VARIANTS.default}`}>
         {/* Back to home link */}
         <Link
           to="/"
@@ -65,8 +65,8 @@ export function AuthForm({ mode }: AuthFormProps) {
           <span>Retour à l'accueil</span>
         </Link>
 
-        {/* Header with brutal styling */}
-        <BrutalPageHeader
+        {/* Header */}
+        <PageHeader
           title="Champollion"
           subtitle={mode === 'login' ? 'Connexion' : 'Créer un compte'}
           variant="colored"
@@ -144,7 +144,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           </Button>
         </form>
 
-        {/* Links with brutal style */}
+        {/* Links */}
         <p className="text-black text-sm mt-6 text-center font-medium">
           {mode === 'login' ? (
             <>
@@ -172,4 +172,3 @@ export function AuthForm({ mode }: AuthFormProps) {
     </div>
   );
 }
-

@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react';
 /**
  * Waveform Component
  *
- * Neo-Brutalist audio waveform visualization with bold, vertical bars.
+ * Audio waveform visualization with bold, vertical bars.
  * Matches the visual identity from the homepage with dynamic bar animations.
  *
  * Features:

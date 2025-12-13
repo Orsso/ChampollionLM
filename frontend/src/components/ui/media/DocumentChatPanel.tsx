@@ -1,14 +1,13 @@
 /**
  * DocumentChatPanel Component
  * Sidebar chat interface for document conversations
- * Neo-Brutalist styling without emojis
  */
 
 import { useState, useRef, useEffect, useCallback, type FormEvent, type KeyboardEvent } from 'react';
 import { useDocumentChat, type ChatOptions } from '../../../hooks/useDocumentChat';
 import { ChatMessage } from './ChatMessage';
-import { BrutalTextarea } from '../forms';
-import { BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS, BRUTAL_BUTTON_VARIANTS, TRANSITIONS } from '../../../constants/styles';
+import { Textarea } from '../forms';
+import { BORDERS, SHADOWS, RADIUS, BUTTON_VARIANTS, TRANSITIONS } from '../../../constants/styles';
 
 interface DocumentChatPanelProps {
     documentId: number;
@@ -17,7 +16,7 @@ interface DocumentChatPanelProps {
     onClose: () => void;
 }
 
-// Icons as SVG components for Neo-Brutalist consistency
+// Icons as SVG components
 const TrashIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <polyline points="3,6 5,6 21,6" />
@@ -128,13 +127,13 @@ export function DocumentChatPanel({
     return (
         <div className={`
       flex flex-col h-full w-[400px] min-w-[360px]
-      ${BRUTAL_BORDERS.normal} border-l-0 border-black
+      ${BORDERS.normal} border-l-0 border-black
       bg-slate-50
     `}>
             {/* Header */}
             <div className={`
         flex items-center justify-between px-5 py-4
-        ${BRUTAL_BORDERS.normal} border-t-0 border-x-0 border-black
+        ${BORDERS.normal} border-t-0 border-x-0 border-black
         bg-white
       `}>
                 <h3 className="font-black text-base uppercase tracking-wide text-black">
@@ -146,7 +145,7 @@ export function DocumentChatPanel({
                             onClick={clearHistory}
                             className={`
                 p-2
-                ${BRUTAL_BORDERS.thin} border-black ${BRUTAL_RADIUS.subtle}
+                ${BORDERS.thin} border-black ${RADIUS.subtle}
                 hover:bg-red-100 ${TRANSITIONS.fast}
                 text-slate-600 hover:text-red-600
               `}
@@ -159,7 +158,7 @@ export function DocumentChatPanel({
                         onClick={onClose}
                         className={`
               p-2
-              ${BRUTAL_BORDERS.thin} border-black ${BRUTAL_RADIUS.subtle}
+              ${BORDERS.thin} border-black ${RADIUS.subtle}
               hover:bg-slate-200 ${TRANSITIONS.fast}
               text-slate-600 hover:text-black
             `}
@@ -179,7 +178,7 @@ export function DocumentChatPanel({
                     <div className="flex items-center justify-center h-full">
                         <div className={`
               px-4 py-2 font-bold text-sm
-              ${BRUTAL_BORDERS.thin} border-black ${BRUTAL_RADIUS.subtle}
+              ${BORDERS.thin} border-black ${RADIUS.subtle}
               bg-white animate-pulse
             `}>
                             Chargement...
@@ -189,8 +188,8 @@ export function DocumentChatPanel({
                     <div className="flex flex-col items-center justify-center h-full text-center px-4">
                         <div className={`
               mb-6 p-4
-              ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal}
-              bg-white ${BRUTAL_SHADOWS.small}
+              ${BORDERS.normal} border-black ${RADIUS.normal}
+              bg-white ${SHADOWS.small}
               text-orange-500
             `}>
                             <ChatBubbleIcon />
@@ -221,8 +220,8 @@ export function DocumentChatPanel({
                         {isStreaming && messages.length > 0 && messages[messages.length - 1]?.content.trim() === '' && (
                             <div className={`
                                 flex items-center gap-3 p-4
-                                ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal}
-                                bg-white ${BRUTAL_SHADOWS.small}
+                                ${BORDERS.normal} border-black ${RADIUS.normal}
+                                bg-white ${SHADOWS.small}
                             `}>
                                 <div className="flex gap-1">
                                     <div className="w-2 h-2 bg-black rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
@@ -241,8 +240,8 @@ export function DocumentChatPanel({
                         {searchStatus.isSearching && messages[messages.length - 1]?.content.trim() !== '' && (
                             <div className={`
                                 flex items-center gap-3 p-4
-                                ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal}
-                                bg-orange-50 ${BRUTAL_SHADOWS.small}
+                                ${BORDERS.normal} border-black ${RADIUS.normal}
+                                bg-orange-50 ${SHADOWS.small}
                             `}>
                                 <div className="flex items-center gap-2">
                                     <SearchIcon />
@@ -264,7 +263,7 @@ export function DocumentChatPanel({
                 {/* Error display */}
                 {error && (
                     <div className={`
-            mt-4 p-4 ${BRUTAL_BORDERS.normal} border-red-500 ${BRUTAL_RADIUS.normal}
+            mt-4 p-4 ${BORDERS.normal} border-red-500 ${RADIUS.normal}
             bg-red-50 text-red-700 font-bold text-sm
           `}>
                         Erreur: {error}
@@ -275,7 +274,7 @@ export function DocumentChatPanel({
             {/* Pending action indicator */}
             {pendingAction && (
                 <div className={`
-          px-5 py-3 ${BRUTAL_BORDERS.thin} border-x-0 border-black
+          px-5 py-3 ${BORDERS.thin} border-x-0 border-black
           bg-orange-100 text-sm
         `}>
                     <div className="flex items-center justify-between">
@@ -286,7 +285,7 @@ export function DocumentChatPanel({
                             onClick={() => setPendingAction(null)}
                             className={`
                 text-xs font-bold px-2 py-1
-                ${BRUTAL_BORDERS.thin} border-black ${BRUTAL_RADIUS.subtle}
+                ${BORDERS.thin} border-black ${RADIUS.subtle}
                 hover:bg-red-100 hover:text-red-600 ${TRANSITIONS.fast}
               `}
                         >
@@ -300,12 +299,12 @@ export function DocumentChatPanel({
             <form
                 onSubmit={handleSubmit}
                 className={`
-          p-5 ${BRUTAL_BORDERS.normal} border-b-0 border-x-0 border-black
+          p-5 ${BORDERS.normal} border-b-0 border-x-0 border-black
           bg-white
         `}
             >
                 <div className="flex gap-3 items-center">
-                    <BrutalTextarea
+                    <Textarea
                         ref={inputRef}
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
@@ -320,8 +319,8 @@ export function DocumentChatPanel({
                         disabled={!inputValue.trim() || isStreaming}
                         className={`
               p-4 font-bold
-              ${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_RADIUS.normal}
-              ${BRUTAL_SHADOWS.medium}
+              ${BUTTON_VARIANTS.primary} ${RADIUS.normal}
+              ${SHADOWS.medium}
               disabled:opacity-50 disabled:cursor-not-allowed
               disabled:hover:translate-x-0 disabled:hover:translate-y-0
               disabled:hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]

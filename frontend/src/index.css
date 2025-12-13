@@ -1,28 +1,28 @@
-/* Import Neo-Brutalist Typography */
+/* Import Typography */
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 @import "./styles/markdown.css";
 
 @theme {
-  /* Typography - Neo-Brutalist Bold Weights */
+  /* Typography - Bold Weights */
   --font-family-sans: 'Space Grotesk', system-ui, sans-serif;
   --font-weight-normal: 500;
   --font-weight-medium: 600;
   --font-weight-bold: 700;
 
-  /* Custom Border Widths for Neo-Brutalism */
+  /* Custom Border Widths */
   --width-3: 3px;
 
-  /* Primary Orange Palette (Preserved) */
+  /* Primary Orange Palette */
   --color-orange-400: #fb923c;
   --color-orange-500: #f97316;
   --color-orange-600: #ea580c;
 
-  /* Additional Saturated Colors for Neo-Brutalism */
-  --color-brutal-yellow: #facc15;
-  --color-brutal-pink: #ec4899;
-  --color-brutal-cyan: #06b6d4;
+  /* Additional Accent Colors */
+  --color-accent-yellow: #facc15;
+  --color-accent-pink: #ec4899;
+  --color-accent-cyan: #06b6d4;
 }
 
 :root {
@@ -36,7 +36,7 @@ body {
   font-weight: 500;
 }
 
-/* Neo-Brutalist Scrollbar (Angular, No Rounding) */
+/* Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 10px;
 }
@@ -85,17 +85,17 @@ body {
   animation: shiny-text 3s ease-in-out infinite;
 }
 
-/* Neo-Brutalist Background Patterns */
+/* Background Patterns */
 @layer components {
 
   /* Dot grid pattern */
-  .brutal-bg-dots {
+  .bg-pattern-dots {
     background-image: radial-gradient(circle, rgba(0, 0, 0, 0.15) 1px, transparent 1px);
     background-size: 24px 24px;
   }
 
   /* Grid lines pattern */
-  .brutal-bg-grid {
+  .bg-pattern-grid {
     background-image:
       linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
       linear-gradient(90deg, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
@@ -103,7 +103,7 @@ body {
   }
 
   /* Diagonal stripes pattern */
-  .brutal-bg-stripes {
+  .bg-pattern-stripes {
     background-image: repeating-linear-gradient(45deg,
         transparent,
         transparent 20px,
@@ -111,13 +111,13 @@ body {
         rgba(0, 0, 0, 0.03) 40px);
   }
 
-  /* Main brutal background with geometric shapes */
-  .brutal-bg-main {
+  /* Main background with geometric shapes */
+  .bg-main {
     position: relative;
     background: linear-gradient(135deg, #fff9f5 0%, #fffbf0 50%, #fef8ff 100%);
   }
 
-  .brutal-bg-main::before {
+  .bg-main::before {
     content: '';
     position: fixed;
     top: -10%;
@@ -130,7 +130,7 @@ body {
     z-index: 0;
   }
 
-  .brutal-bg-main::after {
+  .bg-main::after {
     content: '';
     position: fixed;
     bottom: -10%;
@@ -144,7 +144,7 @@ body {
   }
 
   /* Geometric accent shapes */
-  .brutal-accent-shapes {
+  .accent-shapes {
     position: fixed;
     inset: 0;
     pointer-events: none;
@@ -153,7 +153,7 @@ body {
   }
 
   /* Yellow rotated square - top right */
-  .brutal-accent-shapes::before {
+  .accent-shapes::before {
     content: '';
     position: absolute;
     top: 20%;
@@ -166,7 +166,7 @@ body {
   }
 
   /* Pink circle - bottom left */
-  .brutal-accent-shapes::after {
+  .accent-shapes::after {
     content: '';
     position: absolute;
     bottom: 25%;
@@ -179,7 +179,7 @@ body {
   }
 
   /* Additional geometric shapes using pseudo-elements on inner divs */
-  .brutal-shapes-extra {
+  .shapes-extra {
     position: fixed;
     inset: 0;
     pointer-events: none;
@@ -187,7 +187,7 @@ body {
   }
 
   /* Cyan triangle - top left */
-  .brutal-shapes-extra::before {
+  .shapes-extra::before {
     content: '';
     position: absolute;
     top: 15%;
@@ -201,7 +201,7 @@ body {
   }
 
   /* Orange rectangle - middle right */
-  .brutal-shapes-extra::after {
+  .shapes-extra::after {
     content: '';
     position: absolute;
     top: 45%;
@@ -214,14 +214,14 @@ body {
   }
 
   /* Small accent dots scattered */
-  .brutal-bg-accent-dots {
+  .accent-dots {
     position: fixed;
     inset: 0;
     pointer-events: none;
     z-index: 0;
   }
 
-  .brutal-bg-accent-dots::before {
+  .accent-dots::before {
     content: '';
     position: absolute;
     top: 60%;
@@ -232,7 +232,7 @@ body {
     border-radius: 50%;
   }
 
-  .brutal-bg-accent-dots::after {
+  .accent-dots::after {
     content: '';
     position: absolute;
     top: 35%;

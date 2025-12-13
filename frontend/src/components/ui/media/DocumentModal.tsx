@@ -7,7 +7,7 @@ import { IconButton, ConfirmDeleteButton } from '../buttons';
 import { AnimatedInput } from '../forms';
 import { PlusIcon, CheckIcon, DocumentIcon, EditIcon } from '../icons';
 import { ExportMenu, type ExportOption } from './ExportMenu';
-import { BRUTAL_BORDERS, BRUTAL_RADIUS, BRUTAL_SHADOWS } from '../../../constants/styles';
+import { BORDERS, RADIUS, SHADOWS } from '../../../constants/styles';
 import { API_BASE_URL, getToken } from '../../../lib/api';
 import { createSource } from '../../../hooks/useSources';
 import type { Document } from '../../../types';
@@ -147,9 +147,9 @@ export function DocumentModal({
           <div className="flex items-center gap-2">
             <span className={`
               inline-flex h-10 w-10 items-center justify-center
-              ${BRUTAL_BORDERS.normal}
+              ${BORDERS.normal}
               border-black
-              ${BRUTAL_RADIUS.subtle}
+              ${RADIUS.subtle}
               bg-orange-500 text-white
             `}>
               <DocumentIcon />
@@ -172,7 +172,7 @@ export function DocumentModal({
               tooltip={chatOpen ? 'Fermer le chat' : 'Ouvrir le chat'}
               icon={<ChatIcon />}
               variant={chatOpen ? 'primary' : 'default'}
-              className={`${BRUTAL_SHADOWS.small}`}
+              className={`${SHADOWS.small}`}
             />
             <IconButton
               onClick={handleAddToSource}
@@ -233,9 +233,9 @@ export function DocumentModal({
                 onClick={() => setRenameOpen(false)}
                 className={`
                   px-4 py-2
-                  ${BRUTAL_BORDERS.normal}
+                  ${BORDERS.normal}
                   border-black
-                  ${BRUTAL_RADIUS.subtle}
+                  ${RADIUS.subtle}
                   bg-white text-black font-bold
                 `}
               >
@@ -245,9 +245,9 @@ export function DocumentModal({
                 onClick={handleRenameSubmit}
                 className={`
                   px-4 py-2
-                  ${BRUTAL_BORDERS.normal}
+                  ${BORDERS.normal}
                   border-black
-                  ${BRUTAL_RADIUS.subtle}
+                  ${RADIUS.subtle}
                   bg-orange-500 text-white font-bold
                 `}
               >

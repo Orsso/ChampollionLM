@@ -9,8 +9,8 @@ export * from './feedback';
 
 // Layout
 export * from './layout';
-export * from './BrutalBackground';
-export * from './BrutalPage';
+export * from './PatternBackground';
+export * from './PageWrapper';
 
 // Navigation
 export * from './navigation';

@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { fetcher } from '../lib/api';
-import { BrutalPageHeader } from '../components/ui/layout';
+import { PageHeader } from '../components/ui/layout';
 import { Button } from '../components/ui/buttons';
 import { Alert } from '../components/ui/feedback';
-import { BRUTAL_CARD_VARIANTS, BRUTAL_BORDERS } from '../constants/styles';
+import { CARD_VARIANTS, BORDERS } from '../constants/styles';
 import type { UserAdmin } from '../types';
 
 /**
@@ -116,7 +116,7 @@ export function AdminPanel() {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <BrutalPageHeader
+            <PageHeader
                 title="Panel Admin"
                 subtitle="Gestion des accès demo"
             />
@@ -136,7 +136,7 @@ export function AdminPanel() {
             )}
 
             {/* Grant Access Form */}
-            <div className={`${BRUTAL_CARD_VARIANTS.default} mb-8`}>
+            <div className={`${CARD_VARIANTS.default} mb-8`}>
                 <h2 className="text-xl font-black uppercase mb-4 text-black">Accorder un accès demo</h2>
                 <form onSubmit={handleGrantAccess} className="space-y-4">
                     <div>
@@ -146,7 +146,7 @@ export function AdminPanel() {
                             value={grantEmail}
                             onChange={(e) => setGrantEmail(e.target.value)}
                             required
-                            className={`w-full p-3 ${BRUTAL_BORDERS.normal} border-black focus:outline-none focus:ring-2 focus:ring-orange-500`}
+                            className={`w-full p-3 ${BORDERS.normal} border-black focus:outline-none focus:ring-2 focus:ring-orange-500`}
                             placeholder="utilisateur@example.com"
                         />
                     </div>
@@ -156,7 +156,7 @@ export function AdminPanel() {
                             <select
                                 value={grantDays}
                                 onChange={(e) => setGrantDays(Number(e.target.value))}
-                                className={`w-full p-3 ${BRUTAL_BORDERS.normal} border-black focus:outline-none`}
+                                className={`w-full p-3 ${BORDERS.normal} border-black focus:outline-none`}
                             >
                                 <option value={7}>7 jours</option>
                                 <option value={14}>14 jours</option>
@@ -171,7 +171,7 @@ export function AdminPanel() {
                                 type="text"
                                 value={grantNotes}
                                 onChange={(e) => setGrantNotes(e.target.value)}
-                                className={`w-full p-3 ${BRUTAL_BORDERS.normal} border-black focus:outline-none`}
+                                className={`w-full p-3 ${BORDERS.normal} border-black focus:outline-none`}
                                 placeholder="Beta tester, Influencer..."
                             />
                         </div>
@@ -186,7 +186,7 @@ export function AdminPanel() {
             </div>
 
             {/* Users List */}
-            <div className={`${BRUTAL_CARD_VARIANTS.default}`}>
+            <div className={`${CARD_VARIANTS.default}`}>
                 <h2 className="text-xl font-black uppercase mb-4 text-black">
                     Utilisateurs ({users.length})
                 </h2>
@@ -198,7 +198,7 @@ export function AdminPanel() {
                         {users.map((u) => (
                             <div
                                 key={u.id}
-                                className={`p-4 ${BRUTAL_BORDERS.thin} flex items-center justify-between gap-4`}
+                                className={`p-4 ${BORDERS.thin} flex items-center justify-between gap-4`}
                             >
                                 <div className="flex-1 min-w-0">
                                     <div className="font-bold truncate text-black">{u.email}</div>

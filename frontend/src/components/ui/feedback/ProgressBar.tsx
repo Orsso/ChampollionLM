@@ -1,9 +1,9 @@
-import { BRUTAL_BORDERS, BRUTAL_RADIUS, TRANSITIONS } from '../../../constants/styles';
+import { BORDERS, RADIUS, TRANSITIONS } from '../../../constants/styles';
 
 /**
  * ProgressBar Component
  *
- * Neo-brutalist progress indicator with bold borders.
+ * Progress indicator with bold borders.
  * Solid color blocks, no gradients.
  *
  * @example
@@ -38,7 +38,7 @@ export function ProgressBar({
 
   return (
     <div className={`w-full ${className}`}>
-      <div className={`w-full h-4 bg-slate-700 ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.subtle} overflow-hidden`}>
+      <div className={`w-full h-4 bg-slate-700 ${BORDERS.normal} border-black ${RADIUS.subtle} overflow-hidden`}>
         <div
           className={`h-full ${colorClasses[color]} transition-all ${TRANSITIONS.normal} ease-out`}
           style={{ width: `${clampedValue}%` }}
@@ -56,4 +56,3 @@ export function ProgressBar({
     </div>
   );
 }
-

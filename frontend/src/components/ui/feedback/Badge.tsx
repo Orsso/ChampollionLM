@@ -1,10 +1,10 @@
 import React from 'react';
-import { BRUTAL_BORDERS, BRUTAL_RADIUS } from '../../../constants/styles';
+import { BORDERS, RADIUS } from '../../../constants/styles';
 
 /**
  * Badge Component
  *
- * Neo-brutalist status badge with color variants for different states.
+ * Status badge with color variants for different states.
  * Opaque backgrounds with bold borders and saturated colors.
  *
  * @example
@@ -35,9 +35,8 @@ export function Badge({
   };
 
   return (
-    <span className={`inline-flex items-center px-3 py-1 ${BRUTAL_RADIUS.subtle} text-xs font-bold uppercase tracking-wide ${BRUTAL_BORDERS.thin} ${colorClasses[color]} ${className}`}>
+    <span className={`inline-flex items-center px-3 py-1 ${RADIUS.subtle} text-xs font-bold uppercase tracking-wide ${BORDERS.thin} ${colorClasses[color]} ${className}`}>
       {children}
     </span>
   );
 }
-

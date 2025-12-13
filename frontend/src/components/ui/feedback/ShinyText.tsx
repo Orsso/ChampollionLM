@@ -4,7 +4,7 @@ import React from 'react';
  * ShinyText Component
  *
  * Animated text with a bold gradient effect that moves across the text.
- * Neo-brutalist take on animated text - bold font with vibrant gradient.
+ * Bold font with vibrant gradient animation.
  * Perfect for loading states and AI generation indicators.
  *
  * @example

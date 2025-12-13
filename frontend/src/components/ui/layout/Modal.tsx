@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { BRUTAL_CARD_VARIANTS, BRUTAL_BORDERS, BRUTAL_RADIUS, TRANSITIONS } from '../../../constants/styles';
+import { CARD_VARIANTS, BORDERS, RADIUS, TRANSITIONS } from '../../../constants/styles';
 
 interface ModalProps {
   isOpen: boolean;
@@ -36,8 +36,8 @@ export function Modal({ isOpen, onClose, title, headerRight, children, footer, m
 
   return (
     <div ref={overlayRef} className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 opacity-0 px-4 pt-20" onClick={handleOverlayClick}>
-      <div ref={modalRef} className={`relative w-full ${maxWidth} max-h-[calc(95vh-5rem)] ${BRUTAL_CARD_VARIANTS.dark} ${BRUTAL_RADIUS.normal} overflow-hidden opacity-0`}>
-        <div className={`flex items-center justify-between p-6 ${BRUTAL_BORDERS.normal} border-b-black bg-orange-50`}>
+      <div ref={modalRef} className={`relative w-full ${maxWidth} max-h-[calc(95vh-5rem)] ${CARD_VARIANTS.dark} ${RADIUS.normal} overflow-hidden opacity-0`}>
+        <div className={`flex items-center justify-between p-6 ${BORDERS.normal} border-b-black bg-orange-50`}>
           <div className="flex items-center gap-3">
             {typeof title === 'string' ? (
               <h2 className="text-lg font-bold text-black">{title}</h2>
@@ -49,7 +49,7 @@ export function Modal({ isOpen, onClose, title, headerRight, children, footer, m
             {headerRight}
             <button
               onClick={onClose}
-              className={`p-2 ${BRUTAL_RADIUS.normal} text-black hover:text-orange-600 hover:bg-orange-100 ${BRUTAL_BORDERS.thin} border-transparent hover:border-black transition-all ${TRANSITIONS.fast}`}
+              className={`p-2 ${RADIUS.normal} text-black hover:text-orange-600 hover:bg-orange-100 ${BORDERS.thin} border-transparent hover:border-black transition-all ${TRANSITIONS.fast}`}
               aria-label="Fermer"
             >
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
@@ -60,7 +60,7 @@ export function Modal({ isOpen, onClose, title, headerRight, children, footer, m
           </div>
         </div>
         <div className="p-6 overflow-y-auto max-h-[calc(95vh-12rem)] bg-white">{children}</div>
-        {footer && <div className={`p-4 ${BRUTAL_BORDERS.normal} border-t-black bg-orange-50`}>{footer}</div>}
+        {footer && <div className={`p-4 ${BORDERS.normal} border-t-black bg-orange-50`}>{footer}</div>}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { BrutalPage } from '../components/ui/BrutalPage';
+import { PageWrapper } from '../components/ui/PageWrapper';
 import {
   MicrophoneIcon,
   SparklesIcon,
@@ -7,11 +7,11 @@ import {
   YouTubeIcon
 } from '../components/ui/icons/Icons';
 import {
-  BRUTAL_CARD_VARIANTS,
-  BRUTAL_BUTTON_VARIANTS,
-  BRUTAL_SHADOWS,
-  BRUTAL_RADIUS,
-  BRUTAL_BORDERS,
+  CARD_VARIANTS,
+  BUTTON_VARIANTS,
+  SHADOWS,
+  RADIUS,
+  BORDERS,
   TRANSITIONS,
 } from '../constants/styles';
 
@@ -27,7 +27,7 @@ const features: Feature[] = [
     icon: MicrophoneIcon,
     title: 'Transcription Audio',
     description: 'Convertissez vos enregistrements en texte avec Mistral Voxtral STT. Précision maximale pour vos cours.',
-    color: 'bg-brutal-cyan',
+    color: 'bg-accent-cyan',
   },
   {
     icon: YouTubeIcon,
@@ -39,19 +39,19 @@ const features: Feature[] = [
     icon: FolderOpenIcon,
     title: 'Multi-Sources',
     description: 'Combinez audio, vidéos et documents. Créez des notes complètes à partir de toutes vos ressources.',
-    color: 'bg-brutal-yellow',
+    color: 'bg-accent-yellow',
   },
   {
     icon: SparklesIcon,
     title: 'Synthèse IA',
     description: 'Mistral AI structure vos contenus en documents professionnels.',
-    color: 'bg-brutal-pink',
+    color: 'bg-accent-pink',
   },
 ];
 
 export function Home() {
   return (
-    <BrutalPage variant="grid" showShapes={false}>
+    <PageWrapper variant="grid" showShapes={false}>
       {/* Navigation Bar */}
       <nav className="relative z-20 border-b-3 border-black bg-white">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -59,14 +59,14 @@ export function Home() {
           <div className="flex gap-3">
             <Link to="/login">
               <button
-                className={`${BRUTAL_BUTTON_VARIANTS.secondary} ${BRUTAL_SHADOWS.medium} ${BRUTAL_RADIUS.normal} px-6 py-2 text-sm`}
+                className={`${BUTTON_VARIANTS.secondary} ${SHADOWS.medium} ${RADIUS.normal} px-6 py-2 text-sm`}
               >
                 Se connecter
               </button>
             </Link>
             <Link to="/register">
               <button
-                className={`${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_SHADOWS.medium} ${BRUTAL_RADIUS.normal} px-6 py-2 text-sm`}
+                className={`${BUTTON_VARIANTS.primary} ${SHADOWS.medium} ${RADIUS.normal} px-6 py-2 text-sm`}
               >
                 S'inscrire
               </button>
@@ -82,7 +82,7 @@ export function Home() {
           <div className="space-y-6">
             <div className="inline-block">
               <span
-                className={`inline-block px-4 py-2 ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal} bg-brutal-yellow text-black text-sm font-bold ${BRUTAL_SHADOWS.small}`}
+                className={`inline-block px-4 py-2 ${BORDERS.normal} border-black ${RADIUS.normal} bg-accent-yellow text-black text-sm font-bold ${SHADOWS.small}`}
               >
                 IA • Transcription • Notes
               </span>
@@ -106,14 +106,14 @@ export function Home() {
             <div className="flex flex-wrap gap-4 pt-4">
               <Link to="/register">
                 <button
-                  className={`${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_SHADOWS.large} ${BRUTAL_RADIUS.normal} px-8 py-4 text-lg ${TRANSITIONS.normal}`}
+                  className={`${BUTTON_VARIANTS.primary} ${SHADOWS.large} ${RADIUS.normal} px-8 py-4 text-lg ${TRANSITIONS.normal}`}
                 >
                   Commencer gratuitement
                 </button>
               </Link>
               <Link to="/login">
                 <button
-                  className={`${BRUTAL_BUTTON_VARIANTS.ghost} ${BRUTAL_SHADOWS.large} ${BRUTAL_RADIUS.normal} px-8 py-4 text-lg ${TRANSITIONS.normal} bg-white`}
+                  className={`${BUTTON_VARIANTS.ghost} ${SHADOWS.large} ${RADIUS.normal} px-8 py-4 text-lg ${TRANSITIONS.normal} bg-white`}
                 >
                   Se connecter
                 </button>
@@ -129,7 +129,7 @@ export function Home() {
           <div className="relative">
             {/* Main Card Mockup */}
             <div
-              className={`${BRUTAL_CARD_VARIANTS.default} ${BRUTAL_RADIUS.normal} p-6 space-y-4 transform rotate-2`}
+              className={`${CARD_VARIANTS.default} ${RADIUS.normal} p-6 space-y-4 transform rotate-2`}
             >
               {/* Mockup Header */}
               <div className="flex items-center justify-between">
@@ -143,7 +143,7 @@ export function Home() {
               </div>
 
               {/* Mockup Audio Waveform */}
-              <div className={`${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal} bg-orange-100 p-4`}>
+              <div className={`${BORDERS.normal} border-black ${RADIUS.normal} bg-orange-100 p-4`}>
                 <div className="flex items-end gap-1 h-16 justify-center">
                   {[...Array(20)].map((_, i) => (
                     <div
@@ -167,7 +167,7 @@ export function Home() {
 
               {/* Mockup Button */}
               <button
-                className={`${BRUTAL_BUTTON_VARIANTS.primary} ${BRUTAL_SHADOWS.small} ${BRUTAL_RADIUS.normal} w-full py-2 text-sm pointer-events-none`}
+                className={`${BUTTON_VARIANTS.primary} ${SHADOWS.small} ${RADIUS.normal} w-full py-2 text-sm pointer-events-none`}
               >
                 Générer les notes
               </button>
@@ -175,14 +175,14 @@ export function Home() {
 
             {/* Floating Badge */}
             <div
-              className={`absolute -top-6 -left-6 ${BRUTAL_CARD_VARIANTS.accent} ${BRUTAL_RADIUS.normal} px-4 py-2 transform -rotate-12`}
+              className={`absolute -top-6 -left-6 ${CARD_VARIANTS.accent} ${RADIUS.normal} px-4 py-2 transform -rotate-12`}
             >
               <p className="text-white font-bold text-sm">Powered by Mistral AI</p>
             </div>
 
             {/* Floating Badge 2 */}
             <div
-              className={`absolute -bottom-4 -right-4 bg-brutal-cyan ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal} ${BRUTAL_SHADOWS.medium} px-4 py-2 transform rotate-6`}
+              className={`absolute -bottom-4 -right-4 bg-accent-cyan ${BORDERS.normal} border-black ${RADIUS.normal} ${SHADOWS.medium} px-4 py-2 transform rotate-6`}
             >
               <p className="text-black font-bold text-sm">Export PDF</p>
             </div>
@@ -207,10 +207,10 @@ export function Home() {
             return (
               <div
                 key={index}
-                className={`${BRUTAL_CARD_VARIANTS.default} ${BRUTAL_RADIUS.normal} p-6 space-y-4 hover:translate-y-[-4px] ${TRANSITIONS.normal}`}
+                className={`${CARD_VARIANTS.default} ${RADIUS.normal} p-6 space-y-4 hover:translate-y-[-4px] ${TRANSITIONS.normal}`}
               >
                 <div
-                  className={`w-14 h-14 ${feature.color} ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal} ${BRUTAL_SHADOWS.small} flex items-center justify-center`}
+                  className={`w-14 h-14 ${feature.color} ${BORDERS.normal} border-black ${RADIUS.normal} ${SHADOWS.small} flex items-center justify-center`}
                 >
                   <Icon size={28} className="text-black" />
                 </div>
@@ -229,7 +229,7 @@ export function Home() {
       {/* CTA Section */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 py-20">
         <div
-          className={`${BRUTAL_CARD_VARIANTS.accent} ${BRUTAL_RADIUS.normal} p-12 text-center space-y-6`}
+          className={`${CARD_VARIANTS.accent} ${RADIUS.normal} p-12 text-center space-y-6`}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-white">
             Prêt à démarrer ?
@@ -239,7 +239,7 @@ export function Home() {
           </p>
           <Link to="/register">
             <button
-              className={`bg-white text-black ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_RADIUS.normal} ${BRUTAL_SHADOWS.large} px-10 py-4 text-lg font-bold hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${TRANSITIONS.normal}`}
+              className={`bg-white text-black ${BORDERS.normal} border-black ${RADIUS.normal} ${SHADOWS.large} px-10 py-4 text-lg font-bold hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${TRANSITIONS.normal}`}
             >
               S'inscrire maintenant
             </button>
@@ -265,6 +265,6 @@ export function Home() {
           </div>
         </div>
       </footer>
-    </BrutalPage>
+    </PageWrapper>
   );
 }

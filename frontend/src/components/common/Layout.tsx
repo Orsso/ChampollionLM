@@ -7,8 +7,8 @@ import { useAuth } from '../../hooks';
 import { CreateProjectModal } from '../project/CreateProjectModal';
 import { FloatingActionButton } from '../ui/buttons';
 import { ClickSpark } from '../ui/effects';
-import { BrutalBackground } from '../ui';
-import { BRUTAL_BORDERS, BRUTAL_BACKGROUNDS, BRUTAL_BUTTON_DANGER } from '../../constants/styles';
+import { PatternBackground } from '../ui';
+import { BORDERS, BACKGROUNDS, BUTTON_DANGER } from '../../constants/styles';
 
 /**
  * Format remaining time for demo badge display
@@ -34,7 +34,7 @@ interface LayoutProps {
 
 /**
  * Main application layout with navigation, header, and floating action button.
- * Includes neo-brutalist styling with animated background and click effects.
+ * Includes animated background and click effects.
  */
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
@@ -81,15 +81,15 @@ export function Layout({ children }: LayoutProps) {
   };
 
   return (
-    <div className={`relative min-h-screen ${BRUTAL_BACKGROUNDS.main}`}>
-      {/* Neo-brutalist background with geometric shapes */}
-      <BrutalBackground variant="grid" />
+    <div className={`relative min-h-screen ${BACKGROUNDS.main}`}>
+      {/* Background with geometric shapes */}
+      <PatternBackground variant="grid" />
 
       {/* Global click spark effect */}
       <ClickSpark />
 
-      {/* Header with brutal border */}
-      <header className={`fixed top-0 left-0 right-0 z-50 bg-white ${BRUTAL_BORDERS.thick} border-b-black`}>
+      {/* Header with bold border */}
+      <header className={`fixed top-0 left-0 right-0 z-50 bg-white ${BORDERS.thick} border-b-black`}>
         <div className="flex items-center justify-between px-4 py-3 md:px-8">
           <div className="flex items-center gap-4">
             {/* Logo with Beta badge */}
@@ -120,7 +120,7 @@ export function Layout({ children }: LayoutProps) {
             )}
             <button
               onClick={handleLogout}
-              className={`text-sm uppercase tracking-wide ${BRUTAL_BUTTON_DANGER} flex items-center gap-2`}
+              className={`text-sm uppercase tracking-wide ${BUTTON_DANGER} flex items-center gap-2`}
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -155,4 +155,3 @@ export function Layout({ children }: LayoutProps) {
     </div>
   );
 }
-

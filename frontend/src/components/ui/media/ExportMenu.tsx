@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { TRANSITIONS, BRUTAL_BORDERS, BRUTAL_SHADOWS, BRUTAL_RADIUS } from '../../../constants/styles';
+import { TRANSITIONS, BORDERS, SHADOWS, RADIUS } from '../../../constants/styles';
 import { Tooltip } from '../feedback';
 
 export interface ExportOption {
@@ -17,7 +17,7 @@ interface ExportMenuProps {
 /**
  * ExportMenu Component
  *
- * Dropdown menu for export options with Neo-Brutalist styling.
+ * Dropdown menu for export options.
  *
  * Features:
  * - Thick borders and hard shadows on container
@@ -36,7 +36,7 @@ export function ExportMenu({ options, className = '' }: ExportMenuProps) {
     const menu = menuRef.current;
     if (!menu) return;
 
-    // Simplified brutal animations - snap effect
+    // Simplified animations - snap effect
     const ease = 'power2.out';
 
     if (isOpen) {
@@ -112,12 +112,12 @@ export function ExportMenu({ options, className = '' }: ExportMenuProps) {
 
   return (
     <div className={`relative ${className}`}>
-      {/* Export button - Brutal style */}
+      {/* Export button */}
       <Tooltip content="Exporter le document">
         <button
           ref={buttonRef}
           onClick={handleToggle}
-          className={`h-10 w-10 flex items-center justify-center bg-white border-black text-black hover:bg-orange-50 ${BRUTAL_RADIUS.subtle} ${BRUTAL_BORDERS.normal} ${BRUTAL_SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-bold`}
+          className={`h-10 w-10 flex items-center justify-center bg-white border-black text-black hover:bg-orange-50 ${RADIUS.subtle} ${BORDERS.normal} ${SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-bold`}
           aria-label="Exporter le document"
         >
           <svg
@@ -137,10 +137,10 @@ export function ExportMenu({ options, className = '' }: ExportMenuProps) {
         </button>
       </Tooltip>
 
-      {/* Dropdown menu - Brutal style with thick borders */}
+      {/* Dropdown menu with thick borders */}
       <div
         ref={menuRef}
-        className={`absolute right-0 top-full mt-2 bg-white ${BRUTAL_BORDERS.normal} border-black ${BRUTAL_SHADOWS.large} overflow-hidden z-50`}
+        className={`absolute right-0 top-full mt-2 bg-white ${BORDERS.normal} border-black ${SHADOWS.large} overflow-hidden z-50`}
         style={{ visibility: 'hidden', minWidth: '160px' }}
       >
         <div>
@@ -154,7 +154,7 @@ export function ExportMenu({ options, className = '' }: ExportMenuProps) {
                   itemsRef.current[index] = el;
                 }}
                 onClick={() => handleOptionClick(option)}
-                className={`w-full px-4 py-3 text-left text-sm font-bold flex items-center gap-3 text-white relative group transition-all ${TRANSITIONS.fast} ${isNotLast ? `${BRUTAL_BORDERS.thin} border-b-black` : ''
+                className={`w-full px-4 py-3 text-left text-sm font-bold flex items-center gap-3 text-white relative group transition-all ${TRANSITIONS.fast} ${isNotLast ? `${BORDERS.thin} border-b-black` : ''
                   } hover:translate-x-[2px] hover:translate-y-[2px]`}
                 style={{
                   backgroundColor: option.bgColor,
