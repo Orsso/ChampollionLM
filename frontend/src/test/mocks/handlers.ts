@@ -39,20 +39,22 @@ export const mockProject: Project = {
 
 export const mockSource: Source = {
   id: 1,
+  project_id: 1,
   type: 'document',
+  status: 'ready',
   title: 'Test Source',
   created_at: '2024-01-01T00:00:00Z',
-  has_processed_content: true,
   processed_content: 'Test content',
   content: 'Test content',
 };
 
 export const mockAudioSource: Source = {
   id: 2,
+  project_id: 1,
   type: 'audio',
+  status: 'ready',
   title: 'Test Audio',
   created_at: '2024-01-01T00:00:00Z',
-  has_processed_content: true,
   filename: 'test.mp3',
   duration_seconds: 120,
   size_bytes: 1024000,

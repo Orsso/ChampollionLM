@@ -126,7 +126,9 @@ async def test_process_success(pdf_config, sample_pdf_file):
     processor = MistralPDFProcessor(pdf_config)
     
     mock_response = {
-        "text": "# Extracted Title\n\nThis is the extracted content from the PDF."
+        "pages": [
+            {"index": 0, "markdown": "# Extracted Title\n\nThis is the extracted content from the PDF."}
+        ]
     }
     
     with patch("httpx.AsyncClient") as mock_client:
@@ -149,10 +151,10 @@ async def test_process_success(pdf_config, sample_pdf_file):
 
 @pytest.mark.asyncio
 async def test_process_empty_response(pdf_config, sample_pdf_file):
-    """Test processing fails when OCR returns empty text."""
+    """Test processing fails when OCR returns empty pages."""
     processor = MistralPDFProcessor(pdf_config)
     
-    mock_response = {"text": ""}
+    mock_response = {"pages": []}
     
     with patch("httpx.AsyncClient") as mock_client:
         mock_instance = AsyncMock()
@@ -164,7 +166,7 @@ async def test_process_empty_response(pdf_config, sample_pdf_file):
         mock_instance.__aexit__ = AsyncMock(return_value=None)
         mock_client.return_value = mock_instance
         
-        with pytest.raises(STTProviderError, match="No text content in OCR response"):
+        with pytest.raises(STTProviderError, match="No pages in OCR response"):
             await processor.process(file_path=sample_pdf_file)
 
 
