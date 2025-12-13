@@ -232,7 +232,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
     );
 
     return (
-        <div className="relative flex h-full gap-3">
+        <div className="relative flex h-full min-h-0 gap-3">
             {/* Floating toggle button for left panel when closed */}
             {!leftPanelOpen && (
                 <button
@@ -290,9 +290,9 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
             </SlidingPanel>
 
             {/* CENTER: Main chat area - No container, integrated into background */}
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="flex-1 flex flex-col min-w-0 min-h-0">
                 {/* Messages area */}
-                <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4">
+                <div ref={messagesContainerRef} className="flex-1 min-h-0 overflow-y-auto px-4 pt-4 pb-2">
                     {isLoading ? (
                         <div className="flex items-center justify-center h-full">
                             <div className={`px-4 py-2 font-bold text-sm text-black ${BRUTAL_BORDERS.thin} border-black ${BRUTAL_RADIUS.subtle} bg-white animate-pulse`}>
@@ -350,8 +350,8 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                 </div>
 
                 {/* Input area */}
-                <form onSubmit={handleSubmit} className="flex-shrink-0 px-4 pb-4">
-                    <div className="max-w-3xl mx-auto flex gap-3 items-end">
+                <form onSubmit={handleSubmit} className="flex-shrink-0 px-4 pb-4 pt-2">
+                    <div className="max-w-3xl mx-auto flex gap-3 items-center">
                         <BrutalTextarea
                             value={inputValue}
                             onChange={e => setInputValue(e.target.value)}

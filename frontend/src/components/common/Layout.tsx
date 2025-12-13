@@ -46,6 +46,7 @@ export function Layout({ children }: LayoutProps) {
   });
 
   const onDashboard = location.pathname === '/dashboard';
+  const onProjectPage = location.pathname.startsWith('/projects/');
 
   // Marquer l'animation comme jouée après le premier rendu
   useEffect(() => {
@@ -133,7 +134,7 @@ export function Layout({ children }: LayoutProps) {
       </header>
 
       {/* Main content area */}
-      <main className="relative z-10 pt-24 pb-16 px-4 sm:px-8 min-h-screen">
+      <main className={`relative z-10 pt-24 px-4 sm:px-8 ${onProjectPage ? 'h-screen overflow-hidden' : 'pb-16 min-h-screen'}`}>
         {children}
       </main>
 

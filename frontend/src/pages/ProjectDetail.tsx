@@ -77,7 +77,7 @@ export function ProjectDetail() {
   );
 
   return (
-    <div className={`${isChatMode ? 'h-[calc(100vh-160px)] flex flex-col overflow-hidden' : 'flex-1'}`}>
+    <div className={`${isChatMode ? 'h-[calc(100vh-96px)] flex flex-col overflow-hidden' : 'flex-1'}`}>
       <div className={`${isChatMode ? 'flex flex-col h-full overflow-hidden' : 'max-w-7xl mx-auto w-full'}`}>
         {/* Unified Header: Back + Title | Centered Tabs | Spacer */}
         <div className={`flex items-center justify-between px-4 py-3 ${isChatMode ? 'flex-shrink-0' : 'mb-8'}`}>
