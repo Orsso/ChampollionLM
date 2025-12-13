@@ -1,4 +1,4 @@
-import { SHADOWS, CARD_VARIANTS } from '../../../constants/styles';
+import { Card } from '../cards/Card';
 import { useMarkdown } from '../../../lib/useMarkdown';
 
 interface MarkdownViewerProps {
@@ -22,8 +22,8 @@ export function MarkdownViewer({ markdown, className = '' }: MarkdownViewerProps
   const htmlContent = useMarkdown(markdown);
 
   return (
-    <div
-      className={`${CARD_VARIANTS.default} ${SHADOWS.medium} p-6 markdown-content ${className}`}
+    <Card
+      className={`p-6 markdown-content ${className}`}
       dangerouslySetInnerHTML={{ __html: htmlContent }}
     />
   );

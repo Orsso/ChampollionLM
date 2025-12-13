@@ -4,11 +4,7 @@ import { Alert } from '../ui/feedback';
 import { Button } from '../ui/buttons';
 import { AnimatedInput, Textarea } from '../ui/forms';
 import { useCreateProject } from '../../hooks/useProjects';
-import {
-  SHADOWS,
-  RADIUS,
-  CARD_VARIANTS,
-} from '../../constants/styles';
+import { Card } from '../ui/cards/Card';
 
 interface CreateProjectModalProps {
   isOpen: boolean;
@@ -53,12 +49,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
       onClick={handleOverlayClick}
       className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] px-4"
     >
-      <div className={`
-        ${CARD_VARIANTS.default}
-        ${RADIUS.normal}
-        ${SHADOWS.large}
-        w-full max-w-md p-8
-      `}>
+      <Card className="w-full max-w-md p-8 shadow-large">
         <h2 className="text-3xl font-black text-black mb-6">Nouveau projet</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -103,7 +94,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
             </Button>
           </div>
         </form>
-      </div>
+      </Card>
     </div>
   );
 }

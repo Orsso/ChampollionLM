@@ -6,7 +6,7 @@ import { AnimatedInput } from '../ui/forms';
 import { Button } from '../ui/buttons';
 import { Alert } from '../ui/feedback';
 import { PageHeader } from '../ui/layout';
-import { CARD_VARIANTS } from '../../constants/styles';
+import { Card } from '../ui/cards/Card';
 
 /**
  * Props for the AuthForm component.
@@ -55,7 +55,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center px-4">
-      <div className={`relative z-10 w-full max-w-md p-8 ${CARD_VARIANTS.default}`}>
+      <Card className="relative z-10 w-full max-w-md p-8">
         {/* Back to home link */}
         <Link
           to="/"
@@ -168,7 +168,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             </>
           )}
         </p>
-      </div>
+      </Card>
     </div>
   );
 }

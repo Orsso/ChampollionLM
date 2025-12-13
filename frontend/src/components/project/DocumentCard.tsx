@@ -1,11 +1,7 @@
+import { Card } from '../ui/cards';
 import { ConfirmDeleteButton } from '../ui/buttons';
 import { formatDateTime } from '../../utils/formatters';
 import type { Document } from '../../types';
-import {
-    CARD_VARIANTS,
-    RADIUS,
-    TRANSITIONS
-} from '../../constants/styles';
 
 interface DocumentCardProps {
     document: Document;
@@ -33,17 +29,10 @@ export function DocumentCard({
     );
 
     return (
-        <div
+        <Card
             onClick={onClick}
-            className={`
-        ${CARD_VARIANTS.default}
-        ${RADIUS.subtle}
-        p-4
-        cursor-pointer
-        transition-all ${TRANSITIONS.fast}
-        hover:translate-x-[2px] hover:translate-y-[2px]
-        hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
-      `}
+            className={`p-4`}
+            hoverEffect={true}
         >
             <div className="flex items-center gap-4">
                 <div className="flex-shrink-0 text-orange-500">
@@ -67,6 +56,6 @@ export function DocumentCard({
                     />
                 </div>
             </div>
-        </div>
+        </Card>
     );
 }

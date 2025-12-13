@@ -234,28 +234,19 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                     const Icon = tab.icon;
                     const isActive = importMode === tab.id;
                     return (
-                        <button
+                        <Button
                             key={tab.id}
+                            variant={isActive ? 'primary' : 'secondary'}
+                            size="md"
+                            active={isActive}
                             onClick={() => !tab.disabled && setImportMode(tab.id)}
                             disabled={tab.disabled}
-                            className={`
-                flex items-center gap-2 px-4 py-2
-                ${BORDERS.normal}
-                border-black
-                ${RADIUS.subtle}
-                font-bold text-sm
-                transition-all ${TRANSITIONS.fast}
-                ${isActive
-                                    ? 'bg-orange-500 text-white shadow-none translate-x-[2px] translate-y-[2px]'
-                                    : `bg-white text-black ${SHADOWS.small} hover:bg-orange-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-none`
-                                }
-                ${tab.disabled ? 'opacity-40 cursor-not-allowed hover:translate-x-0 hover:translate-y-0 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]' : ''}
-              `}
                             title={tab.disabled ? 'Bientôt disponible' : undefined}
+                            className={tab.disabled ? 'opacity-40 cursor-not-allowed hover:translate-x-0 hover:translate-y-0 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]' : ''}
                         >
                             <Icon size={16} />
                             {tab.label}
-                        </button>
+                        </Button>
                     );
                 })}
             </div>
@@ -265,47 +256,25 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                 <div className="space-y-4">
                     <div className="relative">
                         <div className="flex gap-4 items-start">
-                            <button
+                            <Button
                                 ref={recordBtnRef}
                                 onClick={handleRecordClick}
                                 disabled={audioMode !== 'idle'}
-                                className={`
-                  flex-1 flex items-center justify-center gap-3 px-6 py-4
-                  bg-orange-500
-                  ${BORDERS.normal}
-                  border-black
-                  ${RADIUS.subtle}
-                  ${SHADOWS.small}
-                  text-white font-bold
-                  transition-all ${TRANSITIONS.fast}
-                  hover:translate-x-[2px] hover:translate-y-[2px]
-                  hover:shadow-none
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                  disabled:hover:translate-x-0 disabled:hover:translate-y-0
-                `}
+                                variant="primary"
+                                size="lg"
+                                className="flex-1 py-4"
                             >
                                 <MicrophoneIcon size={20} />
                                 Enregistrer
-                            </button>
+                            </Button>
 
-                            <button
+                            <Button
                                 ref={importBtnRef}
                                 onClick={handleImportClick}
                                 disabled={isRecording || uploadProgress > 0}
-                                className={`
-                  flex-1 flex items-center justify-center gap-3 px-6 py-4
-                  bg-white
-                  ${BORDERS.normal}
-                  border-black
-                  ${RADIUS.subtle}
-                  ${SHADOWS.small}
-                  text-black font-bold
-                  transition-all ${TRANSITIONS.fast}
-                  hover:translate-x-[2px] hover:translate-y-[2px]
-                  hover:shadow-none
-                  disabled:opacity-50 disabled:cursor-not-allowed
-                  disabled:hover:translate-x-0 disabled:hover:translate-y-0
-                `}
+                                variant="secondary"
+                                size="lg"
+                                className="flex-1 py-4"
                             >
                                 <svg
                                     width="20"
@@ -322,7 +291,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                     <line x1="12" y1="3" x2="12" y2="15" />
                                 </svg>
                                 Importer
-                            </button>
+                            </Button>
 
                             <div ref={importGhostRef} style={{ display: 'none', width: 0, height: 0 }} aria-hidden="true" />
                         </div>
@@ -393,30 +362,18 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                             placeholder="https://youtube.com/watch?v=..."
                             className="flex-1"
                         />
-                        <button
+                        <Button
                             onClick={handleYouTubeImport}
                             disabled={youtubeLoading || !isYouTubeUrlValid(youtubeUrl)}
-                            className={`
-                flex items-center gap-2 px-6 py-3
-                bg-orange-500
-                ${BORDERS.normal}
-                border-black
-                ${RADIUS.subtle}
-                ${SHADOWS.small}
-                text-white font-bold
-                transition-all ${TRANSITIONS.fast}
-                hover:translate-x-[2px] hover:translate-y-[2px]
-                hover:shadow-none
-                disabled:opacity-50 disabled:cursor-not-allowed
-                disabled:hover:translate-x-0 disabled:hover:translate-y-0
-              `}
+                            variant="primary"
+                            size="lg"
                         >
                             {youtubeLoading ? (
                                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                             ) : (
                                 'Importer'
                             )}
-                        </button>
+                        </Button>
                     </div>
 
                     {youtubeError && (

@@ -1,2 +1,2 @@
-export { AnimatedInput, StyledInput, BrutalInput, Textarea, BrutalTextarea } from './Input';
+export { AnimatedInput, StyledInput, Textarea } from './Input';
 export { SourceSelectionItem } from './SourceSelectionItem';

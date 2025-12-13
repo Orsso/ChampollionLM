@@ -4,6 +4,7 @@ import { DocumentCard } from './DocumentCard';
 import { deleteDocument } from '../../lib/api';
 import { useConfirmDelete } from '../../hooks';
 import type { Document } from '../../types';
+import { Card } from '../ui/cards';
 import {
     BORDERS,
     SHADOWS,
@@ -66,14 +67,7 @@ export function DocumentsList({
             <div className="space-y-3">
                 {/* Show generating placeholder as a card */}
                 {isGenerating && (
-                    <div className={`
-                        ${BORDERS.normal}
-                        border-black
-                        ${RADIUS.subtle}
-                        ${SHADOWS.small}
-                        bg-white
-                        p-4
-                    `}>
+                    <Card className="p-4">
                         <div className="flex items-center gap-4">
                             <div className="flex-shrink-0 text-orange-500">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -97,7 +91,7 @@ export function DocumentsList({
                                 </Badge>
                             </div>
                         </div>
-                    </div>
+                    </Card>
                 )}
 
                 {/* Show all documents */}

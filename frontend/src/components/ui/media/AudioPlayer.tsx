@@ -1,6 +1,7 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import { useAudioPlayer } from '../../../hooks/useAudioPlayer';
-import { TRANSITIONS, BORDERS, SHADOWS, CARD_VARIANTS } from '../../../constants/styles';
+import { Card } from '../cards/Card';
+import { TRANSITIONS, BORDERS, SHADOWS } from '../../../constants/styles';
 
 interface AudioPlayerProps {
   src: string;
@@ -37,7 +38,7 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
   // Handle seek calculation from mouse position
   const calculateSeekTime = useCallback((clientX: number) => {
     if (!progressBarRef.current || state.duration === 0) return null;
-    
+
     const rect = progressBarRef.current.getBoundingClientRect();
     const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
     const percentage = x / rect.width;
@@ -103,9 +104,9 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
           strokeLinejoin="round"
           className="text-red-600 flex-shrink-0"
         >
-          <circle cx="12" cy="12" r="10"/>
-          <line x1="12" y1="8" x2="12" y2="12"/>
-          <line x1="12" y1="16" x2="12.01" y2="16"/>
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
         <span className="text-red-600 text-sm font-bold">{state.error}</span>
       </div>
@@ -113,7 +114,7 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
   }
 
   return (
-    <div className={`relative flex items-center gap-4 p-4 ${CARD_VARIANTS.default} ${SHADOWS.medium} ${className}`}>
+    <Card className={`relative flex items-center gap-4 p-4 ${className}`}>
       {/* Loading indicator when metadata is loading but duration is known */}
       {state.isLoading && state.duration > 0 && (
         <div className="absolute top-0 left-0 right-0 h-1 bg-orange-300 border-b-2 border-black">
@@ -138,8 +139,8 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
             viewBox="0 0 24 24"
             fill="currentColor"
           >
-            <rect x="6" y="4" width="4" height="16" rx="1"/>
-            <rect x="14" y="4" width="4" height="16" rx="1"/>
+            <rect x="6" y="4" width="4" height="16" rx="1" />
+            <rect x="14" y="4" width="4" height="16" rx="1" />
           </svg>
         ) : (
           // Play icon
@@ -149,7 +150,7 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
             viewBox="0 0 24 24"
             fill="currentColor"
           >
-            <path d="M8 5.14v14.72c0 .86.93 1.39 1.67.95l11.14-6.36a1.125 1.125 0 0 0 0-1.9L9.67 4.19A1.125 1.125 0 0 0 8 5.14z"/>
+            <path d="M8 5.14v14.72c0 .86.93 1.39 1.67.95l11.14-6.36a1.125 1.125 0 0 0 0-1.9L9.67 4.19A1.125 1.125 0 0 0 8 5.14z" />
           </svg>
         )}
       </button>
@@ -219,9 +220,9 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
             </svg>
           ) : (
             // Volume off icon
@@ -235,13 +236,13 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
               strokeLinecap="round"
               strokeLinejoin="round"
             >
-              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-              <line x1="23" y1="9" x2="17" y2="15"/>
-              <line x1="17" y1="9" x2="23" y2="15"/>
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+              <line x1="23" y1="9" x2="17" y2="15" />
+              <line x1="17" y1="9" x2="23" y2="15" />
             </svg>
           )}
         </button>
       </div>
-    </div>
+    </Card>
   );
 }

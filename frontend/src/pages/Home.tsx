@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { PageWrapper } from '../components/ui/PageWrapper';
+import { Button } from '../components/ui/buttons/Button';
+import { Card } from '../components/ui/cards/Card';
 import {
   MicrophoneIcon,
   SparklesIcon,
@@ -7,8 +9,6 @@ import {
   YouTubeIcon
 } from '../components/ui/icons/Icons';
 import {
-  CARD_VARIANTS,
-  BUTTON_VARIANTS,
   SHADOWS,
   RADIUS,
   BORDERS,
@@ -58,18 +58,14 @@ export function Home() {
           <h1 className="text-2xl font-bold text-black">Champollion</h1>
           <div className="flex gap-3">
             <Link to="/login">
-              <button
-                className={`${BUTTON_VARIANTS.secondary} ${SHADOWS.medium} ${RADIUS.normal} px-6 py-2 text-sm`}
-              >
+              <Button variant="secondary" size="sm">
                 Se connecter
-              </button>
+              </Button>
             </Link>
             <Link to="/register">
-              <button
-                className={`${BUTTON_VARIANTS.primary} ${SHADOWS.medium} ${RADIUS.normal} px-6 py-2 text-sm`}
-              >
+              <Button variant="primary" size="sm">
                 S'inscrire
-              </button>
+              </Button>
             </Link>
           </div>
         </div>
@@ -105,18 +101,14 @@ export function Home() {
 
             <div className="flex flex-wrap gap-4 pt-4">
               <Link to="/register">
-                <button
-                  className={`${BUTTON_VARIANTS.primary} ${SHADOWS.large} ${RADIUS.normal} px-8 py-4 text-lg ${TRANSITIONS.normal}`}
-                >
+                <Button variant="primary" size="lg" className="px-8 py-4 text-lg h-auto">
                   Commencer gratuitement
-                </button>
+                </Button>
               </Link>
               <Link to="/login">
-                <button
-                  className={`${BUTTON_VARIANTS.ghost} ${SHADOWS.large} ${RADIUS.normal} px-8 py-4 text-lg ${TRANSITIONS.normal} bg-white`}
-                >
+                <Button variant="secondary" size="lg" className="px-8 py-4 text-lg h-auto">
                   Se connecter
-                </button>
+                </Button>
               </Link>
             </div>
 
@@ -128,8 +120,9 @@ export function Home() {
           {/* Right: Mockup Illustration */}
           <div className="relative">
             {/* Main Card Mockup */}
-            <div
-              className={`${CARD_VARIANTS.default} ${RADIUS.normal} p-6 space-y-4 transform rotate-2`}
+            <Card
+              variant="default"
+              className={`space-y-4 transform rotate-2`}
             >
               {/* Mockup Header */}
               <div className="flex items-center justify-between">
@@ -166,19 +159,22 @@ export function Home() {
               </div>
 
               {/* Mockup Button */}
-              <button
-                className={`${BUTTON_VARIANTS.primary} ${SHADOWS.small} ${RADIUS.normal} w-full py-2 text-sm pointer-events-none`}
+              <Button
+                variant="primary"
+                size="md"
+                className="w-full pointer-events-none"
               >
                 Générer les notes
-              </button>
-            </div>
+              </Button>
+            </Card>
 
             {/* Floating Badge */}
-            <div
-              className={`absolute -top-6 -left-6 ${CARD_VARIANTS.accent} ${RADIUS.normal} px-4 py-2 transform -rotate-12`}
+            <Card
+              variant="accent"
+              className={`absolute -top-6 -left-6 px-4 py-2 transform -rotate-12`}
             >
               <p className="text-white font-bold text-sm">Powered by Mistral AI</p>
-            </div>
+            </Card>
 
             {/* Floating Badge 2 */}
             <div
@@ -205,9 +201,9 @@ export function Home() {
           {features.map((feature, index) => {
             const Icon = feature.icon;
             return (
-              <div
+              <Card
                 key={index}
-                className={`${CARD_VARIANTS.default} ${RADIUS.normal} p-6 space-y-4 hover:translate-y-[-4px] ${TRANSITIONS.normal}`}
+                className={`space-y-4 hover:translate-y-[-4px] ${TRANSITIONS.normal}`}
               >
                 <div
                   className={`w-14 h-14 ${feature.color} ${BORDERS.normal} border-black ${RADIUS.normal} ${SHADOWS.small} flex items-center justify-center`}
@@ -220,7 +216,7 @@ export function Home() {
                 <p className="text-slate-700 leading-relaxed">
                   {feature.description}
                 </p>
-              </div>
+              </Card>
             );
           })}
         </div>
@@ -228,8 +224,9 @@ export function Home() {
 
       {/* CTA Section */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 py-20">
-        <div
-          className={`${CARD_VARIANTS.accent} ${RADIUS.normal} p-12 text-center space-y-6`}
+        <Card
+          variant="accent"
+          className={`p-12 text-center space-y-6`}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-white">
             Prêt à démarrer ?
@@ -237,14 +234,18 @@ export function Home() {
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
             Créez votre compte et commencez à transformer vos enregistrements en notes structurées dès aujourd'hui.
           </p>
-          <Link to="/register">
-            <button
-              className={`bg-white text-black ${BORDERS.normal} border-black ${RADIUS.normal} ${SHADOWS.large} px-10 py-4 text-lg font-bold hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${TRANSITIONS.normal}`}
-            >
-              S'inscrire maintenant
-            </button>
-          </Link>
-        </div>
+          <div className="flex justify-center">
+            <Link to="/register">
+              <Button
+                variant="secondary" // Using secondary (white) for contrast on accent background
+                size="lg"
+                className="px-10 py-4 text-lg h-auto"
+              >
+                S'inscrire maintenant
+              </Button>
+            </Link>
+          </div>
+        </Card>
       </section>
 
       {/* Footer */}

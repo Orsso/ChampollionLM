@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import { CARD_VARIANTS, BORDERS, RADIUS, TRANSITIONS } from '../../../constants/styles';
+import { Card } from '../cards/Card';
+import { BORDERS, RADIUS, TRANSITIONS } from '../../../constants/styles';
 
 interface ModalProps {
   isOpen: boolean;
@@ -36,7 +37,11 @@ export function Modal({ isOpen, onClose, title, headerRight, children, footer, m
 
   return (
     <div ref={overlayRef} className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 opacity-0 px-4 pt-20" onClick={handleOverlayClick}>
-      <div ref={modalRef} className={`relative w-full ${maxWidth} max-h-[calc(95vh-5rem)] ${CARD_VARIANTS.dark} ${RADIUS.normal} overflow-hidden opacity-0`}>
+      <Card
+        ref={modalRef}
+        variant="dark"
+        className={`relative w-full ${maxWidth} max-h-[calc(95vh-5rem)] overflow-hidden opacity-0 p-0`}
+      >
         <div className={`flex items-center justify-between p-6 ${BORDERS.normal} border-b-black bg-orange-50`}>
           <div className="flex items-center gap-3">
             {typeof title === 'string' ? (
@@ -61,7 +66,7 @@ export function Modal({ isOpen, onClose, title, headerRight, children, footer, m
         </div>
         <div className="p-6 overflow-y-auto max-h-[calc(95vh-12rem)] bg-white">{children}</div>
         {footer && <div className={`p-4 ${BORDERS.normal} border-t-black bg-orange-50`}>{footer}</div>}
-      </div>
+      </Card>
     </div>
   );
 }

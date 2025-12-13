@@ -38,3 +38,4 @@ export function PatternBackground({
 // Legacy alias for backward compatibility
 /** @deprecated Use PatternBackground instead */
 export const BrutalBackground = PatternBackground;
+

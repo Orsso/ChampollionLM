@@ -5,7 +5,8 @@ import { AnimatedInput } from '../components/ui/forms';
 import { Button } from '../components/ui/buttons';
 import { Alert } from '../components/ui/feedback';
 import { PageHeader } from '../components/ui/layout';
-import { CARD_VARIANTS, BORDERS } from '../constants/styles';
+import { Card } from '../components/ui/cards/Card';
+import { BORDERS } from '../constants/styles';
 
 interface ApiKeyFormData {
   apiKey: string;
@@ -132,7 +133,7 @@ export function Settings() {
 
         {/* Demo Access Info - Only visible to demo users */}
         {user?.is_demo_user && (
-          <div className={`mb-6 ${CARD_VARIANTS.colored} bg-cyan-100`}>
+          <Card variant="colored" className="mb-6 bg-cyan-100">
             <h2 className="text-xl font-bold text-black mb-2">Accès Demo</h2>
             <p className="text-gray-700 mb-3">
               Vous bénéficiez actuellement d'un accès demo gratuit à Champollion.
@@ -144,11 +145,11 @@ export function Settings() {
               Pour continuer à utiliser Champollion après cette date, configurez votre propre clé API Mistral ci-dessous.
               Une fois votre clé configurée, elle sera utilisée en priorité sur l'accès demo.
             </p>
-          </div>
+          </Card>
         )}
 
         {/* API Key Section */}
-        <div className={`mb-6 p-6 ${CARD_VARIANTS.default}`}>
+        <Card className="mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <h2 className="text-2xl font-bold text-black">Clé API</h2>
@@ -228,10 +229,10 @@ export function Settings() {
               )}
             </div>
           </form>
-        </div>
+        </Card>
 
         {/* Password Change Section */}
-        <div className={`mb-6 p-6 ${CARD_VARIANTS.default}`}>
+        <Card className="mb-6">
           <h2 className="text-2xl font-bold text-black mb-4">Mot de passe</h2>
           <p className="text-gray-600 font-medium mb-4">
             Modifiez votre mot de passe de connexion
@@ -311,10 +312,10 @@ export function Settings() {
               {isPasswordLoading ? 'Modification...' : 'Modifier le mot de passe'}
             </Button>
           </form>
-        </div>
+        </Card>
 
         {/* Profile Section */}
-        <div className={`p-6 ${CARD_VARIANTS.default}`}>
+        <Card className="mb-6">
           <h2 className="text-2xl font-bold text-black mb-4">Profil</h2>
           <div className="space-y-4">
             <div className={`pb-3 ${BORDERS.normal} border-b-gray-300`}>
@@ -322,10 +323,10 @@ export function Settings() {
               <p className="text-black font-medium text-lg">{user?.email}</p>
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Danger Zone */}
-        <div className={`mt-6 p-6 ${CARD_VARIANTS.default} border-red-500`}>
+        <Card className="mt-6 border-red-500">
           <h2 className="text-2xl font-bold text-red-600 mb-2">Zone de Danger</h2>
           <p className="text-gray-600 font-medium mb-4">
             La suppression de votre compte est irréversible. Toutes vos données (projets, sources, documents) seront définitivement supprimées.
@@ -368,7 +369,7 @@ export function Settings() {
               Annuler
             </Button>
           )}
-        </div>
+        </Card>
       </div>
     </div>
   );

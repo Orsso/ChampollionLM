@@ -32,6 +32,8 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
   const documents = project?.documents || [];
   const documentStatus = project?.document_status?.status;
   const isGenerating = documentStatus === 'pending' || documentStatus === 'in_progress';
+  const isJobFailed = documentStatus === 'failed';
+  const jobError = project?.document_status?.error;
 
   // Poll for updates when generating
   useEffect(() => {
@@ -94,6 +96,8 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
     onMutate?.();
   };
 
+  const displayError = error || (isJobFailed ? (jobError || "La génération a échoué") : null);
+
   return (
     <div className="space-y-8">
       <GenerationControls
@@ -106,7 +110,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
         onGenerate={handleGenerateDocument}
       />
 
-      {error && <Alert variant="error" message={error} />}
+      {displayError && <Alert variant="error" message={displayError} />}
 
       <DocumentsList
         projectId={projectId}

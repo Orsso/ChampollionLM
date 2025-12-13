@@ -43,7 +43,7 @@ export const AnimatedInput = React.forwardRef<HTMLInputElement, AnimatedInputPro
     };
 
     const bgClass = darkMode ? 'bg-slate-900' : 'bg-white';
-    const borderClass = darkMode ? 'border-slate-600' : 'border-gray-600';
+    const borderClass = 'border-black';
     const textClass = darkMode ? 'text-slate-100' : 'text-gray-900';
     const labelClass = darkMode ? 'text-slate-300' : 'text-gray-700';
     const labelBgClass = darkMode ? 'bg-slate-900' : 'bg-white';
@@ -146,9 +146,7 @@ export const StyledInput = React.forwardRef<HTMLInputElement, StyledInputProps>(
 
 StyledInput.displayName = 'StyledInput';
 
-// Legacy alias for backward compatibility
-/** @deprecated Use StyledInput instead */
-export const BrutalInput = StyledInput;
+
 
 /**
  * Textarea Component
@@ -216,6 +214,4 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
 
 Textarea.displayName = 'Textarea';
 
-// Legacy alias for backward compatibility
-/** @deprecated Use Textarea instead */
-export const BrutalTextarea = Textarea;
+

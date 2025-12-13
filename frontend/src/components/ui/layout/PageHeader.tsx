@@ -87,3 +87,4 @@ export function PageHeader({
 // Legacy alias for backward compatibility
 /** @deprecated Use PageHeader instead */
 export const BrutalPageHeader = PageHeader;
+

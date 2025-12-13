@@ -7,7 +7,8 @@ import { useState, useRef, useEffect, useCallback, type FormEvent, type Keyboard
 import { useDocumentChat, type ChatOptions } from '../../../hooks/useDocumentChat';
 import { ChatMessage } from './ChatMessage';
 import { Textarea } from '../forms';
-import { BORDERS, SHADOWS, RADIUS, BUTTON_VARIANTS, TRANSITIONS } from '../../../constants/styles';
+import { Button } from '../buttons/Button';
+import { BORDERS, SHADOWS, RADIUS, TRANSITIONS } from '../../../constants/styles';
 
 interface DocumentChatPanelProps {
     documentId: number;
@@ -314,24 +315,17 @@ export function DocumentChatPanel({
                         rows={2}
                         className="flex-1 text-sm"
                     />
-                    <button
+                    <Button
                         type="submit"
                         disabled={!inputValue.trim() || isStreaming}
-                        className={`
-              p-4 font-bold
-              ${BUTTON_VARIANTS.primary} ${RADIUS.normal}
-              ${SHADOWS.medium}
-              disabled:opacity-50 disabled:cursor-not-allowed
-              disabled:hover:translate-x-0 disabled:hover:translate-y-0
-              disabled:hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-            `}
+                        className="p-4 h-auto"
                     >
                         {isStreaming ? (
                             <div className="w-[18px] h-[18px] border-2 border-white border-t-transparent rounded-full animate-spin" />
                         ) : (
                             <SendIcon />
                         )}
-                    </button>
+                    </Button>
                 </div>
             </form>
         </div>

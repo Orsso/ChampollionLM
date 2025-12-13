@@ -5,10 +5,10 @@ import { PillNav } from '../ui/navigation';
 import type { PillNavItem } from '../ui/navigation';
 import { useAuth } from '../../hooks';
 import { CreateProjectModal } from '../project/CreateProjectModal';
-import { FloatingActionButton } from '../ui/buttons';
+import { FloatingActionButton, Button } from '../ui/buttons';
 import { ClickSpark } from '../ui/effects';
 import { PatternBackground } from '../ui';
-import { BORDERS, BACKGROUNDS, BUTTON_DANGER } from '../../constants/styles';
+import { BORDERS, BACKGROUNDS } from '../../constants/styles';
 
 /**
  * Format remaining time for demo badge display
@@ -118,9 +118,10 @@ export function Layout({ children }: LayoutProps) {
                 Demo {user.demo_expires_at && `• ${formatDemoRemaining(user.demo_expires_at)}`}
               </Link>
             )}
-            <button
+            <Button
               onClick={handleLogout}
-              className={`text-sm uppercase tracking-wide ${BUTTON_DANGER} flex items-center gap-2`}
+              variant="danger"
+              className="flex items-center gap-2"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -128,7 +129,7 @@ export function Layout({ children }: LayoutProps) {
                 <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
               <span className="hidden md:inline">Déconnexion</span>
-            </button>
+            </Button>
           </div>
         </div>
       </header>

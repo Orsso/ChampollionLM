@@ -1,4 +1,4 @@
-import { SHADOWS, CARD_VARIANTS } from '../../../constants/styles';
+import { Card } from '../cards/Card';
 
 interface TranscriptViewProps {
   text: string;
@@ -18,8 +18,10 @@ interface TranscriptViewProps {
  */
 export function TranscriptView({ text, className = '' }: TranscriptViewProps) {
   return (
-    <pre className={`${CARD_VARIANTS.default} ${SHADOWS.medium} p-6 text-slate-900 text-sm font-mono font-medium whitespace-pre-wrap leading-relaxed ${className}`}>
-      {text}
-    </pre>
+    <Card className={`p-0 overflow-hidden ${className}`}>
+      <pre className="p-6 text-slate-900 text-sm font-mono font-medium whitespace-pre-wrap leading-relaxed">
+        {text}
+      </pre>
+    </Card>
   );
 }

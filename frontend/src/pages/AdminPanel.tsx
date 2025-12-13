@@ -4,8 +4,9 @@ import { useAuth } from '../hooks';
 import { fetcher } from '../lib/api';
 import { PageHeader } from '../components/ui/layout';
 import { Button } from '../components/ui/buttons';
-import { Alert } from '../components/ui/feedback';
-import { CARD_VARIANTS, BORDERS } from '../constants/styles';
+import { Badge, Alert } from '../components/ui/feedback';
+import { Card } from '../components/ui/cards/Card';
+import { BORDERS } from '../constants/styles';
 import type { UserAdmin } from '../types';
 
 /**
@@ -136,7 +137,7 @@ export function AdminPanel() {
             )}
 
             {/* Grant Access Form */}
-            <div className={`${CARD_VARIANTS.default} mb-8`}>
+            <Card className="mb-8">
                 <h2 className="text-xl font-black uppercase mb-4 text-black">Accorder un accès demo</h2>
                 <form onSubmit={handleGrantAccess} className="space-y-4">
                     <div>
@@ -183,10 +184,10 @@ export function AdminPanel() {
                         {isGranting ? 'Attribution...' : 'Accorder l\'accès'}
                     </Button>
                 </form>
-            </div>
+            </Card>
 
             {/* Users List */}
-            <div className={`${CARD_VARIANTS.default}`}>
+            <Card>
                 <h2 className="text-xl font-black uppercase mb-4 text-black">
                     Utilisateurs ({users.length})
                 </h2>
@@ -205,14 +206,10 @@ export function AdminPanel() {
                                     <div className="text-sm text-gray-600 flex flex-wrap gap-2 mt-1">
                                         <span>Inscrit le {formatDate(u.created_at)}</span>
                                         {u.is_superuser && (
-                                            <span className="px-2 py-0.5 bg-purple-200 text-purple-800 text-xs font-bold rounded">
-                                                Admin
-                                            </span>
+                                            <Badge color="purple">Admin</Badge>
                                         )}
                                         {u.has_api_key && (
-                                            <span className="px-2 py-0.5 bg-green-200 text-green-800 text-xs font-bold rounded">
-                                                Clé API
-                                            </span>
+                                            <Badge color="green">Clé API</Badge>
                                         )}
                                     </div>
                                 </div>
@@ -220,20 +217,21 @@ export function AdminPanel() {
                                 <div className="flex items-center gap-2">
                                     {u.demo_access?.is_active ? (
                                         <>
-                                            <span className="px-3 py-1 bg-cyan-200 text-cyan-800 text-sm font-bold rounded border-2 border-black">
+                                            <Badge color="cyan">
                                                 Demo → {formatDate(u.demo_access.expires_at)}
-                                            </span>
+                                            </Badge>
                                             <Button
                                                 variant="danger"
+                                                size="sm"
                                                 onClick={() => handleRevokeAccess(u.id, u.email)}
                                             >
                                                 Révoquer
                                             </Button>
                                         </>
                                     ) : u.demo_access ? (
-                                        <span className="px-3 py-1 bg-gray-200 text-gray-600 text-sm rounded">
+                                        <Badge color="gray">
                                             Demo expiré/révoqué
-                                        </span>
+                                        </Badge>
                                     ) : !u.has_api_key ? (
                                         <span className="text-sm text-gray-500">
                                             Sans accès API
@@ -244,7 +242,7 @@ export function AdminPanel() {
                         ))}
                     </div>
                 )}
-            </div>
+            </Card>
         </div>
     );
 }

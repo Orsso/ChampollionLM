@@ -18,7 +18,7 @@ import { BORDERS, RADIUS } from '../../../constants/styles';
 
 interface BadgeProps {
   children: React.ReactNode;
-  color?: 'green' | 'amber' | 'red' | 'gray';
+  color?: 'green' | 'amber' | 'red' | 'gray' | 'cyan' | 'purple';
   className?: string;
 }
 
@@ -32,6 +32,8 @@ export function Badge({
     amber: 'bg-amber-400 text-amber-900 border-black',
     red: 'bg-red-400 text-red-900 border-black',
     gray: 'bg-slate-300 text-slate-900 border-slate-600',
+    cyan: 'bg-cyan-200 text-cyan-800 border-black',
+    purple: 'bg-purple-200 text-purple-800 border-black',
   };
 
   return (

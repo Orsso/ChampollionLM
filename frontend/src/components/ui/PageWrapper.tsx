@@ -40,3 +40,4 @@ export function PageWrapper({
 // Legacy alias for backward compatibility
 /** @deprecated Use PageWrapper instead */
 export const BrutalPage = PageWrapper;
+

@@ -49,33 +49,9 @@ export const RADIUS = {
   normal: 'rounded-lg',   // 8px - standard
 } as const;
 
-/**
- * Button Variants
- * Usage: Bold, high-contrast buttons with press-down effect
- * Example: <button className={BUTTON_VARIANTS.primary}>Click</button>
- *
- * Behavior:
- * - Hover: Translates element to reduce shadow (press-in effect)
- * - Active: Full press-down with zero shadow
- */
-export const BUTTON_VARIANTS = {
-  primary: 'bg-orange-500 text-white border-3 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold',
-  secondary: 'bg-white text-black border-3 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold',
-  danger: 'bg-red-500 text-white border-3 border-black hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold',
-  ghost: 'bg-transparent text-black border-3 border-black hover:bg-slate-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all font-bold',
-} as const;
 
-/**
- * Card Variants
- * Usage: Container components with bold shadows and borders
- * Example: <div className={CARD_VARIANTS.default}>
- */
-export const CARD_VARIANTS = {
-  default: 'bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black p-6',
-  colored: 'bg-orange-100 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black p-6',
-  dark: 'bg-white border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black',
-  accent: 'bg-orange-500 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-white p-6',
-} as const;
+
+
 
 /**
  * Background Patterns
@@ -106,44 +82,4 @@ export const SHAPES = {
   dots: 'accent-dots',
 } as const;
 
-/**
- * Button Base Styles
- * Standard padding and radius for all buttons
- */
-export const BUTTON_BASE = `px-6 py-3 ${RADIUS.normal}` as const;
 
-/**
- * Secondary Button Style
- * Usage: Cancel buttons, secondary actions
- * Example: <button className={BUTTON_SECONDARY}>Annuler</button>
- */
-export const BUTTON_SECONDARY = `${BUTTON_BASE} ${BORDERS.normal} border-black bg-white text-black hover:bg-orange-50 ${SHADOWS.medium} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none` as const;
-
-/**
- * Danger Button Style
- * Usage: Logout, delete actions
- * Example: <button className={BUTTON_DANGER}>Déconnexion</button>
- */
-export const BUTTON_DANGER = `${BUTTON_BASE} ${BORDERS.normal} border-black bg-white text-black hover:bg-red-500 hover:text-white ${SHADOWS.medium} font-bold transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none` as const;
-
-// Legacy aliases for backward compatibility (deprecated, will be removed)
-/** @deprecated Use BORDERS instead */
-export const BRUTAL_BORDERS = BORDERS;
-/** @deprecated Use SHADOWS instead */
-export const BRUTAL_SHADOWS = SHADOWS;
-/** @deprecated Use RADIUS instead */
-export const BRUTAL_RADIUS = RADIUS;
-/** @deprecated Use BUTTON_VARIANTS instead */
-export const BRUTAL_BUTTON_VARIANTS = BUTTON_VARIANTS;
-/** @deprecated Use CARD_VARIANTS instead */
-export const BRUTAL_CARD_VARIANTS = CARD_VARIANTS;
-/** @deprecated Use BACKGROUNDS instead */
-export const BRUTAL_BACKGROUNDS = BACKGROUNDS;
-/** @deprecated Use SHAPES instead */
-export const BRUTAL_SHAPES = SHAPES;
-/** @deprecated Use BUTTON_BASE instead */
-export const BRUTAL_BUTTON_BASE = BUTTON_BASE;
-/** @deprecated Use BUTTON_SECONDARY instead */
-export const BRUTAL_BUTTON_SECONDARY = BUTTON_SECONDARY;
-/** @deprecated Use BUTTON_DANGER instead */
-export const BRUTAL_BUTTON_DANGER = BUTTON_DANGER;

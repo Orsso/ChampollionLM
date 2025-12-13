@@ -1,13 +1,9 @@
+import { Card } from '../ui/cards';
 import { Badge, ShinyText } from '../ui/feedback';
-import { ConfirmDeleteButton, IconButton } from '../ui/buttons';
+import { ConfirmDeleteButton, LightButton } from '../ui/buttons';
 import { RefreshIcon } from '../ui/icons';
 import { formatDateShort, formatDuration, formatSize } from '../../utils/formatters';
 import type { Source, JobStatus } from '../../types';
-import {
-  CARD_VARIANTS,
-  RADIUS,
-  TRANSITIONS
-} from '../../constants/styles';
 
 interface SourceCardProps {
   source: Source;
@@ -102,17 +98,10 @@ export function SourceCard({
   }
 
   return (
-    <div
+    <Card
       onClick={onClick}
-      className={`
-        ${CARD_VARIANTS.default}
-        ${RADIUS.subtle}
-        p-4
-        cursor-pointer
-        transition-all ${TRANSITIONS.fast}
-        hover:translate-x-[2px] hover:translate-y-[2px]
-        hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
-      `}
+      className="p-4"
+      hoverEffect={true}
     >
       <div className="flex items-center gap-4">
         <div className="flex-shrink-0 text-black">
@@ -129,14 +118,14 @@ export function SourceCard({
                 {badge}
                 {/* Retry button next to Echec badge */}
                 {isJobFailed && !hasProcessedContent && onRetry && (
-                  <IconButton
-                    icon={<RefreshIcon size={14} className={isRetrying ? 'animate-spin' : ''} />}
+                  <LightButton
                     onClick={(e) => { e.stopPropagation(); onRetry(); }}
-                    tooltip="Réessayer le traitement"
-                    variant="primary"
-                    size="sm"
+                    className="p-1 h-auto min-h-0"
+                    title="Réessayer"
                     disabled={isRetrying}
-                  />
+                  >
+                    <RefreshIcon size={14} className={isRetrying ? 'animate-spin' : ''} />
+                  </LightButton>
                 )}
               </div>
             )}
@@ -159,6 +148,6 @@ export function SourceCard({
           </div>
         )}
       </div>
-    </div>
+    </Card>
   );
 }

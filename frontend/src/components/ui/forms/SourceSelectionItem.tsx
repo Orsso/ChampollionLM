@@ -67,22 +67,22 @@ export function SourceSelectionItem({
     const typeStyle = TYPE_STYLES[type] || TYPE_STYLES.document;
 
     return (
-        <label
+        <div
+            onClick={() => onChange(!checked)}
             className={`
                 flex items-center gap-3 cursor-pointer
                 ${compact ? BORDERS.thin : BORDERS.normal}
                 border-black ${RADIUS.subtle}
-                ${checked ? `bg-orange-100 ${SHADOWS.small}` : 'bg-white hover:bg-slate-50'}
+                ${checked
+                    ? 'bg-orange-100 shadow-none translate-x-[2px] translate-y-[2px]'
+                    : `bg-white ${SHADOWS.small} hover:bg-orange-50 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]`
+                }
                 ${compact ? 'p-2' : 'p-3'}
                 transition-all ${TRANSITIONS.fast}
             `}
+            role="checkbox"
+            aria-checked={checked}
         >
-            <input
-                type="checkbox"
-                checked={checked}
-                onChange={(e) => onChange(e.target.checked)}
-                className="w-4 h-4 accent-orange-500 flex-shrink-0"
-            />
             <div className="flex-shrink-0 text-black">
                 <TypeIcon type={type} size={compact ? 16 : 18} />
             </div>
@@ -97,6 +97,6 @@ export function SourceSelectionItem({
                     <p className="text-xs text-slate-600 truncate font-medium mt-0.5">{subtitle}</p>
                 )}
             </div>
-        </label>
+        </div>
     );
 }

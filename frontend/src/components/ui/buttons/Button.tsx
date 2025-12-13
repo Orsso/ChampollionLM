@@ -1,10 +1,9 @@
 import React from 'react';
-import { 
-  BUTTON_BASE, 
-  BUTTON_SECONDARY, 
-  BUTTON_DANGER,
-  BUTTON_VARIANTS,
-  SHADOWS
+import {
+  SHADOWS,
+  BORDERS,
+  RADIUS,
+  TRANSITIONS
 } from '../../../constants/styles';
 
 /**
@@ -18,53 +17,97 @@ import {
  * <Button variant="primary" onClick={handleSubmit}>
  *   Enregistrer
  * </Button>
- * <Button variant="secondary" onClick={handleCancel}>
+ * <Button variant="secondary" size="sm" onClick={handleCancel}>
  *   Annuler
- * </Button>
- * <Button variant="danger" onClick={handleLogout}>
- *   Déconnexion
  * </Button>
  * ```
  */
 
-interface ButtonProps {
-  children: React.ReactNode;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
-  type?: 'button' | 'submit' | 'reset';
-  disabled?: boolean;
-  className?: string;
+  size?: 'sm' | 'md' | 'lg';
+  active?: boolean;
 }
 
-export function Button({
+const SIZES = {
+  sm: 'px-3 py-1.5 text-xs',
+  md: 'px-4 py-2 text-sm',
+  lg: 'px-6 py-3 text-base',
+};
+
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   children,
   onClick,
   variant = 'primary',
+  size = 'lg',
+  active = false,
   type = 'button',
   disabled = false,
-  className = ''
-}: ButtonProps) {
-  // Use predefined constants for secondary and danger variants
-  let buttonClasses = '';
-  
-  if (variant === 'secondary') {
-    buttonClasses = BUTTON_SECONDARY;
-  } else if (variant === 'danger') {
-    buttonClasses = BUTTON_DANGER;
-  } else {
-    // For primary and ghost, use BUTTON_VARIANTS
-    const variantClasses = BUTTON_VARIANTS[variant];
-    buttonClasses = `${BUTTON_BASE} ${SHADOWS.medium} ${variantClasses}`;
+  className = '',
+  ...props
+}, ref) => {
+
+  // Base structural styles
+  const baseStyles = `${RADIUS.normal} ${BORDERS.normal} border-black font-bold transition-all ${TRANSITIONS.fast} flex items-center justify-center gap-2`;
+
+  // Size styles
+  const sizeStyles = SIZES[size];
+
+  // Variant styles
+  let variantStyles = '';
+
+  switch (variant) {
+    case 'primary':
+      if (active) {
+        variantStyles = `bg-orange-500 text-white translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`;
+      } else {
+        variantStyles = `bg-orange-500 text-white hover:bg-orange-600 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium}`;
+      }
+      break;
+    case 'secondary':
+      if (active) {
+        // Active: Orange background (Brand), white text, pressed down (no hover movement)
+        variantStyles = `bg-orange-500 text-white translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`;
+      } else {
+        // Normal: White background, hover effect
+        variantStyles = `bg-white text-black hover:bg-orange-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium}`;
+      }
+      break;
+    case 'danger':
+      variantStyles = `bg-white text-black hover:bg-red-500 hover:text-white hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium}`;
+      break;
+    case 'ghost':
+      if (active) {
+        variantStyles = `bg-slate-100 translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] border-black`;
+      } else {
+        variantStyles = `bg-transparent text-black hover:bg-slate-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] border-transparent hover:border-black`;
+      }
+      break;
+  }
+
+  // Active state overrides (if generic active behavior is needed beyond variants)
+  if (active && variant !== 'primary' && variant !== 'ghost') {
+    // General active override if not handled above
   }
 
   return (
     <button
+      ref={ref}
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${buttonClasses} disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 ${className}`}
+      className={`
+        ${baseStyles}
+        ${sizeStyles}
+        ${variantStyles}
+        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-x-0 disabled:hover:translate-y-0 disabled:hover:shadow-none
+        ${className}
+      `}
+      {...props}
     >
       {children}
     </button>
   );
-}
+});
+
+Button.displayName = 'Button';

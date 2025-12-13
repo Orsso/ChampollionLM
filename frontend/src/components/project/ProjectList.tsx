@@ -5,11 +5,10 @@ import { ConfirmDeleteButton } from '../ui/buttons';
 import { useDeleteProject } from '../../hooks/useProjects';
 import { useConfirmDelete } from '../../hooks';
 import { formatDate } from '../../utils/formatters';
+import { Card } from '../ui/cards';
 import {
   BORDERS,
-  RADIUS,
-  CARD_VARIANTS,
-  TRANSITIONS
+  RADIUS
 } from '../../constants/styles';
 
 /**
@@ -57,7 +56,7 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
       const statusTime = new Date(project.status_updated_at).getTime();
       const now = Date.now();
       const isRecent = (now - statusTime) < 10000; // 10 seconds
-      
+
       if (isRecent) {
         return <Badge color="green">Pret</Badge>;
       }
@@ -99,20 +98,11 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
   return (
     <div className="grid grid-cols-1 gap-6">
       {projects.map((project) => (
-        <div
+        <Card
           key={project.id}
           onClick={() => navigate(`/projects/${project.id}`)}
-          className={`
-            ${CARD_VARIANTS.default}
-            ${RADIUS.normal}
-            p-6
-            cursor-pointer
-            transition-all ${TRANSITIONS.fast}
-            hover:translate-x-[2px] hover:translate-y-[2px]
-            hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
-            active:translate-x-[4px] active:translate-y-[4px]
-            active:shadow-none
-          `}
+          className={`p-6`}
+          hoverEffect={true}
         >
           <div className="flex items-center gap-6">
             <div className={`
@@ -157,7 +147,7 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
               />
             </div>
           </div>
-        </div>
+        </Card>
       ))}
     </div>
   );
