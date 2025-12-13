@@ -49,7 +49,7 @@ DATABASE_URL=sqlite+aiosqlite:///./champollion.db
 
 **Stockage:**
 ```env
-AUDIO_STORAGE_ROOT=./storage/audio
+FILE_STORAGE_ROOT=./storage/files
 MAX_AUDIO_BYTES=524288000
 MAX_AUDIO_DURATION_SECONDS=7200
 ```

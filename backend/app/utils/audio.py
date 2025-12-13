@@ -78,7 +78,7 @@ def convert_webm_to_mp3(input_path: Path, output_path: Path) -> None:
 
 
 def user_project_storage_path(user_id: int, project_id: int) -> Path:
-    return settings.audio_storage_root / str(user_id) / str(project_id)
+    return settings.file_storage_root / str(user_id) / str(project_id)
 
 
 def build_recording_path(user_id: int, project_id: int, filename: str) -> Path:

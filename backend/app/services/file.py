@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 from typing import BinaryIO
 
+from app.core.settings import settings
 from app.models.metadata import AudioMetadata
 from app.utils.audio import (
     build_recording_path,
@@ -123,8 +124,7 @@ class FileService:
         final_filename = generate_upload_filename(filename)
 
         # Build file path (using pdf subdirectory)
-        # Build file path (using pdf subdirectory)
-        storage_root = Path(settings.audio_storage_root)
+        storage_root = Path(settings.file_storage_root)
         destination = storage_root / str(user_id) / str(project_id) / "pdf" / final_filename
 
         # Write uploaded file

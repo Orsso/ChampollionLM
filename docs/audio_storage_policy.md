@@ -11,9 +11,10 @@
 3. Prévoir les points d’entrée pour un nettoyage manuel, sans automatisation (KISS/YAGNI).
 
 ## Storage Root
-- Racine configurable via variable d'environnement `AUDIO_STORAGE_ROOT`, défaut `./storage/audio`.
-- Arborescence hiérarchique : `/<root>/<user_id>/<project_id>/`.
-- Exemple : `storage/audio/42/105/` contient toutes les ressources audio du projet 105 de l'utilisateur 42.
+- Racine configurable via variable d'environnement `FILE_STORAGE_ROOT`, défaut `./storage/files`.
+- Arborescence hiérarchique : `/<root>/<user_id>/<project_id>/[audio|pdf]/`.
+- Exemple audio : `storage/files/42/105/recording-20250929-143000.webm`
+- Exemple PDF : `storage/files/42/105/pdf/document.pdf`
 
 ## File Naming Convention
 - Enregistrement live : `recording-<timestamp>.webm`

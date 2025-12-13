@@ -46,8 +46,8 @@ class AppSettings(BaseSettings):
     jwt_secret: SecretStr = Field(..., description="JWT secret for FastAPI Users")
     jwt_lifetime_seconds: int = Field(default=3600, ge=300)
 
-    audio_storage_root: Path = Field(
-        default=Path("./storage/audio"), description="Root directory for audio files"
+    file_storage_root: Path = Field(
+        default=Path("./storage/files"), description="Root directory for all uploaded files (audio, PDFs, etc.)"
     )
     max_audio_bytes: int = Field(default=500 * 1024 * 1024, ge=1)
     max_audio_duration_seconds: int = Field(default=7200, ge=1)
