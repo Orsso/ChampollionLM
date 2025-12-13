@@ -192,6 +192,10 @@ class MistralAudioProcessor(SourceProcessor):
                     response.raise_for_status()
                     transcription = response.json()
 
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code == 401:
+                    raise STTProviderError("Clé API Mistral invalide ou expirée. Veuillez vérifier vos paramètres.") from exc
+                raise STTProviderError(str(exc)) from exc
             except Exception as exc:  # pragma: no cover - network failures mapped
                 raise STTProviderError(str(exc)) from exc
         finally:

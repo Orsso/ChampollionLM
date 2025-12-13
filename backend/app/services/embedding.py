@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 import chromadb
 from mistralai import Mistral
 
+from mistralai.models.sdkerror import SDKError
 from app.core.security import decrypt_api_key
 
 if TYPE_CHECKING:
@@ -116,6 +117,12 @@ class EmbeddingService:
                 inputs=texts
             )
             return [item.embedding for item in response.data]
+        except SDKError as e:
+            if e.status_code == 401:
+                logger.warning(f"Mistral API unauthorized (401) for user {self.user.id}")
+                raise ValueError("Clé API Mistral invalide ou expirée. Veuillez vérifier vos paramètres.")
+            logger.error(f"Mistral SDK Error: {e}")
+            raise
         except Exception as exc:
             logger.error("Error getting embeddings", exc_info=exc)
             raise
@@ -152,6 +159,7 @@ class EmbeddingService:
             name=collection_name,
             metadata={"source_hash": source_hash}
         )
+
         
         # Prepare chunks from all sources
         all_chunks: list[str] = []

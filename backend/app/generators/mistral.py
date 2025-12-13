@@ -9,6 +9,7 @@ from dataclasses import dataclass
 from typing import Any
 
 from mistralai import Mistral
+from mistralai.models.sdkerror import SDKError
 
 from app.core.security import decrypt_api_key
 from app.generators.base import DocumentProviderError, GenerationResult, GenerationStrategy
@@ -176,6 +177,10 @@ class MistralGenerator(GenerationStrategy):
                 ],
                 temperature=self.config.temperature,
             )
+        except SDKError as e:
+            if e.status_code == 401:
+                raise DocumentProviderError("Clé API Mistral invalide ou expirée. Veuillez vérifier vos paramètres.") from e
+            raise DocumentProviderError(f"Mistral SDK Error: {e}") from e
         except Exception as exc:  # pragma: no cover - network failures
             raise DocumentProviderError(str(exc)) from exc
 

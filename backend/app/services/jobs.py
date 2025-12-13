@@ -92,7 +92,8 @@ async def _run_processing_job_impl(
 
     # Get or create job
     job = await job_svc.get_or_create_job(project_id)
-    await job_svc.mark_in_progress(job.id)
+    job_id = job.id
+    await job_svc.mark_in_progress(job_id)
     await session.commit()
     logger.info("Transcription job marked as IN_PROGRESS", extra={"project_id": project_id})
 
@@ -118,13 +119,13 @@ async def _run_processing_job_impl(
                 "error": str(exc)
             })
             await session.rollback()
-            await job_svc.mark_failed(job.id, f"Source {src_name}: {str(exc)}")
+            await job_svc.mark_failed(job_id, f"Source {src_name}: {str(exc)}")
             await session.commit()
             return
 
     # All sources transcribed successfully
     logger.info("All audio sources transcribed successfully", extra={"project_id": project_id})
-    await job_svc.mark_succeeded(job.id)
+    await job_svc.mark_succeeded(job_id)
     await session.commit()
     logger.info("Transcription job completed successfully", extra={"project_id": project_id})
 
@@ -201,7 +202,7 @@ async def _run_document_job_impl(
             document_type=document_type,
         )
     except Exception as exc:  # pragma: no cover - defensive catch
-        logger.error("Error generating document", extra={
+        logger.error(f"Error generating document: {str(exc)}", extra={
             "project_id": project_id,
             "error": str(exc)
         })
