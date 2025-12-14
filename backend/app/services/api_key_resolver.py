@@ -62,20 +62,18 @@ def get_effective_api_key_sync(user: User) -> str | None:
         try:
             return decrypt_api_key(user.api_key_encrypted)
         except ValueError:
-            logger.warning(f"Failed to decrypt API key for user {user.id}")
+            logger.warning("Failed to decrypt API key for user %d", user.id)
 
     # Priority 2: Demo shared API key
-    logger.info(f"Checking demo API key for user {user.id}: demo_key_configured={settings.demo_mistral_api_key is not None}")
     if settings.demo_mistral_api_key:
         # Accessing .demo_access here is safe ONLY if eagerly loaded
         # or if we are in a sync session context (which we aren't).
         # The dependency current_user_with_demo ensures it is loaded.
         demo_access = getattr(user, "demo_access", None)
-        logger.info(f"User {user.id} demo_access: exists={demo_access is not None}, is_active={demo_access.is_active if demo_access else 'N/A'}")
         if demo_access and demo_access.is_active:
-            logger.info(f"Using demo API key for user {user.id}")
+            logger.debug("Using demo API key for user %d", user.id)
             return settings.demo_mistral_api_key.get_secret_value()
     else:
-        logger.warning(f"DEMO_MISTRAL_API_KEY not configured in environment")
+        logger.debug("DEMO_MISTRAL_API_KEY not configured")
 
     return None

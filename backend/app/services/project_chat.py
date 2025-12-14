@@ -270,20 +270,7 @@ Titre:"""
         # Build messages for Mistral
         messages = self._build_messages(project, sources, history, message, action, selected_text)
 
-        # === DEBUG LOGGING: START OF RAG FLOW ===
-        print("\n" + "="*80)
-        print("RAG FLOW DEBUG - START")
-        print("="*80)
-        print(f"\n1. USER QUESTION:")
-        print("-"*40)
-        print(message)
-        print("-"*40)
-        if action:
-            print(f"   Action: {action}")
-        if selected_text:
-            print(f"   Selected text: {selected_text}")
-        print(f"   Sources available: {len(sources)}")
-        print()
+        logger.debug("Starting RAG flow for project %d with %d sources", project_id, len(sources))
 
         # Agentic loop - capture sources for saving (accumulate across all searches)
         full_response = ""
@@ -322,25 +309,10 @@ Titre:"""
 
         clean_response = self.clean_response(full_response)
 
-        # === DEBUG LOGGING: END OF RAG FLOW ===
-        print(f"\n4. LLM RESPONSE:")
-        print("-"*40)
-        print(clean_response)
-        print("-"*40)
-        
-        print(f"\n5. RAG CHUNKS FOUND ({len(all_chunks_found)} total):")
-        print("-"*40)
-        for i, chunk in enumerate(all_chunks_found):
-            print(f"\n[CHUNK {i+1}] Source: {chunk.get('source', 'Unknown')}")
-            print(f"           Query: {chunk.get('query', 'N/A')}")
-            print(f"           Score: {chunk.get('score', 'N/A')}")
-            print(f"           FULL CONTENT:")
-            print(chunk.get('content', chunk.get('preview', 'NO CONTENT')))
-        print("-"*40)
-        
-        print("\n" + "="*80)
-        print("RAG FLOW DEBUG - END")
-        print("="*80 + "\n")
+        logger.debug(
+            "RAG flow completed: %d sources used, %d chunks found",
+            len(all_sources_used), len(all_chunks_found)
+        )
 
         # Save assistant response
         assistant_metadata = None

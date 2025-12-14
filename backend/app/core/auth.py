@@ -13,9 +13,6 @@ from app.models import User
 from app.schemas.user import UserCreate, UserRead, UserUpdate
 
 
-RESET_PASSWORD_TOKEN_SECRET = "reset-password-token"
-VERIFICATION_TOKEN_SECRET = "verification-token"
-
 
 def get_jwt_strategy() -> JWTStrategy:
     return JWTStrategy(

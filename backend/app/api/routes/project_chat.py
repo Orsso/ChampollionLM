@@ -10,7 +10,6 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_db_session
-from app.api.deps import get_db_session
 from app.core.auth import current_user_with_demo
 from app.models import User
 from app.schemas import (

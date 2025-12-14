@@ -120,21 +120,13 @@ class BaseChatService(ABC):
                         except json.JSONDecodeError:
                             query = tool_call.function.arguments
 
-                        # === DEBUG LOGGING: RAG QUERY ===
-                        print(f"\n2. RAG QUERY (from LLM tool call):")
-                        print("-"*40)
-                        print(query)
-                        print("-"*40)
+                        logger.debug("RAG query from tool call: %s", query)
 
                         yield f'[EVENT:search_start:{json.dumps({"query": query})}]'
 
                         results, source_titles, chunks_preview = await self._search_sources(context_id, query)
 
-                        # === DEBUG LOGGING: RAG RESPONSE ===
-                        print(f"\n3. RAG RESPONSE ({len(chunks_preview)} chunks found):")
-                        print("-"*40)
-                        print(results)  # FULL RAG RESULTS sent to LLM
-                        print("-"*40)
+                        logger.debug("RAG response: %d chunks found", len(chunks_preview))
 
                         yield f'[EVENT:search_complete:{json.dumps({"sources": source_titles, "chunks": chunks_preview})}]'
 
