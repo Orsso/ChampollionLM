@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useProject } from '../hooks/useProjects';
-import { Spinner } from '../components/ui/feedback';
+import { PageLoader } from '../components/ui/feedback';
 import { SourcesPanel } from '../components/project/SourcesPanel';
 import { StudioPanel } from '../components/project/StudioPanel';
 import { ProjectChatPanel } from '../components/project/ProjectChatPanel';
@@ -40,7 +40,7 @@ export function ProjectDetail() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Spinner color="orange" size="lg" />
+        <PageLoader size="lg" />
       </div>
     );
   }

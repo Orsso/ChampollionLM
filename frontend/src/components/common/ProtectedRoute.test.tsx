@@ -8,9 +8,9 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { AuthContext } from '../../contexts/AuthContext';
 import type { ReactNode } from 'react';
 
-// Mock Spinner component
+// Mock PageLoader component
 vi.mock('../ui/feedback', () => ({
-  Spinner: () => <div data-testid="spinner">Loading...</div>,
+  PageLoader: () => <div data-testid="page-loader">Loading...</div>,
 }));
 
 function renderWithRouter(ui: ReactNode, initialEntries = ['/protected']) {
@@ -66,7 +66,7 @@ describe('ProtectedRoute', () => {
       </AuthWrapper>
     );
 
-    expect(screen.getByTestId('spinner')).toBeInTheDocument();
+    expect(screen.getByTestId('page-loader')).toBeInTheDocument();
     expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
   });
 
@@ -130,7 +130,7 @@ describe('ProtectedRoute', () => {
       </AuthWrapper>
     );
 
-    expect(screen.getByTestId('spinner')).toBeInTheDocument();
+    expect(screen.getByTestId('page-loader')).toBeInTheDocument();
     expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
   });
 });

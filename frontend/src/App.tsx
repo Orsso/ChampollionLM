@@ -20,6 +20,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
+
           {/* Protected routes with Dock navigation */}
           <Route
             path="/dashboard"

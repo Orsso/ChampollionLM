@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import type { Project } from '../../types';
-import { Badge, Spinner, ShinyText } from '../ui/feedback';
+import { Badge, PageLoader, ShinyText } from '../ui/feedback';
 import { ConfirmDeleteButton } from '../ui/buttons';
 import { useDeleteProject } from '../../hooks/useProjects';
 import { useConfirmDelete } from '../../hooks';
@@ -81,7 +81,7 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center py-16">
-        <Spinner color="orange" size="lg" />
+        <PageLoader size="lg" />
       </div>
     );
   }
