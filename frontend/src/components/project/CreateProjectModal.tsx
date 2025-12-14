@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Alert } from '../ui/feedback';
 import { Button } from '../ui/buttons';
 import { AnimatedInput, Textarea } from '../ui/forms';
@@ -17,6 +18,7 @@ interface FormData {
 }
 
 export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps) {
+  const { t } = useTranslation();
   const { createProject } = useCreateProject();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -32,7 +34,7 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
       reset();
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors de la creation');
+      setError(err instanceof Error ? err.message : t('project.createError'));
     } finally {
       setIsLoading(false);
     }
@@ -50,13 +52,13 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
       className="fixed inset-0 bg-black/60 flex items-center justify-center z-[60] px-4"
     >
       <Card className="w-full max-w-md p-8 shadow-large">
-        <h2 className="text-3xl font-black text-black mb-6">Nouveau projet</h2>
+        <h2 className="text-3xl font-black text-black mb-6">{t('project.new')}</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
             <AnimatedInput
-              label="Titre du projet"
-              {...register('title', { required: 'Titre requis' })}
+              label={t('project.title')}
+              {...register('title', { required: t('project.titleRequired') })}
               darkMode={false}
             />
             {errors.title && (
@@ -66,12 +68,12 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
 
           <div>
             <label className="block text-sm font-bold text-black mb-2">
-              Description (optionnel)
+              {t('project.descriptionOptional')}
             </label>
             <Textarea
               {...register('description')}
               rows={3}
-              placeholder="Decrivez votre projet..."
+              placeholder={t('project.descriptionPlaceholder')}
             />
           </div>
 
@@ -83,14 +85,14 @@ export function CreateProjectModal({ isOpen, onClose }: CreateProjectModalProps)
               onClick={onClose}
               variant="secondary"
             >
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button
               type="submit"
               variant="primary"
               disabled={isLoading}
             >
-              {isLoading ? 'Creation...' : 'Creer'}
+              {isLoading ? t('common.creating') : t('common.create')}
             </Button>
           </div>
         </form>

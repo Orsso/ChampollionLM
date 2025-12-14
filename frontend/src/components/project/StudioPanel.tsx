@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert } from '../ui/feedback';
 import { GenerationControls } from './GenerationControls';
 import { DocumentsList } from './DocumentsList';
@@ -16,6 +17,7 @@ interface StudioPanelProps {
 }
 
 export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
+  const { t } = useTranslation();
   const { generateDocument } = useGenerateDocument(projectId);
   const { project, mutate: mutateProject } = useProject(projectId);
   const { mutate: mutateSources } = useSources(projectId);
@@ -35,15 +37,6 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
   const isJobFailed = documentStatus === 'failed';
   const jobError = project?.document_status?.error;
 
-  // Poll for updates when generating
-  useEffect(() => {
-    if (!isGenerating) return;
-    const interval = setInterval(() => {
-      mutateProject();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [isGenerating, mutateProject]);
-
   const handleGenerateDocument = async (sourceIds: number[], title?: string) => {
     setError(null);
     setIsLaunching(true);
@@ -51,7 +44,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
     try {
       await generateDocument({ sourceIds, title });
     } catch (err) {
-      let errorMessage = 'Erreur lors de la generation';
+      let errorMessage = t('project.studio.generationError');
       if (err instanceof Error) errorMessage = err.message;
       else if (typeof err === 'string') errorMessage = err;
       setError(errorMessage);
@@ -71,7 +64,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
         }
         await mutateProject();
       } catch {
-        setError("Failed to load project details");
+        setError(t('project.studio.deleteError'));
       }
     }, documentId);
   };
@@ -81,7 +74,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
       await updateDocument(Number(projectId), documentId, title);
       await mutateProject();
     } catch {
-      throw new Error('Echec du renommage');
+      throw new Error(t('project.studio.renameFailed'));
     }
   };
 
@@ -96,7 +89,7 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
     onMutate?.();
   };
 
-  const displayError = error || (isJobFailed ? (jobError || "La génération a échoué") : null);
+  const displayError = error || (isJobFailed ? (jobError || t('project.studio.generationFailed')) : null);
 
   return (
     <div className="space-y-8">
@@ -142,5 +135,3 @@ export function StudioPanel({ projectId, onMutate }: StudioPanelProps) {
     </div>
   );
 }
-
-

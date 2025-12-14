@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useProject } from '../hooks/useProjects';
 import { Spinner } from '../components/ui/feedback';
 import { SourcesPanel } from '../components/project/SourcesPanel';
@@ -11,6 +12,7 @@ import { BORDERS, SHADOWS, RADIUS } from '../constants/styles';
 type TabType = 'recording' | 'chat' | 'notes';
 
 export function ProjectDetail() {
+  const { t } = useTranslation();
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
   const { project, isLoading, mutate } = useProject(projectId);
@@ -46,15 +48,15 @@ export function ProjectDetail() {
   if (!project) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-600 font-medium">Projet non trouvé</p>
+        <p className="text-gray-600 font-medium">{t('errors.notFound')}</p>
       </div>
     );
   }
 
   const tabs: { id: TabType; label: string }[] = [
-    { id: 'recording', label: 'Sources' },
-    { id: 'chat', label: 'Chat' },
-    { id: 'notes', label: 'Studio' },
+    { id: 'recording', label: t('project.sources.title') },
+    { id: 'chat', label: t('project.chat.title') },
+    { id: 'notes', label: t('project.studio.title') },
   ];
 
   const isChatMode = activeTab === 'chat';
@@ -90,7 +92,7 @@ export function ProjectDetail() {
               className="bg-white text-orange-500 hover:bg-orange-50"
             >
               <span className="text-lg">←</span>
-              <span className="hidden sm:inline text-sm">Retour</span>
+              <span className="hidden sm:inline text-sm">{t('common.back')}</span>
             </Button>
             <div className={`px-4 py-2 bg-orange-50 ${BORDERS.normal} border-black ${SHADOWS.medium} ${RADIUS.subtle}`}>
               <h1 className="font-bold text-base sm:text-lg text-black truncate max-w-[180px] sm:max-w-xs tracking-tight">

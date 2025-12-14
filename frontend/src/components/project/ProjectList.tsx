@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { Project } from '../../types';
 import { Badge, Spinner, ShinyText } from '../ui/feedback';
 import { ConfirmDeleteButton } from '../ui/buttons';
@@ -24,6 +25,7 @@ interface ProjectListProps {
  * Navigates to project detail on click, supports two-step delete confirmation.
  */
 export function ProjectList({ projects, isLoading }: ProjectListProps) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { deleteProject } = useDeleteProject();
   const { isConfirmingId, handleDelete } = useConfirmDelete<number>();
@@ -33,7 +35,7 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
     if (documentStatus === 'pending' || documentStatus === 'in_progress') {
       return (
         <Badge color="amber">
-          <ShinyText size="sm">Generation de document en cours</ShinyText>
+          <ShinyText size="sm">{t('projects.status.documentGeneration')}</ShinyText>
         </Badge>
       );
     }
@@ -46,25 +48,25 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
     if (isProcessing) {
       return (
         <Badge color="amber">
-          <ShinyText size="sm">Traitement en cours</ShinyText>
+          <ShinyText size="sm">{t('projects.status.processing')}</ShinyText>
         </Badge>
       );
     }
 
-    // Show "Pret" badge only temporarily (within 10 seconds of status update)
+    // Show "Ready" badge only temporarily (within 10 seconds of status update)
     if (project.status === 'ready' && project.status_updated_at) {
       const statusTime = new Date(project.status_updated_at).getTime();
       const now = Date.now();
       const isRecent = (now - statusTime) < 10000; // 10 seconds
 
       if (isRecent) {
-        return <Badge color="green">Pret</Badge>;
+        return <Badge color="green">{t('projects.status.ready')}</Badge>;
       }
       return null; // No badge for older "ready" status
     }
 
     if (project.status === 'draft') {
-      return <Badge color="gray">Brouillon</Badge>;
+      return <Badge color="gray">{t('projects.status.draft')}</Badge>;
     }
 
     return null;
@@ -87,9 +89,9 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
   if (!projects || projects.length === 0) {
     return (
       <div className="text-center py-16">
-        <p className="text-slate-800 text-xl font-bold">Aucun projet pour l'instant</p>
+        <p className="text-slate-800 text-xl font-bold">{t('projects.noProjects')}</p>
         <p className="text-slate-600 mt-2">
-          Utilisez le bouton dans la barre de navigation pour creer votre premier projet
+          {t('projects.noProjectsHint')}
         </p>
       </div>
     );
@@ -125,10 +127,10 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
                 return (
                   <div className="flex flex-wrap items-center gap-4 text-sm font-bold">
                     <span className="text-black">
-                      {sourcesCount} source{sourcesCount > 1 ? 's' : ''}
+                      {sourcesCount} {sourcesCount > 1 ? t('projects.sourcesPlural') : t('projects.sources')}
                     </span>
                     <span className="text-black">
-                      {documentsCount} document{documentsCount > 1 ? 's' : ''}
+                      {documentsCount} {documentsCount > 1 ? t('projects.documentsPlural') : t('projects.documents')}
                     </span>
                     <span className="text-slate-600">
                       {formatDate(project.status_updated_at)}
@@ -143,7 +145,7 @@ export function ProjectList({ projects, isLoading }: ProjectListProps) {
               <ConfirmDeleteButton
                 isConfirming={isConfirmingId(project.id)}
                 onDelete={() => handleDeleteClick(project.id)}
-                ariaLabel={isConfirmingId(project.id) ? `Confirmer la suppression de ${project.title}` : `Supprimer ${project.title}`}
+                ariaLabel={isConfirmingId(project.id) ? t('projects.deleteConfirm', { title: project.title }) : t('projects.deleteAction', { title: project.title })}
               />
             </div>
           </div>

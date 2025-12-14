@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { gsap } from 'gsap';
 import { TRANSITIONS, BORDERS, SHADOWS, RADIUS } from '../../../constants/styles';
 import { Tooltip } from '../feedback';
@@ -6,7 +7,7 @@ import { Tooltip } from '../feedback';
 export interface ExportOption {
   label: string;
   onClick: () => void;
-  bgColor: string; // Couleur de fond (e.g., '#3b82f6')
+  bgColor: string;
 }
 
 interface ExportMenuProps {
@@ -18,15 +19,9 @@ interface ExportMenuProps {
  * ExportMenu Component
  *
  * Dropdown menu for export options.
- *
- * Features:
- * - Thick borders and hard shadows on container
- * - Bold separators between items
- * - Press-down effect on hover (reduced shadow)
- * - Saturated color backgrounds
- * - Simplified GSAP animations (snap effect)
  */
 export function ExportMenu({ options, className = '' }: ExportMenuProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -82,7 +77,7 @@ export function ExportMenu({ options, className = '' }: ExportMenuProps) {
     }
   }, [isOpen]);
 
-  // Fermer le menu quand on clique en dehors
+  // Close menu when clicking outside
   useEffect(() => {
     if (!isOpen) return;
 
@@ -113,12 +108,12 @@ export function ExportMenu({ options, className = '' }: ExportMenuProps) {
   return (
     <div className={`relative ${className}`}>
       {/* Export button */}
-      <Tooltip content="Exporter le document">
+      <Tooltip content={t('project.documents.export')}>
         <button
           ref={buttonRef}
           onClick={handleToggle}
           className={`h-10 w-10 flex items-center justify-center bg-white border-black text-black hover:bg-orange-50 ${RADIUS.subtle} ${BORDERS.normal} ${SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-bold`}
-          aria-label="Exporter le document"
+          aria-label={t('project.documents.export')}
         >
           <svg
             width="20"

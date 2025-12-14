@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../hooks';
 import { AnimatedInput } from '../ui/forms';
 import { Button } from '../ui/buttons';
@@ -27,6 +28,7 @@ interface FormData {
  * Features styled inputs and form validation.
  */
 export function AuthForm({ mode }: AuthFormProps) {
+  const { t } = useTranslation();
   const { login, register: registerUser } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +49,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       }
       navigate('/dashboard');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      setError(err instanceof Error ? err.message : t('auth.genericError'));
     } finally {
       setIsLoading(false);
     }
@@ -62,13 +64,13 @@ export function AuthForm({ mode }: AuthFormProps) {
           className="inline-flex items-center gap-2 text-sm font-bold text-slate-600 hover:text-orange-500 transition-colors mb-6"
         >
           <span>←</span>
-          <span>Retour à l'accueil</span>
+          <span>{t('common.backToHome')}</span>
         </Link>
 
         {/* Header */}
         <PageHeader
           title="Champollion"
-          subtitle={mode === 'login' ? 'Connexion' : 'Créer un compte'}
+          subtitle={mode === 'login' ? t('auth.loginTitle') : t('auth.registerTitle')}
           variant="colored"
           subtitleVariant="highlight"
           className="text-center"
@@ -77,14 +79,14 @@ export function AuthForm({ mode }: AuthFormProps) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
           <div>
             <AnimatedInput
-              label="Email"
+              label={t('auth.email')}
               type="email"
               autoComplete="email"
               {...register('email', {
-                required: 'Email requis',
+                required: t('auth.emailRequired'),
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: 'Email invalide'
+                  message: t('auth.emailInvalid')
                 }
               })}
               darkMode={false}
@@ -96,14 +98,14 @@ export function AuthForm({ mode }: AuthFormProps) {
 
           <div>
             <AnimatedInput
-              label="Mot de passe"
+              label={t('auth.password')}
               type="password"
               autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
               {...register('password', {
-                required: 'Mot de passe requis',
+                required: t('auth.passwordRequired'),
                 minLength: {
                   value: 6,
-                  message: 'Minimum 6 caractères'
+                  message: t('auth.passwordMinLength')
                 }
               })}
               darkMode={false}
@@ -116,13 +118,13 @@ export function AuthForm({ mode }: AuthFormProps) {
           {mode === 'register' && (
             <div>
               <AnimatedInput
-                label="Confirmer le mot de passe"
+                label={t('auth.confirmPassword')}
                 type="password"
                 autoComplete="new-password"
                 {...register('confirmPassword', {
-                  required: 'Confirmation requise',
+                  required: t('auth.confirmRequired'),
                   validate: (value) =>
-                    value === password || 'Les mots de passe ne correspondent pas'
+                    value === password || t('auth.passwordMismatch')
                 })}
                 darkMode={false}
               />
@@ -140,7 +142,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             className="w-full"
             disabled={isLoading}
           >
-            {isLoading ? 'Chargement...' : mode === 'login' ? 'Se connecter' : "S'inscrire"}
+            {isLoading ? t('common.loading') : mode === 'login' ? t('auth.login') : t('auth.register')}
           </Button>
         </form>
 
@@ -148,22 +150,22 @@ export function AuthForm({ mode }: AuthFormProps) {
         <p className="text-black text-sm mt-6 text-center font-medium">
           {mode === 'login' ? (
             <>
-              Pas de compte?{' '}
+              {t('auth.noAccount')}{' '}
               <Link
                 to="/register"
                 className="text-orange-500 font-bold hover:text-orange-600 underline decoration-2 underline-offset-4"
               >
-                S'inscrire
+                {t('auth.register')}
               </Link>
             </>
           ) : (
             <>
-              Déjà un compte?{' '}
+              {t('auth.hasAccount')}{' '}
               <Link
                 to="/login"
                 className="text-orange-500 font-bold hover:text-orange-600 underline decoration-2 underline-offset-4"
               >
-                Se connecter
+                {t('auth.login')}
               </Link>
             </>
           )}

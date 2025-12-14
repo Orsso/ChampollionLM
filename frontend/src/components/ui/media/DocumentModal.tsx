@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { saveAs } from 'file-saver';
 import { Modal } from '../layout';
 import { MarkdownViewer } from './MarkdownViewer';
@@ -35,6 +36,7 @@ export function DocumentModal({
   isConfirmingDelete = false,
   onMutate
 }: DocumentModalProps) {
+  const { t } = useTranslation();
   const [renameOpen, setRenameOpen] = useState(false);
   const [renameValue, setRenameValue] = useState('');
   const [copied, setCopied] = useState(false);
@@ -74,7 +76,7 @@ export function DocumentModal({
     try {
       await createSource(projectId, {
         type: 'document',
-        title: document?.title || 'Document sans titre',
+        title: document?.title || t('project.documents.untitledDoc'),
         content: document.markdown,
       });
       onMutate?.();
@@ -89,7 +91,7 @@ export function DocumentModal({
     if (!document?.markdown) return;
     try {
       const token = getToken();
-      if (!token) throw new Error('Non authentifie');
+      if (!token) throw new Error('Not authenticated');
       const response = await fetch(`${API_BASE_URL}/api/projects/${projectId}/documents/${document.id}/export/pdf`, {
         method: 'GET',
         headers: { 'Authorization': `Bearer ${token}` }
@@ -154,10 +156,10 @@ export function DocumentModal({
             `}>
               <DocumentIcon />
             </span>
-            <span className="text-lg font-black text-orange-500">{document?.title || 'Cours'}</span>
+            <span className="text-lg font-black text-orange-500">{document?.title || t('project.documents.course')}</span>
             <IconButton
               onClick={handleRenameClick}
-              tooltip="Renommer le document"
+              tooltip={t('project.documents.rename')}
               icon={<EditIcon />}
               size="sm"
               className="!h-7 !w-7"
@@ -169,20 +171,20 @@ export function DocumentModal({
             {/* Chat toggle button */}
             <IconButton
               onClick={() => setChatOpen(!chatOpen)}
-              tooltip={chatOpen ? 'Fermer le chat' : 'Ouvrir le chat'}
+              tooltip={chatOpen ? t('project.documents.closeChat') : t('project.documents.openChat')}
               icon={<ChatIcon />}
               variant={chatOpen ? 'primary' : 'default'}
               className={`${SHADOWS.small}`}
             />
             <IconButton
               onClick={handleAddToSource}
-              tooltip={addedToSource ? 'Ajouté !' : 'Ajouter comme source'}
+              tooltip={addedToSource ? t('project.documents.added') : t('project.documents.addAsSource')}
               icon={addedToSource ? <CheckIcon /> : <PlusIcon />}
               variant="primary"
             />
             <IconButton
               onClick={handleCopyMarkdown}
-              tooltip={copied ? 'Copié !' : 'Copier le markdown'}
+              tooltip={copied ? t('project.documents.copied') : t('project.documents.copyMarkdown')}
               icon={copied ? <CheckIcon /> : (
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
@@ -195,7 +197,9 @@ export function DocumentModal({
               <ConfirmDeleteButton
                 isConfirming={isConfirmingDelete}
                 onDelete={() => onDelete(document.id)}
-                ariaLabel={isConfirmingDelete ? `Confirmer la suppression de ${document?.title || projectTitle || 'document'}` : `Supprimer ${document?.title || projectTitle || 'document'}`}
+                ariaLabel={isConfirmingDelete
+                  ? t('project.documents.deleteConfirmFull', { title: document?.title || projectTitle || 'document' })
+                  : t('project.documents.deleteAction', { title: document?.title || projectTitle || 'document' })}
               />
             )}
           </div>
@@ -218,10 +222,10 @@ export function DocumentModal({
       </Modal>
 
       {renameOpen && (
-        <Modal isOpen={renameOpen} onClose={() => setRenameOpen(false)} title="Renommer le document" maxWidth="max-w-md">
+        <Modal isOpen={renameOpen} onClose={() => setRenameOpen(false)} title={t('project.documents.rename')} maxWidth="max-w-md">
           <div className="space-y-4">
             <AnimatedInput
-              label="Titre"
+              label={t('project.documents.renameTitle')}
               value={renameValue}
               onChange={(e) => setRenameValue(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleRenameSubmit()}
@@ -239,7 +243,7 @@ export function DocumentModal({
                   bg-white text-black font-bold
                 `}
               >
-                Annuler
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleRenameSubmit}
@@ -251,7 +255,7 @@ export function DocumentModal({
                   bg-orange-500 text-white font-bold
                 `}
               >
-                Renommer
+                {t('common.save')}
               </button>
             </div>
           </div>

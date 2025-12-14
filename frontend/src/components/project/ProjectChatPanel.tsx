@@ -6,6 +6,7 @@
  */
 
 import { useState, useRef, useEffect, useCallback, type FormEvent, type KeyboardEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useProjectChat } from '../../hooks/useProjectChat';
 import { useConfirmDelete } from '../../hooks/useConfirmDelete';
 import { ChatMessage } from '../ui/media/ChatMessage';
@@ -62,6 +63,7 @@ const LayersIcon = () => (
 
 
 export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) {
+    const { t } = useTranslation();
     const {
         messages, isStreaming, searchStatus, error, sendMessage, isLoading,
         sessions, currentSession, createSession, selectSession, deleteSession,
@@ -131,7 +133,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
             variant="secondary"
             size="sm"
             className="p-1 px-2"
-            title="Nouvelle conversation"
+            title={t('project.chat.newConversation')}
         >
             <PlusIcon />
         </Button>
@@ -146,14 +148,14 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
             <LightButton
                 onClick={() => setSelectedSourceIds(readySources.map(s => s.id))}
                 className="py-0.5 h-auto min-h-0"
-                title="Tout sélectionner"
+                title={t('common.selectAll')}
             >
-                Tout
+                {t('common.all')}
             </LightButton>
             <LightButton
                 onClick={() => setSelectedSourceIds([])}
                 className="py-0.5 h-auto min-h-0"
-                title="Tout désélectionner"
+                title={t('common.deselectAll')}
             >
                 ∅
             </LightButton>
@@ -167,7 +169,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                 <LightButton
                     onClick={() => setLeftPanelOpen(true)}
                     className="absolute left-2 top-2 z-10 shadow-sm p-1.5"
-                    title="Afficher les conversations"
+                    title={t('project.chat.showConversations')}
                 >
                     <MessageSquareIcon />
                 </LightButton>
@@ -178,7 +180,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                 <LightButton
                     onClick={() => setRightPanelOpen(true)}
                     className="absolute right-2 top-2 z-10 shadow-sm p-1.5"
-                    title="Afficher les sources"
+                    title={t('project.chat.showSources')}
                 >
                     <LayersIcon />
                 </LightButton>
@@ -189,12 +191,12 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                 isOpen={leftPanelOpen}
                 onToggle={() => setLeftPanelOpen(!leftPanelOpen)}
                 side="left"
-                title="Conversations"
+                title={t('common.conversations')}
                 headerActions={sessionHeaderActions}
             >
                 {sessions.length === 0 ? (
                     <p className="text-xs text-black text-center py-4">
-                        Cliquez sur <span className="font-bold">+</span> pour créer une conversation.
+                        {t('project.chat.createConversationHint')}
                     </p>
                 ) : (
                     sessions.map(session => (
@@ -211,7 +213,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                             <ConfirmDeleteButton
                                 isConfirming={isConfirmingId(session.id)}
                                 onDelete={() => handleDelete(() => deleteSession(session.id), session.id)}
-                                ariaLabel="Supprimer"
+                                ariaLabel={t('common.delete')}
                             />
                         </div>
                     ))
@@ -225,7 +227,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                     {isLoading ? (
                         <div className="flex items-center justify-center h-full">
                             <div className={`px-4 py-2 font-bold text-sm text-black ${BORDERS.thin} border-black ${RADIUS.subtle} bg-white animate-pulse`}>
-                                Chargement...
+                                {t('common.loading')}
                             </div>
                         </div>
                     ) : messages.length === 0 ? (
@@ -233,9 +235,9 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                             <div className={`mb-4 p-5 ${BORDERS.normal} border-black ${RADIUS.normal} bg-white ${SHADOWS.small} text-orange-500`}>
                                 <ChatBubbleIcon />
                             </div>
-                            <p className="text-black font-black text-lg mb-2">Discutez avec vos sources</p>
+                            <p className="text-black font-black text-lg mb-2">{t('project.chat.chatWithSources')}</p>
                             <p className="text-black font-medium text-sm max-w-md">
-                                {readySources.length === 0 ? "Importez des sources pour activer la recherche." : "Posez des questions sur vos sources."}
+                                {readySources.length === 0 ? t('project.chat.importSourcesHint') : t('project.chat.askAboutSources')}
                             </p>
                         </div>
                     ) : (
@@ -258,7 +260,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                     )}
                     {error && (
                         <div className={`mt-4 p-4 ${BORDERS.normal} border-red-600 ${RADIUS.normal} bg-red-100 text-red-700 font-bold text-sm max-w-3xl mx-auto`}>
-                            Erreur: {error}
+                            {t('common.error')}: {error}
                         </div>
                     )}
                 </div>
@@ -270,7 +272,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                             value={inputValue}
                             onChange={e => setInputValue(e.target.value)}
                             onKeyDown={handleKeyDown}
-                            placeholder={selectedSourceIds.length === 0 ? "Mode conversation libre..." : "Posez une question..."}
+                            placeholder={selectedSourceIds.length === 0 ? t('common.freeMode') : t('common.askQuestion')}
                             disabled={isStreaming}
                             rows={2}
                             className="flex-1 text-sm"
@@ -292,7 +294,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                     {selectedSourceIds.length > 0 && (
                         <div className="max-w-3xl mx-auto mt-2">
                             <span className={`inline-block text-xs font-bold text-black px-2 py-1 ${BORDERS.thin} border-black ${RADIUS.subtle} bg-white`}>
-                                {selectedSourceIds.length} source{selectedSourceIds.length > 1 ? 's' : ''} sélectionnée{selectedSourceIds.length > 1 ? 's' : ''}
+                                {selectedSourceIds.length} {t('common.source')}{selectedSourceIds.length > 1 ? 's' : ''} {selectedSourceIds.length > 1 ? t('common.selectedPlural') : t('common.selected')}
                             </span>
                         </div>
                     )}
@@ -304,13 +306,13 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
                 isOpen={rightPanelOpen}
                 onToggle={() => setRightPanelOpen(!rightPanelOpen)}
                 side="right"
-                title="Sources"
+                title={t('common.sources')}
                 headerActions={sourcesHeaderActions}
             >
                 {readySources.length === 0 ? (
                     <p className="text-xs text-black text-center py-4">
-                        Aucune source.<br />
-                        <span className="text-orange-600 font-bold">Importez des sources.</span>
+                        {t('project.chat.noSourcesPanel')}<br />
+                        <span className="text-orange-600 font-bold">{t('project.chat.importSourcesAction')}</span>
                     </p>
                 ) : (
                     readySources.map(source => (

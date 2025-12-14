@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Modal } from '../layout';
 import { AudioPlayer } from './AudioPlayer';
 import { TranscriptView } from './TranscriptView';
@@ -26,7 +27,6 @@ interface SourceModalProps {
  *
  * Generic modal for displaying source content based on type.
  * Supports audio (with player + transcript) and document (markdown viewer).
- * Extensible via type-specific renderers.
  */
 export function SourceModal({
   isOpen,
@@ -38,6 +38,7 @@ export function SourceModal({
   isConfirmingDelete = false,
   processingStatus
 }: SourceModalProps) {
+  const { t } = useTranslation();
   const [renameOpen, setRenameOpen] = useState(false);
   const [renameValue, setRenameValue] = useState('');
 
@@ -71,14 +72,14 @@ export function SourceModal({
           {fileUrl ? (
             <div>
               <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
-                Lecture audio
+                {t('project.sources.audioPlayback')}
               </h3>
               <AudioPlayer src={fileUrl} duration={source.duration_seconds} />
             </div>
           ) : (
             <div className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
               <div className="animate-spin h-4 w-4 border-2 border-slate-600 border-t-transparent rounded-full"></div>
-              Chargement de l'audio...
+              {t('project.sources.loadingAudio')}
             </div>
           )}
 
@@ -86,7 +87,7 @@ export function SourceModal({
           {hasProcessedContent && (
             <div>
               <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
-                Transcription
+                {t('project.sources.transcription')}
               </h3>
               <TranscriptView
                 text={source.processed_content || ''}
@@ -98,7 +99,7 @@ export function SourceModal({
           {isProcessing && (
             <div className="flex items-center justify-center p-4 bg-orange-50 rounded-lg border-2 border-black">
               <Badge color="amber">
-                <ShinyText size="sm">Traitement en cours...</ShinyText>
+                <ShinyText size="sm">{t('project.sources.processing')}</ShinyText>
               </Badge>
             </div>
           )}
@@ -115,7 +116,7 @@ export function SourceModal({
           {videoId && (
             <div>
               <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
-                Vidéo source
+                {t('project.sources.sourceVideo')}
               </h3>
               <a
                 href={`https://www.youtube.com/watch?v=${videoId}`}
@@ -127,7 +128,7 @@ export function SourceModal({
                   <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
                   <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
                 </svg>
-                Voir sur YouTube
+                {t('project.sources.viewOnYoutube')}
               </a>
             </div>
           )}
@@ -136,7 +137,7 @@ export function SourceModal({
           {hasProcessedContent && (
             <div>
               <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
-                Transcription
+                {t('project.sources.transcription')}
               </h3>
               <TranscriptView
                 text={source.processed_content || ''}
@@ -152,12 +153,12 @@ export function SourceModal({
       return (
         <div className="space-y-4">
           <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide pb-2 ${BORDERS.thin} border-b-black`}>
-            Contenu du document
+            {t('project.sources.documentContent')}
           </h3>
           {source.content ? (
             <MarkdownViewer markdown={source.content} />
           ) : (
-            <p className="text-slate-600 text-sm font-semibold">Aucun contenu disponible</p>
+            <p className="text-slate-600 text-sm font-semibold">{t('project.sources.noContentAvailable')}</p>
           )}
         </div>
       );
@@ -171,7 +172,7 @@ export function SourceModal({
           {hasProcessedContent && (
             <div>
               <h3 className={`text-sm font-bold text-slate-900 uppercase tracking-wide mb-3 pb-2 ${BORDERS.thin} border-b-black`}>
-                Texte extrait (OCR)
+                {t('project.sources.extractedText')}
               </h3>
               <MarkdownViewer
                 markdown={source.processed_content || ''}
@@ -183,7 +184,7 @@ export function SourceModal({
           {isProcessing && (
             <div className="flex items-center justify-center p-4 bg-orange-50 rounded-lg border-2 border-black">
               <Badge color="amber">
-                <ShinyText size="sm">Extraction OCR en cours...</ShinyText>
+                <ShinyText size="sm">{t('project.sources.ocrInProgress')}</ShinyText>
               </Badge>
             </div>
           )}
@@ -202,16 +203,15 @@ export function SourceModal({
                 </svg>
                 <div className="flex-1">
                   <p className="text-red-700 font-semibold text-sm">
-                    Échec de l'extraction OCR
+                    {t('project.sources.ocrFailed')}
                   </p>
                   <p className="text-red-600 text-sm mt-1">
-                    Une erreur s'est produite lors du traitement du PDF. Vérifiez que le fichier est valide et réessayez.
+                    {t('project.sources.ocrFailedHint')}
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => {
-                  // Trigger reprocessing via API
                   fetch(`/api/projects/${source.project_id}/sources/${source.id}/reprocess`, {
                     method: 'POST',
                     credentials: 'include'
@@ -227,14 +227,14 @@ export function SourceModal({
                   transition-colors
                 `}
               >
-                Réessayer
+                {t('project.sources.retry')}
               </button>
             </div>
           )}
 
           {/* No content yet */}
           {!hasProcessedContent && !isProcessing && source.jobStatus !== 'failed' && (
-            <p className="text-slate-600 text-sm font-semibold">Aucun contenu extrait</p>
+            <p className="text-slate-600 text-sm font-semibold">{t('project.sources.noExtractedContent')}</p>
           )}
         </div>
       );
@@ -243,7 +243,7 @@ export function SourceModal({
     // Unknown type fallback
     return (
       <p className="text-slate-600 text-sm font-semibold">
-        Type de source non supporté: {source.type}
+        {t('project.sources.unsupportedSourceType')}: {source.type}
       </p>
     );
   };
@@ -316,8 +316,8 @@ export function SourceModal({
               <button
                 onClick={handleRenameClick}
                 className={`p-2 ${BORDERS.normal} border-black bg-white hover:bg-orange-50 text-black ${RADIUS.subtle} ${SHADOWS.small} transition-all ${TRANSITIONS.fast} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none font-bold`}
-                aria-label="Renommer"
-                title="Renommer"
+                aria-label={t('project.sources.rename')}
+                title={t('project.sources.rename')}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 20h9" />
@@ -331,7 +331,9 @@ export function SourceModal({
               <ConfirmDeleteButton
                 isConfirming={isConfirmingDelete}
                 onDelete={() => onDelete(source.id)}
-                ariaLabel={isConfirmingDelete ? `Confirmer la suppression de ${source.title}` : `Supprimer ${source.title}`}
+                ariaLabel={isConfirmingDelete
+                  ? t('project.sources.deleteConfirm') + ' ' + source.title
+                  : t('project.sources.delete') + ' ' + source.title}
               />
             )}
           </div>
@@ -342,17 +344,17 @@ export function SourceModal({
         <div className={`flex items-center gap-4 mb-6 pb-3 text-sm text-slate-700 font-semibold ${BORDERS.thin} border-b-black`}>
           {source.type === 'audio' && source.duration_seconds && (
             <span>
-              Durée: {formatDuration(source.duration_seconds)}
+              {t('project.sources.duration')}: {formatDuration(source.duration_seconds)}
             </span>
           )}
           {source.type === 'audio' && source.size_bytes && (
             <span>
-              Taille: {formatSize(source.size_bytes)}
+              {t('project.sources.size')}: {formatSize(source.size_bytes)}
             </span>
           )}
           {source.created_at && (
             <span>
-              Créé le {formatDateSimple(source.created_at)}
+              {t('project.sources.createdOn')} {formatDateSimple(source.created_at)}
             </span>
           )}
         </div>
@@ -365,12 +367,12 @@ export function SourceModal({
       <Modal
         isOpen={renameOpen}
         onClose={() => setRenameOpen(false)}
-        title="Renommer la source"
+        title={t('project.sources.renameSource')}
         maxWidth="max-w-md"
       >
         <div className="space-y-4">
           <AnimatedInput
-            label="Titre"
+            label={t('project.documents.renameTitle')}
             value={renameValue}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRenameValue(e.target.value)}
             darkMode={false}
@@ -380,13 +382,13 @@ export function SourceModal({
               variant="secondary"
               onClick={() => setRenameOpen(false)}
             >
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button
               variant="primary"
               onClick={handleRenameSubmit}
             >
-              Enregistrer
+              {t('common.save')}
             </Button>
           </div>
         </div>

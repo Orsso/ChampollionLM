@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { PillNav } from '../ui/navigation';
 import type { PillNavItem } from '../ui/navigation';
 import { useAuth } from '../../hooks';
@@ -13,16 +14,16 @@ import { BORDERS, BACKGROUNDS } from '../../constants/styles';
 /**
  * Format remaining time for demo badge display
  */
-function formatDemoRemaining(dateStr: string | null): string {
+function formatDemoRemaining(dateStr: string | null, t: (key: string) => string): string {
   if (!dateStr) return '';
   const now = new Date();
   const expires = new Date(dateStr);
   const diffMs = expires.getTime() - now.getTime();
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffDays <= 0) return 'Expiré';
-  if (diffDays === 1) return '1 jour';
-  return `${diffDays} jours`;
+  if (diffDays <= 0) return t('common.expired') || 'Expired';
+  if (diffDays === 1) return `1 ${t('common.day') || 'day'}`;
+  return `${diffDays} ${t('common.days') || 'days'}`;
 }
 
 /**
@@ -37,18 +38,19 @@ interface LayoutProps {
  * Includes animated background and click effects.
  */
 export function Layout({ children }: LayoutProps) {
+  const { t } = useTranslation();
   const location = useLocation();
   const { logout, user } = useAuth();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [hasPlayedAnimation] = useState(() => {
-    // Vérifier si l'animation a déjà été jouée dans cette session
+    // Check if animation has already been played in this session
     return sessionStorage.getItem('pillnav-animation-played') === 'true';
   });
 
   const onDashboard = location.pathname === '/dashboard';
   const onProjectPage = location.pathname.startsWith('/projects/');
 
-  // Marquer l'animation comme jouée après le premier rendu
+  // Mark animation as played after first render
   useEffect(() => {
     if (!hasPlayedAnimation) {
       sessionStorage.setItem('pillnav-animation-played', 'true');
@@ -57,18 +59,18 @@ export function Layout({ children }: LayoutProps) {
 
   const navItems = useMemo<PillNavItem[]>(() => [
     {
-      label: 'Projets',
+      label: t('nav.dashboard'),
       href: '/dashboard',
     },
     {
-      label: 'Paramètres',
+      label: t('nav.settings'),
       href: '/settings',
     },
-  ], []);
+  ], [t]);
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
-    // Réinitialiser le flag d'animation pour la prochaine connexion
+    // Reset animation flag for next login
     sessionStorage.removeItem('pillnav-animation-played');
     logout();
   };
@@ -115,7 +117,7 @@ export function Layout({ children }: LayoutProps) {
                 to="/settings"
                 className="px-2 py-1 text-[10px] font-black uppercase tracking-wider bg-cyan-400 text-black border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] rounded hover:bg-cyan-300 transition-colors"
               >
-                Demo {user.demo_expires_at && `• ${formatDemoRemaining(user.demo_expires_at)}`}
+                Demo {user.demo_expires_at && `• ${formatDemoRemaining(user.demo_expires_at, t)}`}
               </Link>
             )}
             <Button
@@ -128,7 +130,7 @@ export function Layout({ children }: LayoutProps) {
                 <polyline points="16,17 21,12 16,7" />
                 <line x1="21" y1="12" x2="9" y2="12" />
               </svg>
-              <span className="hidden md:inline">Déconnexion</span>
+              <span className="hidden md:inline">{t('nav.logout')}</span>
             </Button>
           </div>
         </div>

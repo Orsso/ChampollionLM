@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { AudioVisualizer } from '../ui/media/AudioVisualizer';
 import { ProgressBar } from '../ui/feedback';
 import { StyledInput } from '../ui/forms';
@@ -33,6 +34,7 @@ interface SourceImportZoneProps {
 }
 
 export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps) {
+    const { t } = useTranslation();
     const [importMode, setImportMode] = useState<ImportMode>('audio');
     const [audioMode, setAudioMode] = useState<AudioMode>('idle');
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -68,7 +70,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
 
         if (file.size > MAX_FILE_SIZE_BYTES) {
             const fileSizeMB = (file.size / (1024 * 1024)).toFixed(1);
-            setUploadError(`Fichier trop volumineux: ${fileSizeMB} MB (maximum ${MAX_FILE_SIZE_MB} MB)`);
+            setUploadError(t('project.sources.fileTooLarge', { size: fileSizeMB, max: MAX_FILE_SIZE_MB }));
             return;
         }
 
@@ -83,7 +85,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             } else if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
                 await uploadPDFSource(projectId, file);
             } else {
-                throw new Error('Type de fichier non supporté');
+                throw new Error(t('project.sources.unsupportedType'));
             }
 
             clearInterval(progressInterval);
@@ -101,7 +103,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
         } catch (error) {
             clearInterval(progressInterval);
             setUploadProgress(0);
-            const errorMessage = error instanceof Error ? error.message : 'Échec de l\'upload';
+            const errorMessage = error instanceof Error ? error.message : t('project.sources.uploadFailed');
             setUploadError(errorMessage);
             console.error("Upload failed", error);
         }
@@ -208,7 +210,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             setYoutubeUrl('');
             onMutate?.();
         } catch (error) {
-            setYoutubeError(error instanceof Error ? error.message : 'Échec de l\'import');
+            setYoutubeError(error instanceof Error ? error.message : t('project.sources.importFailed'));
         } finally {
             setYoutubeLoading(false);
         }
@@ -225,9 +227,9 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
     };
 
     const tabs = [
-        { id: 'audio' as const, label: 'Audio', icon: MicrophoneIcon },
-        { id: 'link' as const, label: 'Lien', icon: LinkIcon },
-        { id: 'file' as const, label: 'PDF', icon: FileIcon },
+        { id: 'audio' as const, label: t('project.sources.audio'), icon: MicrophoneIcon },
+        { id: 'link' as const, label: t('project.sources.link'), icon: LinkIcon },
+        { id: 'file' as const, label: t('project.sources.pdf'), icon: FileIcon },
     ];
 
     return (
@@ -247,7 +249,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                 className="hidden"
             />
 
-            <h2 className="text-xl font-black text-black mb-4">Ajouter des sources</h2>
+            <h2 className="text-xl font-black text-black mb-4">{t('project.sources.addSources')}</h2>
 
             {/* Mode tabs */}
             <div className="flex gap-2 mb-4">
@@ -283,7 +285,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                 className="flex-1 py-4"
                             >
                                 <MicrophoneIcon size={20} />
-                                Enregistrer
+                                {t('project.sources.record')}
                             </Button>
 
                             <Button
@@ -308,7 +310,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                     <polyline points="17 8 12 3 7 8" />
                                     <line x1="12" y1="3" x2="12" y2="15" />
                                 </svg>
-                                Importer
+                                {t('project.sources.import')}
                             </Button>
 
                             <div ref={importGhostRef} style={{ display: 'none', width: 0, height: 0 }} aria-hidden="true" />
@@ -334,7 +336,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                                 ? `bg-red-500 hover:bg-red-600 ${SHADOWS.red} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(239,68,68)]`
                                                 : `bg-orange-500 hover:bg-orange-600 ${SHADOWS.orange} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(249,115,22)]`
                                                 }`}
-                                            aria-label={isRecording ? 'Arrêter l\'enregistrement' : 'Commencer l\'enregistrement'}
+                                            aria-label={isRecording ? t('project.sources.stopRecording') : t('project.sources.startRecording')}
                                         >
                                             {isRecording ? (
                                                 <div className="w-6 h-6 bg-white border-2 border-black" />
@@ -389,7 +391,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                             {youtubeLoading ? (
                                 <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                             ) : (
-                                'Importer'
+                                t('project.sources.import')
                             )}
                         </Button>
                     </div>
@@ -408,8 +410,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                     )}
 
                     <p className="text-sm text-gray-600">
-                        Collez un lien YouTube pour importer automatiquement la transcription de la vidéo.
-                        La vidéo doit avoir des sous-titres activés.
+                        {t('project.sources.youtubeHint')}
                     </p>
                 </div>
             )}
@@ -425,12 +426,11 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                         className="w-full py-4"
                     >
                         <FileIcon size={20} />
-                        Sélectionner un PDF
+                        {t('project.sources.selectPdf')}
                     </Button>
 
                     <p className="text-sm text-gray-600">
-                        Importez un fichier PDF pour extraire automatiquement le texte via OCR.
-                        Taille maximale : 50 MB.
+                        {t('project.sources.pdfHint')}
                     </p>
                 </div>
             )}
@@ -463,22 +463,22 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
             <Modal
                 isOpen={apiKeyWarning}
                 onClose={() => setApiKeyWarning(false)}
-                title="Clé API requise"
+                title={t('project.studio.apiKeyRequired')}
                 maxWidth="max-w-md"
             >
                 <div className="space-y-4">
                     <p className="text-slate-700 font-medium">
-                        Votre source a été ajoutée, mais le traitement échouera sans clé API Mistral.
+                        {t('project.sources.apiKeyWarning')}
                     </p>
                     <p className="text-sm text-slate-500">
-                        Configurez votre clé API dans les paramètres, puis utilisez le bouton "Réessayer" sur la source.
+                        {t('project.sources.apiKeyHint')}
                     </p>
                     <div className="flex gap-3 justify-end pt-2">
                         <Button
                             variant="secondary"
                             onClick={() => setApiKeyWarning(false)}
                         >
-                            Compris
+                            {t('project.sources.understood')}
                         </Button>
                         <Button
                             variant="primary"
@@ -487,7 +487,7 @@ export function SourceImportZone({ projectId, onMutate }: SourceImportZoneProps)
                                 navigate('/settings');
                             }}
                         >
-                            Aller aux paramètres
+                            {t('common.goToSettings')}
                         </Button>
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useProjectsWithPolling } from '../hooks/useProjectsWithPolling';
 import { ProjectList } from '../components/project/ProjectList';
 import { CreateProjectModal } from '../components/project/CreateProjectModal';
@@ -6,6 +7,7 @@ import { PageHeader } from '../components/ui/layout';
 import { StyledInput } from '../components/ui/forms';
 
 export function Dashboard() {
+  const { t } = useTranslation();
   const { projects, isLoading } = useProjectsWithPolling();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -26,8 +28,8 @@ export function Dashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Page header */}
         <PageHeader
-          title="Projets"
-          subtitle="Gérez tous vos projets Champollion"
+          title={t('dashboard.title')}
+          subtitle={t('dashboard.subtitle')}
           variant="colored"
         />
 
@@ -35,7 +37,7 @@ export function Dashboard() {
         <div className="mb-6">
           <StyledInput
             type="search"
-            placeholder="Rechercher un projet..."
+            placeholder={`${t('common.search')}...`}
             className="md:w-96"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}

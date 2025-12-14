@@ -20,9 +20,9 @@ export default defineConfig({
         'src/**/*.d.ts',
         'src/**/index.ts',
       ],
-      // Thresholds désactivés pour le moment
-      // Les tests actuels couvrent les modules critiques (API, Auth, hooks)
-      // Les composants UI nécessiteront des tests supplémentaires
+      // Coverage thresholds disabled for now
+      // Current tests cover critical modules (API, Auth, hooks)
+      // UI components will need additional testing
       // thresholds: {
       //   statements: 80,
       //   branches: 70,

@@ -5,7 +5,7 @@ import { TRANSITIONS, BORDERS, SHADOWS } from '../../../constants/styles';
 
 interface AudioPlayerProps {
   src: string;
-  duration?: number; // Durée en secondes depuis le backend
+  duration?: number; // Duration in seconds from the backend
   className?: string;
 }
 
@@ -126,7 +126,7 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
         onClick={controls.toggle}
         disabled={state.isLoading && state.duration === 0}
         className={`flex-shrink-0 w-12 h-12 flex items-center justify-center bg-orange-500 hover:bg-orange-600 disabled:bg-slate-400 disabled:cursor-not-allowed text-white ${BORDERS.normal} border-black ${SHADOWS.small} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all ${TRANSITIONS.fast} focus:outline-none`}
-        aria-label={state.isPlaying ? 'Pause' : 'Lecture'}
+        aria-label={state.isPlaying ? 'Pause' : 'Play'}
       >
         {state.isLoading && state.duration === 0 ? (
           // Loading spinner
@@ -174,7 +174,7 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
           onMouseDown={handleMouseDown}
           className={`relative h-3 bg-slate-200 ${BORDERS.thin} border-black cursor-pointer group`}
           role="slider"
-          aria-label="Barre de progression"
+          aria-label="Progress bar"
           aria-valuemin={0}
           aria-valuemax={state.duration}
           aria-valuenow={state.currentTime}
@@ -206,7 +206,7 @@ export function AudioPlayer({ src, duration, className = '' }: AudioPlayerProps)
             controls.setVolume(state.volume > 0 ? 0 : 1);
           }}
           className={`w-10 h-10 flex items-center justify-center ${BORDERS.thin} border-black bg-white hover:bg-slate-100 text-slate-900 transition-colors ${TRANSITIONS.fast}`}
-          aria-label={state.volume > 0 ? 'Couper le son' : 'Activer le son'}
+          aria-label={state.volume > 0 ? 'Mute' : 'Unmute'}
         >
           {state.volume > 0 ? (
             // Volume on icon

@@ -5,6 +5,7 @@
  */
 
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SHADOWS, BORDERS, RADIUS } from '../../../constants/styles';
 import { useMarkdown } from '../../../lib/useMarkdown';
 
@@ -28,12 +29,12 @@ interface ChatMessageProps {
     isStreaming?: boolean;
 }
 
-// Action labels without emojis
+// Action labels
 const ACTION_LABELS: Record<string, string> = {
-    explain: 'EXPLIQUER',
-    expand: 'DÉVELOPPER',
-    summarize: 'RÉSUMER',
-    refine: 'AFFINER',
+    explain: 'EXPLAIN',
+    expand: 'EXPAND',
+    summarize: 'SUMMARIZE',
+    refine: 'REFINE',
 };
 
 // Book/document icon for sources
@@ -63,6 +64,7 @@ const ChevronIcon = ({ isOpen }: { isOpen: boolean }) => (
 
 // Collapsible sources section with full grounding transparency
 function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; chunksFound?: ChunkPreview[] }) {
+    const { t } = useTranslation();
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -74,7 +76,7 @@ function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; 
             >
                 <span className="flex items-center gap-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                     <BookIcon />
-                    Sources consultées ({chunksFound?.length || 0})
+                    {t('project.sources.sourcesConsulted')} ({chunksFound?.length || 0})
                     <ChevronIcon isOpen={isOpen} />
                 </span>
                 {sourcesUsed?.map((source, idx) => (
@@ -110,7 +112,7 @@ function SourcesSection({ sourcesUsed, chunksFound }: { sourcesUsed?: string[]; 
                             {/* Query that found this chunk */}
                             {chunk.query && (
                                 <div className="text-[10px] text-slate-500 mb-2">
-                                    Recherche: « {chunk.query} »
+                                    {t('common.search')}: « {chunk.query} »
                                 </div>
                             )}
                             {/* Full content (scrollable if too long) */}

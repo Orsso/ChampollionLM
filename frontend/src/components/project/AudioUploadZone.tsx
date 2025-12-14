@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { AudioVisualizer } from '../ui/media/AudioVisualizer';
 import { ProgressBar } from '../ui/feedback';
 import { useRecordingAnimations } from '../../hooks/useRecordingAnimations';
@@ -26,6 +27,7 @@ interface AudioUploadZoneProps {
 }
 
 export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<Mode>('idle');
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -35,7 +37,7 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
   const spacerRef = useRef<HTMLDivElement>(null!);
   const importGhostRef = useRef<HTMLDivElement>(null!);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-  
+
   const autoCloseTimerRef = useRef<number | null>(null);
 
   const { setupRefs, toRecording, toIdle } = useRecordingAnimations(ANIM);
@@ -49,7 +51,7 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
 
     try {
       await uploadAudioSource(projectId, file);
-      
+
       clearInterval(progressInterval);
       setUploadProgress(100);
       onMutate?.();
@@ -134,26 +136,9 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
   }, [setupRefs]);
 
   useEffect(() => {
-    if (mode === 'recording' && !isRecording) {
-      // Check if we just entered recording mode but haven't started? 
-      // Or if we stopped recording and are waiting to close?
-      // Actually, if isRecording is false, we should probably not be in 'recording' mode for long unless we are initializing.
-      // But here we want to auto-close if user doesn't start or if it stopped.
-      
-      // NOTE: startRecording is async, so there might be a delay.
-      // But we call startRecording inside the onClick handler usually.
-      // Wait, the previous code called startRecording inside startRecording function which was called by button.
-      
-      // With the hook, we call startRecording().
-    }
-    
     // Legacy auto-close logic
     if (mode === 'recording' && !isRecording) {
-       // If we are in recording mode UI but not actually recording (e.g. finished or not started)
-       // We might want to wait a bit then close.
-       // But `startRecording` sets `isRecording` to true quickly?
-       // Let's keep the timeout for now.
-       autoCloseTimerRef.current = window.setTimeout(() => {
+      autoCloseTimerRef.current = window.setTimeout(() => {
         if (!isRecording) {
           setActiveMode('idle');
         }
@@ -170,10 +155,7 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
 
   const handleRecordClick = () => {
     if (mode === 'idle') {
-        setActiveMode('recording');
-        // We don't start recording immediately?
-        // The original code: onClick={() => setActiveMode('recording')}
-        // Then the "Record" button (red one) inside the expanded area triggers startRecording.
+      setActiveMode('recording');
     }
   };
 
@@ -194,7 +176,7 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
         className="hidden"
       />
 
-      <h2 className="text-xl font-black text-black mb-4">Ajouter des sources</h2>
+      <h2 className="text-xl font-black text-black mb-4">{t('project.sources.addSources')}</h2>
 
       <div className="space-y-4">
         <div className="relative">
@@ -228,12 +210,12 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                <line x1="12" y1="19" x2="12" y2="23"/>
-                <line x1="8" y1="23" x2="16" y2="23"/>
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                <line x1="12" y1="19" x2="12" y2="23" />
+                <line x1="8" y1="23" x2="16" y2="23" />
               </svg>
-              Enregistrer
+              {t('project.sources.record')}
             </button>
 
             <button
@@ -265,11 +247,11 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17 8 12 3 7 8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
               </svg>
-              Importer
+              {t('project.sources.import')}
             </button>
 
             <div ref={importGhostRef} style={{ display: 'none', width: 0, height: 0 }} aria-hidden="true" />
@@ -283,7 +265,7 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
             {mode === 'recording' && (
               <div className="space-y-4">
                 {/* Waveform visualization */}
-                <AudioVisualizer 
+                <AudioVisualizer
                   audioData={audioData}
                   isRecording={isRecording}
                   micGain={micGain}
@@ -293,12 +275,11 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
                 <div className="flex items-center justify-center gap-4">
                   <button
                     onClick={isRecording ? stopRecording : startRecording}
-                    className={`relative w-20 h-20 flex items-center justify-center transition-all ${TRANSITIONS.normal} ${BORDERS.thick} border-black ${
-                      isRecording
+                    className={`relative w-20 h-20 flex items-center justify-center transition-all ${TRANSITIONS.normal} ${BORDERS.thick} border-black ${isRecording
                         ? `bg-red-500 hover:bg-red-600 ${SHADOWS.red} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(239,68,68)]`
                         : `bg-orange-500 hover:bg-orange-600 ${SHADOWS.orange} hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgb(249,115,22)]`
-                    }`}
-                    aria-label={isRecording ? 'Arrêter l\'enregistrement' : 'Commencer l\'enregistrement'}
+                      }`}
+                    aria-label={isRecording ? t('project.sources.stopRecording') : t('project.sources.startRecording')}
                   >
                     {isRecording ? (
                       <div className="w-6 h-6 bg-white border-2 border-black" />
@@ -314,10 +295,10 @@ export function AudioUploadZone({ projectId, onMutate }: AudioUploadZoneProps) {
                         strokeLinejoin="round"
                         className="text-white"
                       >
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
-                        <line x1="12" y1="19" x2="12" y2="23"/>
-                        <line x1="8" y1="23" x2="16" y2="23"/>
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+                        <line x1="12" y1="19" x2="12" y2="23" />
+                        <line x1="8" y1="23" x2="16" y2="23" />
                       </svg>
                     )}
                   </button>

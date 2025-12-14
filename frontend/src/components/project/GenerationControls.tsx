@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Badge, ShinyText, Alert } from '../ui/feedback';
 import { Modal } from '../ui/layout';
 import { AnimatedInput, SourceSelectionItem } from '../ui/forms';
@@ -33,6 +34,7 @@ export function GenerationControls({
   hasAnyProcessedContent,
   onGenerate
 }: GenerationControlsProps) {
+  const { t } = useTranslation();
   const [selectModalOpen, setSelectModalOpen] = useState(false);
   const [selectedSourceIds, setSelectedSourceIds] = useState<number[]>([]);
   const [docTitle, setDocTitle] = useState('');
@@ -73,7 +75,7 @@ export function GenerationControls({
       await onGenerate(sourceIds, title);
       setSelectModalOpen(false);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la génération';
+      const message = err instanceof Error ? err.message : t('project.studio.generationError');
       setGenerationError(message);
     }
   };
@@ -113,10 +115,10 @@ export function GenerationControls({
                 </span>
                 <div>
                   <p className={`font-black text-lg ${tileDisabled ? 'text-slate-600' : 'text-white'}`}>
-                    Cours
+                    {t('project.studio.course')}
                   </p>
                   <p className={`text-xs font-bold ${tileDisabled ? 'text-slate-500' : 'text-white/90'}`}>
-                    Document structure
+                    {t('project.studio.structuredDoc')}
                   </p>
                 </div>
               </div>
@@ -124,7 +126,7 @@ export function GenerationControls({
               {isGenerating && (
                 <div className="flex items-center gap-2 text-xs">
                   <Badge color="amber">
-                    <ShinyText size="xs">En cours</ShinyText>
+                    <ShinyText size="xs">{t('common.inProgress')}</ShinyText>
                   </Badge>
                 </div>
               )}
@@ -146,7 +148,7 @@ export function GenerationControls({
                 }}
                 variant="default"
                 size="sm"
-                tooltip="Configurer les sources"
+                tooltip={t('project.studio.configureSources')}
               />
             </div>
           )}
@@ -181,8 +183,8 @@ export function GenerationControls({
                   </svg>
                 </span>
                 <div>
-                  <p className="text-slate-600 font-black text-lg">Resume</p>
-                  <p className="text-slate-500 text-xs font-bold">Synthese concise</p>
+                  <p className="text-slate-600 font-black text-lg">{t('project.studio.resume')}</p>
+                  <p className="text-slate-500 text-xs font-bold">{t('project.studio.conciseSynthesis')}</p>
                 </div>
               </div>
               <span className={`
@@ -192,7 +194,7 @@ export function GenerationControls({
                 ${RADIUS.subtle}
                 bg-slate-400 text-slate-600 font-bold text-xs
               `}>
-                Bientot disponible
+                {t('common.comingSoon')}
               </span>
             </div>
           </div>
@@ -224,8 +226,8 @@ export function GenerationControls({
                   </svg>
                 </span>
                 <div>
-                  <p className="text-slate-600 font-black text-lg">Todo</p>
-                  <p className="text-slate-500 text-xs font-bold">Liste de taches</p>
+                  <p className="text-slate-600 font-black text-lg">{t('project.studio.todo')}</p>
+                  <p className="text-slate-500 text-xs font-bold">{t('project.studio.taskList')}</p>
                 </div>
               </div>
               <span className={`
@@ -235,7 +237,7 @@ export function GenerationControls({
                 ${RADIUS.subtle}
                 bg-slate-400 text-slate-600 font-bold text-xs
               `}>
-                Bientot disponible
+                {t('common.comingSoon')}
               </span>
             </div>
           </div>
@@ -245,7 +247,7 @@ export function GenerationControls({
       <Modal
         isOpen={selectModalOpen}
         onClose={() => setSelectModalOpen(false)}
-        title="Generer un cours"
+        title={t('project.studio.generateCourse')}
         maxWidth="max-w-xl"
         footer={
           <div className="flex justify-end gap-3">
@@ -264,7 +266,7 @@ export function GenerationControls({
                 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
               `}
             >
-              Annuler
+              {t('common.cancel')}
             </button>
             <button
               onClick={handleLaunchGeneration}
@@ -281,7 +283,7 @@ export function GenerationControls({
                 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
               `}
             >
-              Lancer
+              {t('common.launch')}
             </button>
           </div>
         }
@@ -289,24 +291,24 @@ export function GenerationControls({
         <div className="space-y-4">
           <div>
             <AnimatedInput
-              label="Titre du document"
+              label={t('project.studio.documentTitle')}
               value={docTitle}
               onChange={(e) => setDocTitle(e.target.value)}
               darkMode={false}
             />
             <p className="text-xs text-slate-600 mt-2 font-medium">
-              Laissez vide pour utiliser le format par defaut: {projectTitle ? `${projectTitle}:Cours1` : 'Cours'}
+              {t('project.studio.titleHint')}: {projectTitle ? `${projectTitle}:Cours1` : t('project.studio.course')}
             </p>
           </div>
           <div>
-            <label className="block text-sm font-bold text-slate-800 mb-2">Selectionnez les sources a inclure</label>
+            <label className="block text-sm font-bold text-slate-800 mb-2">{t('project.studio.selectSourcesLabel')}</label>
             <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
               {readySources.length > 0 ? (
                 readySources.map(source => (
                   <SourceSelectionItem
                     key={source.id}
                     id={source.id}
-                    title={source.title || source.filename || 'Sans titre'}
+                    title={source.title || source.filename || t('common.untitled')}
                     type={source.type}
                     checked={selectedSourceIds.includes(source.id)}
                     onChange={(checked) => {
@@ -320,8 +322,8 @@ export function GenerationControls({
                 ))
               ) : (
                 <div className="text-center py-8 text-slate-600">
-                  <p className="text-sm font-bold">Aucune source disponible</p>
-                  <p className="text-xs mt-1">Ajoutez des enregistrements ou des documents pour commencer</p>
+                  <p className="text-sm font-bold">{t('project.studio.noSourcesAvailable')}</p>
+                  <p className="text-xs mt-1">{t('project.studio.addSourcesHint')}</p>
                 </div>
               )}
             </div>
@@ -331,7 +333,7 @@ export function GenerationControls({
           <div className="pt-2 border-t-2 border-black/10">
             <div className="space-y-2">
               <div className={`flex items-center justify-between text-xs font-bold text-slate-800`}>
-                <span>Utilisation des tokens (Estimation)</span>
+                <span>{t('project.studio.tokenUsage')}</span>
                 {estimation ? (
                   <span>{Math.round(estimation.context_percentage)}% de 200k (~{estimation.formatted_count})</span>
                 ) : (
@@ -352,7 +354,7 @@ export function GenerationControls({
                 />
               </div>
               <p className="text-[10px] text-slate-500 font-medium">
-                L'estimation est basee sur les sources selectionnees.
+                {t('project.studio.estimationNote')}
               </p>
             </div>
           </div>
@@ -368,22 +370,22 @@ export function GenerationControls({
       <Modal
         isOpen={apiKeyError}
         onClose={() => setApiKeyError(false)}
-        title="Clé API requise"
+        title={t('project.studio.apiKeyRequired')}
         maxWidth="max-w-md"
       >
         <div className="space-y-4">
           <p className="text-slate-700 font-medium">
-            Vous devez configurer votre clé API Mistral pour utiliser les fonctionnalités de génération.
+            {t('project.studio.apiKeyMessage')}
           </p>
           <p className="text-sm text-slate-500">
-            Rendez-vous dans les paramètres pour ajouter votre clé API.
+            {t('project.studio.apiKeyHint')}
           </p>
           <div className="flex gap-3 justify-end pt-2">
             <Button
               variant="secondary"
               onClick={() => setApiKeyError(false)}
             >
-              Annuler
+              {t('common.cancel')}
             </Button>
             <Button
               variant="primary"
@@ -392,7 +394,7 @@ export function GenerationControls({
                 navigate('/settings');
               }}
             >
-              Aller aux paramètres
+              {t('common.goToSettings')}
             </Button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { PageWrapper } from '../components/ui/PageWrapper';
 import { Button } from '../components/ui/buttons/Button';
 import { Card } from '../components/ui/cards/Card';
@@ -17,39 +18,41 @@ import {
 
 interface Feature {
   icon: React.ComponentType<{ size?: number; className?: string }>;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
   color: string;
 }
 
 const features: Feature[] = [
   {
     icon: MicrophoneIcon,
-    title: 'Transcription Audio',
-    description: 'Convertissez vos enregistrements en texte avec Mistral Voxtral STT. Précision maximale pour vos cours.',
+    titleKey: 'home.features.transcription.title',
+    descriptionKey: 'home.features.transcription.description',
     color: 'bg-accent-cyan',
   },
   {
     icon: YouTubeIcon,
-    title: 'Vidéos YouTube',
-    description: 'Importez les transcriptions de vidéos YouTube en un clic. Idéal pour les conférences et tutoriels.',
+    titleKey: 'home.features.youtube.title',
+    descriptionKey: 'home.features.youtube.description',
     color: 'bg-red-500',
   },
   {
     icon: FolderOpenIcon,
-    title: 'Multi-Sources',
-    description: 'Combinez audio, vidéos et documents. Créez des notes complètes à partir de toutes vos ressources.',
+    titleKey: 'home.features.multiSource.title',
+    descriptionKey: 'home.features.multiSource.description',
     color: 'bg-accent-yellow',
   },
   {
     icon: SparklesIcon,
-    title: 'Synthèse IA',
-    description: 'Mistral AI structure vos contenus en documents professionnels.',
+    titleKey: 'home.features.synthesis.title',
+    descriptionKey: 'home.features.synthesis.description',
     color: 'bg-accent-pink',
   },
 ];
 
 export function Home() {
+  const { t } = useTranslation();
+
   return (
     <PageWrapper variant="grid" showShapes={false}>
       {/* Navigation Bar */}
@@ -59,12 +62,12 @@ export function Home() {
           <div className="flex gap-3">
             <Link to="/login">
               <Button variant="secondary" size="sm">
-                Se connecter
+                {t('auth.login')}
               </Button>
             </Link>
             <Link to="/register">
               <Button variant="primary" size="sm">
-                S'inscrire
+                {t('auth.register')}
               </Button>
             </Link>
           </div>
@@ -80,40 +83,39 @@ export function Home() {
               <span
                 className={`inline-block px-4 py-2 ${BORDERS.normal} border-black ${RADIUS.normal} bg-accent-yellow text-black text-sm font-bold ${SHADOWS.small}`}
               >
-                IA • Transcription • Notes
+                {t('home.tagline')}
               </span>
             </div>
 
             <h1 className="text-5xl md:text-6xl font-bold text-black leading-tight">
-              Transformez vos
+              {t('home.heroTitle')}
               <span className="relative inline-block ml-3">
-                <span className="relative z-10">sources</span>
+                <span className="relative z-10">{t('home.heroTitleHighlight')}</span>
                 <span className="absolute inset-0 bg-orange-500 -rotate-1 -z-10 rounded" />
               </span>
               <br />
-              en notes structurées
+              {t('home.heroTitle2')}
             </h1>
 
             <p className="text-xl text-slate-700 leading-relaxed max-w-xl">
-              Champollion utilise l'IA pour transcrire vos enregistrements et vidéos YouTube,
-              puis générer des notes de cours claires et professionnelles.
+              {t('home.heroDescription')}
             </p>
 
             <div className="flex flex-wrap gap-4 pt-4">
               <Link to="/register">
                 <Button variant="primary" size="lg" className="px-8 py-4 text-lg h-auto">
-                  Commencer gratuitement
+                  {t('home.cta')}
                 </Button>
               </Link>
               <Link to="/login">
                 <Button variant="secondary" size="lg" className="px-8 py-4 text-lg h-auto">
-                  Se connecter
+                  {t('home.ctaLogin')}
                 </Button>
               </Link>
             </div>
 
             <p className="text-sm text-slate-600 pt-2">
-              Utilisez votre propre clé API Mistral • Contrôle total sur vos coûts
+              {t('home.subText')}
             </p>
           </div>
 
@@ -164,7 +166,7 @@ export function Home() {
                 size="md"
                 className="w-full pointer-events-none"
               >
-                Générer les notes
+                {t('home.mockup.generateNotes')}
               </Button>
             </Card>
 
@@ -173,14 +175,14 @@ export function Home() {
               variant="accent"
               className={`absolute -top-6 -left-6 px-4 py-2 transform -rotate-12`}
             >
-              <p className="text-white font-bold text-sm">Powered by Mistral AI</p>
+              <p className="text-white font-bold text-sm">{t('home.mockup.poweredBy')}</p>
             </Card>
 
             {/* Floating Badge 2 */}
             <div
               className={`absolute -bottom-4 -right-4 bg-accent-cyan ${BORDERS.normal} border-black ${RADIUS.normal} ${SHADOWS.medium} px-4 py-2 transform rotate-6`}
             >
-              <p className="text-black font-bold text-sm">Export PDF</p>
+              <p className="text-black font-bold text-sm">{t('home.mockup.exportPdf')}</p>
             </div>
           </div>
         </div>
@@ -190,10 +192,10 @@ export function Home() {
       <section className="relative z-10 max-w-7xl mx-auto px-6 py-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-black mb-4">
-            Tout ce dont vous avez besoin
+            {t('home.featuresTitle')}
           </h2>
           <p className="text-xl text-slate-700 max-w-2xl mx-auto">
-            Une suite complète pour capturer, structurer et exporter vos contenus académiques
+            {t('home.featuresSubtitle')}
           </p>
         </div>
 
@@ -211,10 +213,10 @@ export function Home() {
                   <Icon size={28} className="text-black" />
                 </div>
                 <h3 className="text-xl font-bold text-black">
-                  {feature.title}
+                  {t(feature.titleKey)}
                 </h3>
                 <p className="text-slate-700 leading-relaxed">
-                  {feature.description}
+                  {t(feature.descriptionKey)}
                 </p>
               </Card>
             );
@@ -229,19 +231,19 @@ export function Home() {
           className={`p-12 text-center space-y-6`}
         >
           <h2 className="text-4xl md:text-5xl font-bold text-white">
-            Prêt à démarrer ?
+            {t('home.readyTitle')}
           </h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Créez votre compte et commencez à transformer vos enregistrements en notes structurées dès aujourd'hui.
+            {t('home.readyDescription')}
           </p>
           <div className="flex justify-center">
             <Link to="/register">
               <Button
-                variant="secondary" // Using secondary (white) for contrast on accent background
+                variant="secondary"
                 size="lg"
                 className="px-10 py-4 text-lg h-auto"
               >
-                S'inscrire maintenant
+                {t('home.readyCta')}
               </Button>
             </Link>
           </div>
@@ -253,14 +255,14 @@ export function Home() {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-slate-600">
-              © 2025 Champollion • Propulsé par Mistral AI
+              {t('home.footer')}
             </p>
             <div className="flex gap-6 text-sm text-slate-600">
               <a href="https://github.com/orsso/champollionlm" className="hover:text-orange-500 transition-colors">
                 GitHub
               </a>
               <a href="https://github.com/Orsso/ChampollionLM/blob/main/docs/ARCHITECTURE.md" className="hover:text-orange-500 transition-colors">
-                Documentation
+                {t('home.documentation')}
               </a>
             </div>
           </div>

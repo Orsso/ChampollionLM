@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { Card } from '../ui/cards';
 import { Badge, ShinyText } from '../ui/feedback';
 import { ConfirmDeleteButton, LightButton } from '../ui/buttons';
@@ -30,6 +31,8 @@ export function SourceCard({
   onDelete,
   onRetry
 }: SourceCardProps) {
+  const { t } = useTranslation();
+
   // Determine processing state
   const hasProcessedContent = Boolean(source.processed_content);
   const jobStatus = processingStatus?.status;
@@ -72,13 +75,13 @@ export function SourceCard({
   if (isProcessing) {
     badge = (
       <Badge color="amber">
-        <ShinyText size="sm">Traitement...</ShinyText>
+        <ShinyText size="sm">{t('project.sources.processing')}</ShinyText>
       </Badge>
     );
   } else if (isJobFailed && !hasProcessedContent) {
-    badge = <Badge color="gray">Echec</Badge>;
+    badge = <Badge color="gray">{t('common.error')}</Badge>;
   } else if (hasProcessedContent) {
-    badge = <Badge color="green">Traité</Badge>;
+    badge = <Badge color="green">{t('projects.status.ready')}</Badge>;
   }
 
   // Metadata display (Phase 7: use typed metadata if available)
@@ -98,13 +101,13 @@ export function SourceCard({
     const { language, transcript_type } = source.youtube_metadata;
     const parts = [];
     if (language) parts.push(language.toUpperCase());
-    if (transcript_type) parts.push(transcript_type === 'auto-generated' ? 'Auto' : 'Manuel');
+    if (transcript_type) parts.push(transcript_type === 'auto-generated' ? 'Auto' : 'Manual');
     metadata = parts.length > 0 ? `Transcript ${parts.join(' · ')}` : 'YouTube';
   } else if (source.type === 'pdf' && source.created_at) {
     // PDF: show file added date
-    metadata = `PDF ajouté le ${formatDateShort(source.created_at)}`;
+    metadata = `PDF ${t('project.sources.createdOn')} ${formatDateShort(source.created_at)}`;
   } else if (source.type === 'document' && source.created_at) {
-    metadata = `Document ajouté le ${formatDateShort(source.created_at)}`;
+    metadata = `Document ${t('project.sources.createdOn')} ${formatDateShort(source.created_at)}`;
   }
 
   return (
@@ -126,12 +129,12 @@ export function SourceCard({
             {badge && (
               <div className="flex-shrink-0 flex items-center gap-2">
                 {badge}
-                {/* Retry button next to Echec badge */}
+                {/* Retry button next to failed badge */}
                 {isJobFailed && !hasProcessedContent && onRetry && (
                   <LightButton
                     onClick={(e) => { e.stopPropagation(); onRetry(); }}
                     className="p-1 h-auto min-h-0"
-                    title="Réessayer"
+                    title={t('project.sources.retry')}
                     disabled={isRetrying}
                   >
                     <RefreshIcon size={14} className={isRetrying ? 'animate-spin' : ''} />
@@ -153,7 +156,9 @@ export function SourceCard({
             <ConfirmDeleteButton
               isConfirming={isConfirmingDelete}
               onDelete={onDelete}
-              ariaLabel={isConfirmingDelete ? `Confirmer la suppression de ${source.title}` : `Supprimer ${source.title}`}
+              ariaLabel={isConfirmingDelete
+                ? `${t('project.sources.deleteConfirm')} ${source.title}`
+                : `${t('project.sources.delete')} ${source.title}`}
             />
           </div>
         )}

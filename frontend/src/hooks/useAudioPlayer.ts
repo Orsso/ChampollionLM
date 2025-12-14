@@ -24,7 +24,7 @@ export function useAudioPlayer(src: string | undefined, initialDuration?: number
     currentTime: 0,
     duration: initialDuration || 0,
     volume: 1,
-    isLoading: initialDuration ? false : true, // Si on a la durée, pas de loading
+    isLoading: initialDuration ? false : true, // If we have duration, no loading
     error: null,
   });
 
@@ -38,7 +38,7 @@ export function useAudioPlayer(src: string | undefined, initialDuration?: number
 
     // Event handlers
     const handleLoadedMetadata = () => {
-      // Ne pas écraser la durée si elle a déjà été fournie et est valide
+      // Don't overwrite duration if already provided and valid
       setState((prev) => ({
         ...prev,
         duration: audio.duration && isFinite(audio.duration) ? audio.duration : prev.duration,
@@ -47,7 +47,7 @@ export function useAudioPlayer(src: string | undefined, initialDuration?: number
     };
 
     const handleDurationChange = () => {
-      // Mise à jour de la durée seulement si elle est valide
+      // Update duration only if it's valid
       if (audio.duration && isFinite(audio.duration)) {
         setState((prev) => ({
           ...prev,
@@ -96,7 +96,7 @@ export function useAudioPlayer(src: string | undefined, initialDuration?: number
       }
       setState((prev) => ({
         ...prev,
-        error: 'Erreur lors du chargement de l\'audio',
+        error: 'Error loading audio',
         isLoading: false,
       }));
     };
@@ -143,10 +143,10 @@ export function useAudioPlayer(src: string | undefined, initialDuration?: number
   const play = useCallback(() => {
     if (audioRef.current) {
       audioRef.current.play().catch((err) => {
-        console.error('Erreur lors de la lecture:', err);
+        console.error('Error playing audio:', err);
         setState((prev) => ({
           ...prev,
-          error: 'Impossible de lire l\'audio',
+          error: 'Unable to play audio',
         }));
       });
       setState((prev) => ({ ...prev, isPlaying: true, error: null }));
