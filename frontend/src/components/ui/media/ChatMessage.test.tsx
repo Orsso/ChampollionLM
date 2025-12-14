@@ -19,7 +19,7 @@ describe('ChatMessage', () => {
     it('renders metadata badges', () => {
         const metadata = { action: 'explain' };
         render(<ChatMessage role="assistant" content="Explained" metadata={metadata} />);
-        expect(screen.getByText('EXPLIQUER')).toBeInTheDocument();
+        expect(screen.getByText('EXPLAIN')).toBeInTheDocument();
     });
 
     it('handles streaming state', () => {

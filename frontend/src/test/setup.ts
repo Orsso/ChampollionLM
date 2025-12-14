@@ -4,6 +4,7 @@
  * Configures:
  * - jest-dom matchers for DOM assertions
  * - MSW server for API mocking
+ * - i18n for translations
  * - Global test utilities
  */
 import '@testing-library/jest-dom/vitest';
@@ -14,7 +15,7 @@ import { server } from './mocks/server';
 // Increase default timeout for async utilities (helps in CI)
 configure({ asyncUtilTimeout: 5000 });
 
-// Mock localStorage
+// Mock localStorage - MUST be defined before i18n import
 const localStorageMock = (() => {
   let store: Record<string, string> = {};
   return {
@@ -39,6 +40,7 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
   writable: true,
 });
+
 
 // Mock window.matchMedia for components using media queries
 Object.defineProperty(window, 'matchMedia', {
@@ -88,15 +90,19 @@ Object.defineProperty(window, 'location', {
   writable: true,
 });
 
-// MSW Server setup
-beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
+// MSW Server setup and i18n initialization
+beforeAll(async () => {
+  // Initialize i18n before tests run
+  await import('../lib/i18n');
+  server.listen({ onUnhandledRequest: 'warn' });
+});
 afterEach(() => {
   cleanup();
   server.resetHandlers();
 });
 afterAll(() => server.close());
 
-// Reset localStorage between tests
+// Reset localStorage between tests (but keep language setting)
 beforeEach(() => {
   localStorageMock.clear();
 });
