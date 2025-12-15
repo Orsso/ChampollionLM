@@ -137,15 +137,6 @@ export function Settings() {
           variant="colored"
         />
 
-        {/* Language Section */}
-        <Card className="mb-6">
-          <h2 className="text-2xl font-bold text-black mb-2">{t('settings.language.title')}</h2>
-          <p className="text-gray-600 font-medium mb-4">
-            {t('settings.language.description')}
-          </p>
-          <LanguageSelector />
-        </Card>
-
         {/* Demo Access Info - Only visible to demo users */}
         {user?.is_demo_user && (
           <Card variant="colored" className="mb-6 bg-cyan-100">
@@ -243,6 +234,15 @@ export function Settings() {
               )}
             </div>
           </form>
+        </Card>
+
+        {/* Language Section */}
+        <Card className="mb-6">
+          <h2 className="text-2xl font-bold text-black mb-2">{t('settings.language.title')}</h2>
+          <p className="text-gray-600 font-medium mb-4">
+            {t('settings.language.description')}
+          </p>
+          <LanguageSelector />
         </Card>
 
         {/* Password Change Section */}

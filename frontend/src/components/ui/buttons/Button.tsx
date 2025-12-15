@@ -53,34 +53,36 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({
   // Size styles
   const sizeStyles = SIZES[size];
 
-  // Variant styles
+  // Variant styles (with active press effect for all states)
+  // Active buttons are already at 2px offset, so they press to 4px (additional 2px)
+  // Non-active buttons press from 0 to 4px
+  const activePressNormal = 'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none';
+  const activePressFromActive = 'active:translate-x-[4px] active:translate-y-[4px] active:shadow-none';
   let variantStyles = '';
 
   switch (variant) {
     case 'primary':
       if (active) {
-        variantStyles = `bg-orange-500 text-white translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`;
+        variantStyles = `bg-orange-500 text-white translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${activePressFromActive}`;
       } else {
-        variantStyles = `bg-orange-500 text-white hover:bg-orange-600 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium}`;
+        variantStyles = `bg-orange-500 text-white hover:bg-orange-600 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium} ${activePressNormal}`;
       }
       break;
     case 'secondary':
       if (active) {
-        // Active: Orange background (Brand), white text, pressed down (no hover movement)
-        variantStyles = `bg-orange-500 text-white translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]`;
+        variantStyles = `bg-orange-500 text-white translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${activePressFromActive}`;
       } else {
-        // Normal: White background, hover effect
-        variantStyles = `bg-white text-black hover:bg-orange-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium}`;
+        variantStyles = `bg-white text-black hover:bg-orange-50 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium} ${activePressNormal}`;
       }
       break;
     case 'danger':
-      variantStyles = `bg-white text-black hover:bg-red-500 hover:text-white hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium}`;
+      variantStyles = `bg-white text-black hover:bg-red-500 hover:text-white hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${SHADOWS.medium} ${activePressNormal}`;
       break;
     case 'ghost':
       if (active) {
-        variantStyles = `bg-slate-100 translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] border-black`;
+        variantStyles = `bg-slate-100 translate-x-[2px] translate-y-[2px] shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] border-black ${activePressFromActive}`;
       } else {
-        variantStyles = `bg-transparent text-black hover:bg-slate-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] border-transparent hover:border-black`;
+        variantStyles = `bg-transparent text-black hover:bg-slate-100 hover:translate-x-[2px] hover:translate-y-[2px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] border-transparent hover:border-black ${activePressNormal}`;
       }
       break;
   }

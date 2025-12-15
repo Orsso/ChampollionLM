@@ -123,7 +123,7 @@
       "title": "Clé API",
       "configured": "Clé configurée",
       "description": "Configurez votre clé API pour les services de transcription et génération de notes",
-      "label": "Clé API STT/LLM",
+      "label": "Clé API Mistral",
       "placeholder": "sk-...",
       "required": "Clé API requise",
       "success": "Clé API mise à jour avec succès",

@@ -92,20 +92,35 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
         }
     }, [readySources, hasInitializedSources]);
 
-    const scrollToBottom = useCallback((force = false) => {
+    // Track if user is near the bottom (for auto-scroll behavior)
+    const isNearBottomRef = useRef(true);
+    const SCROLL_THRESHOLD = 150; // px from bottom to consider "near bottom"
+
+    // Update near-bottom status on scroll
+    const handleScroll = useCallback(() => {
         const container = messagesContainerRef.current;
         if (!container) return;
-        const isNearBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 100;
-        if (force || isNearBottom || shouldScrollRef.current) {
-            container.scrollTop = container.scrollHeight;
-            shouldScrollRef.current = false;
-        }
+        const distanceFromBottom = container.scrollHeight - container.scrollTop - container.clientHeight;
+        isNearBottomRef.current = distanceFromBottom < SCROLL_THRESHOLD;
     }, []);
 
+    // Smooth scroll to bottom
+    const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+        const container = messagesContainerRef.current;
+        if (!container) return;
+        container.scrollTo({
+            top: container.scrollHeight,
+            behavior
+        });
+    }, []);
+
+    // Auto-scroll on new messages or streaming content, but only if user is near bottom
     useEffect(() => {
-        shouldScrollRef.current = true;
-        scrollToBottom(true);
-    }, [messages.length, scrollToBottom]);
+        if (isNearBottomRef.current || shouldScrollRef.current) {
+            scrollToBottom(shouldScrollRef.current ? 'instant' : 'smooth');
+            shouldScrollRef.current = false;
+        }
+    }, [messages, scrollToBottom]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -223,7 +238,7 @@ export function ProjectChatPanel({ projectId, sources }: ProjectChatPanelProps) 
             {/* CENTER: Main chat area - No container, integrated into background */}
             <div className="flex-1 flex flex-col min-w-0 min-h-0">
                 {/* Messages area */}
-                <div ref={messagesContainerRef} className="flex-1 min-h-0 overflow-y-auto px-4 pt-4 pb-2">
+                <div ref={messagesContainerRef} onScroll={handleScroll} className="flex-1 min-h-0 overflow-y-auto px-4 pt-4 pb-2">
                     {isLoading ? (
                         <div className="flex items-center justify-center h-full">
                             <div className={`px-4 py-2 font-bold text-sm text-black ${BORDERS.thin} border-black ${RADIUS.subtle} bg-white animate-pulse`}>

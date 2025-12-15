@@ -373,9 +373,8 @@ export function useProjectChat(projectId: number | string): UseProjectChatReturn
                 }
             }
 
-            if (currentSession?.id) {
-                await loadHistory(currentSession.id);
-            }
+            // Note: We don't call loadHistory here anymore to avoid flicker
+            // The streaming already updates messages in real-time
             await loadSessions(); // Refresh session list to update message counts
         } catch (err) {
             if (err instanceof Error && err.name === 'AbortError') {
@@ -389,7 +388,7 @@ export function useProjectChat(projectId: number | string): UseProjectChatReturn
             setSearchStatus({ isSearching: false });
             abortControllerRef.current = null;
         }
-    }, [projectId, currentSession, loadHistory, loadSessions]);
+    }, [projectId, currentSession, loadSessions]);
 
     return {
         messages,

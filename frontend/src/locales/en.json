@@ -123,7 +123,7 @@
             "title": "API Key",
             "configured": "Key configured",
             "description": "Configure your API key for transcription and notes generation services",
-            "label": "STT/LLM API Key",
+            "label": "Mistral API Key",
             "placeholder": "sk-...",
             "required": "API key required",
             "success": "API key updated successfully",
