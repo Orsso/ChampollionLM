@@ -271,6 +271,18 @@ async def _transcribe_audio_source(session: AsyncSession, source: Source, provid
     if source.type == SourceType.AUDIO:
         # Audio sources use MIME type like 'audio/mpeg'
         source_format = getattr(source, 'source_metadata', {}).get('format') if hasattr(source, 'source_metadata') else None
+        
+        # If format is an extension (e.g., 'mp3'), convert to MIME type
+        if source_format and not source_format.startswith('audio/'):
+            extension_to_mime = {
+                'mp3': 'audio/mpeg',
+                'wav': 'audio/wav',
+                'webm': 'audio/webm',
+                'm4a': 'audio/mp4',
+                'aac': 'audio/aac',
+            }
+            source_format = extension_to_mime.get(source_format.lower())
+        
         if not source_format:
             # Fallback: guess from file extension
             import mimetypes
