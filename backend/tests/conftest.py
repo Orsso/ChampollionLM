@@ -71,7 +71,7 @@ async def client(tmp_path) -> AsyncGenerator[AsyncClient, None]:
     db_path = tmp_path / "test.db"
     storage_root = tmp_path / "audio"
     os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{db_path}"
-    os.environ["AUDIO_STORAGE_ROOT"] = str(storage_root)
+    os.environ["FILE_STORAGE_ROOT"] = str(storage_root)
 
     storage_root.mkdir(parents=True, exist_ok=True)
 
