@@ -343,7 +343,9 @@
       "importSourcesHint": "Importez des sources pour activer la recherche.",
       "askAboutSources": "Posez des questions sur vos sources.",
       "noSourcesPanel": "Aucune source.",
-      "importSourcesAction": "Importez des sources."
+      "importSourcesAction": "Importez des sources.",
+      "searching": "Recherche de documents...",
+      "searchingWithQuery": "Recherche de documents : « {{query}} »"
     }
   },
   "upload": {
@@ -398,6 +400,9 @@
     "grantError": "Erreur lors de l'attribution",
     "revokeError": "Erreur lors de la révocation",
     "grantSuccess": "Accès demo accordé à {{email}} pour {{days}} jours",
-    "revokeSuccess": "Accès demo révoqué pour {{email}}"
+    "revokeSuccess": "Accès demo révoqué pour {{email}}",
+    "adminBadge": "Admin",
+    "apiKeyBadge": "Clé API",
+    "daysOption": "{{count}} jours"
   }
 }

@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Badge, ShinyText } from '../ui/feedback';
 import { DocumentCard } from './DocumentCard';
 import { deleteDocument } from '../../lib/api';
@@ -30,6 +31,7 @@ export function DocumentsList({
     onMutate,
     onDocumentClick
 }: DocumentsListProps) {
+    const { t } = useTranslation();
     const { confirmingId, handleDelete } = useConfirmDelete<number>();
 
     const handleDeleteClick = async (documentId: number) => {
@@ -62,7 +64,7 @@ export function DocumentsList({
       bg-white
       p-6
     `}>
-            <h2 className="text-xl font-black text-black mb-4">Documents générés</h2>
+            <h2 className="text-xl font-black text-black mb-4">{t('project.documents.title')}</h2>
 
             <div className="space-y-3">
                 {/* Show generating placeholder as a card */}
@@ -81,13 +83,13 @@ export function DocumentsList({
                                     {generatingDocTitle || projectTitle || 'Document'}
                                 </h3>
                                 <div className="text-slate-600 text-sm mt-1 font-medium">
-                                    En cours de génération...
+                                    {t('project.documents.generating')}
                                 </div>
                             </div>
 
                             <div className="flex-shrink-0">
                                 <Badge color="amber">
-                                    <ShinyText size="sm">Génération...</ShinyText>
+                                    <ShinyText size="sm">{t('project.documents.generating')}</ShinyText>
                                 </Badge>
                             </div>
                         </div>

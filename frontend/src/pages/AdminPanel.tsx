@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../hooks';
 import { fetcher } from '../lib/api';
 import { PageHeader } from '../components/ui/layout';
@@ -14,6 +15,7 @@ import type { UserAdmin } from '../types';
  * Only accessible to superusers.
  */
 export function AdminPanel() {
+    const { t } = useTranslation();
     const navigate = useNavigate();
     const { user } = useAuth();
     const [users, setUsers] = useState<UserAdmin[]>([]);
@@ -41,7 +43,7 @@ export function AdminPanel() {
                 const data = await fetcher<UserAdmin[]>('/api/admin/users');
                 setUsers(data);
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Erreur lors du chargement des utilisateurs');
+                setError(err instanceof Error ? err.message : t('admin.loadError'));
             } finally {
                 setLoading(false);
             }
@@ -68,7 +70,7 @@ export function AdminPanel() {
                 }),
             });
 
-            setSuccess(`Accès demo accordé à ${grantEmail} pour ${grantDays} jours`);
+            setSuccess(t('admin.grantSuccess', { email: grantEmail, days: grantDays }));
             setGrantEmail('');
             setGrantNotes('');
 
@@ -76,14 +78,14 @@ export function AdminPanel() {
             const data = await fetcher<UserAdmin[]>('/api/admin/users');
             setUsers(data);
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Erreur lors de l\'attribution');
+            setError(err instanceof Error ? err.message : t('admin.grantError'));
         } finally {
             setIsGranting(false);
         }
     };
 
     const handleRevokeAccess = async (userId: number, userEmail: string) => {
-        if (!confirm(`Révoquer l'accès demo de ${userEmail} ?`)) return;
+        if (!confirm(t('admin.revokeConfirm', { email: userEmail }))) return;
 
         setError(null);
         setSuccess(null);
@@ -93,13 +95,13 @@ export function AdminPanel() {
                 method: 'DELETE',
             });
 
-            setSuccess(`Accès demo révoqué pour ${userEmail}`);
+            setSuccess(t('admin.revokeSuccess', { email: userEmail }));
 
             // Refresh user list
             const data = await fetcher<UserAdmin[]>('/api/admin/users');
             setUsers(data);
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Erreur lors de la révocation');
+            setError(err instanceof Error ? err.message : t('admin.revokeError'));
         }
     };
 
@@ -118,8 +120,8 @@ export function AdminPanel() {
     return (
         <div className="max-w-4xl mx-auto">
             <PageHeader
-                title="Panel Admin"
-                subtitle="Gestion des accès demo"
+                title={t('admin.title')}
+                subtitle={t('admin.subtitle')}
             />
 
             {error && (
@@ -138,10 +140,10 @@ export function AdminPanel() {
 
             {/* Grant Access Form */}
             <Card className="mb-8">
-                <h2 className="text-xl font-black uppercase mb-4 text-black">Accorder un accès demo</h2>
+                <h2 className="text-xl font-black uppercase mb-4 text-black">{t('admin.grantAccess')}</h2>
                 <form onSubmit={handleGrantAccess} className="space-y-4">
                     <div>
-                        <label className="block font-bold mb-1 text-black">Email de l'utilisateur</label>
+                        <label className="block font-bold mb-1 text-black">{t('admin.userEmail')}</label>
                         <input
                             type="email"
                             value={grantEmail}
@@ -153,21 +155,21 @@ export function AdminPanel() {
                     </div>
                     <div className="flex gap-4">
                         <div className="flex-1">
-                            <label className="block font-bold mb-1 text-black">Durée (jours)</label>
+                            <label className="block font-bold mb-1 text-black">{t('admin.duration')}</label>
                             <select
                                 value={grantDays}
                                 onChange={(e) => setGrantDays(Number(e.target.value))}
                                 className={`w-full p-3 ${BORDERS.normal} border-black focus:outline-none`}
                             >
-                                <option value={7}>7 jours</option>
-                                <option value={14}>14 jours</option>
-                                <option value={30}>30 jours</option>
-                                <option value={60}>60 jours</option>
-                                <option value={90}>90 jours</option>
+                                <option value={7}>{t('admin.daysOption', { count: 7 })}</option>
+                                <option value={14}>{t('admin.daysOption', { count: 14 })}</option>
+                                <option value={30}>{t('admin.daysOption', { count: 30 })}</option>
+                                <option value={60}>{t('admin.daysOption', { count: 60 })}</option>
+                                <option value={90}>{t('admin.daysOption', { count: 90 })}</option>
                             </select>
                         </div>
                         <div className="flex-1">
-                            <label className="block font-bold mb-1 text-black">Notes (optionnel)</label>
+                            <label className="block font-bold mb-1 text-black">{t('admin.notes')}</label>
                             <input
                                 type="text"
                                 value={grantNotes}
@@ -181,7 +183,7 @@ export function AdminPanel() {
                         type="submit"
                         disabled={isGranting || !grantEmail}
                     >
-                        {isGranting ? 'Attribution...' : 'Accorder l\'accès'}
+                        {isGranting ? t('admin.granting') : t('admin.grantBtn')}
                     </Button>
                 </form>
             </Card>
@@ -189,11 +191,11 @@ export function AdminPanel() {
             {/* Users List */}
             <Card>
                 <h2 className="text-xl font-black uppercase mb-4 text-black">
-                    Utilisateurs ({users.length})
+                    {t('admin.users')} ({users.length})
                 </h2>
 
                 {loading ? (
-                    <p className="text-gray-600">Chargement...</p>
+                    <p className="text-gray-600">{t('common.loading')}</p>
                 ) : (
                     <div className="space-y-3">
                         {users.map((u) => (
@@ -204,12 +206,12 @@ export function AdminPanel() {
                                 <div className="flex-1 min-w-0">
                                     <div className="font-bold truncate text-black">{u.email}</div>
                                     <div className="text-sm text-gray-600 flex flex-wrap gap-2 mt-1">
-                                        <span>Inscrit le {formatDate(u.created_at)}</span>
+                                        <span>{t('admin.registeredOn')} {formatDate(u.created_at)}</span>
                                         {u.is_superuser && (
-                                            <Badge color="purple">Admin</Badge>
+                                            <Badge color="purple">{t('admin.adminBadge')}</Badge>
                                         )}
                                         {u.has_api_key && (
-                                            <Badge color="green">Clé API</Badge>
+                                            <Badge color="green">{t('admin.apiKeyBadge')}</Badge>
                                         )}
                                     </div>
                                 </div>
@@ -225,16 +227,16 @@ export function AdminPanel() {
                                                 size="sm"
                                                 onClick={() => handleRevokeAccess(u.id, u.email)}
                                             >
-                                                Révoquer
+                                                {t('admin.revoke')}
                                             </Button>
                                         </>
                                     ) : u.demo_access ? (
                                         <Badge color="gray">
-                                            Demo expiré/révoqué
+                                            {t('admin.demoExpired')}
                                         </Badge>
                                     ) : !u.has_api_key ? (
                                         <span className="text-sm text-gray-500">
-                                            Sans accès API
+                                            {t('admin.noApiAccess')}
                                         </span>
                                     ) : null}
                                 </div>

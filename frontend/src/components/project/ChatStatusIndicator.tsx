@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SearchIcon, SparklesIcon } from '../ui/icons';
 import { BORDERS, RADIUS, SHADOWS } from '../../constants/styles';
 
@@ -9,6 +10,7 @@ interface ChatStatusIndicatorProps {
 }
 
 export function ChatStatusIndicator({ isSearching, query, isTyping }: ChatStatusIndicatorProps) {
+    const { t } = useTranslation();
     // Local state to enforce minimum display time for search
     const [displayedSearch, setDisplayedSearch] = useState(isSearching);
     const [displayedQuery, setDisplayedQuery] = useState(query);
@@ -62,7 +64,10 @@ export function ChatStatusIndicator({ isSearching, query, isTyping }: ChatStatus
                             <SearchIcon size={16} />
                         </div>
                         <span className="text-xs font-bold text-slate-700 animate-pulse">
-                            Recherche de documents{displayedQuery ? ` : « ${displayedQuery} »` : '...'}
+                            {displayedQuery
+                                ? t('project.chat.searchingWithQuery', { query: displayedQuery })
+                                : t('project.chat.searching')
+                            }
                         </span>
                     </>
                 ) : (
@@ -71,7 +76,7 @@ export function ChatStatusIndicator({ isSearching, query, isTyping }: ChatStatus
                             <SparklesIcon size={16} />
                         </div>
                         <span className="text-xs font-bold text-slate-700 animate-pulse">
-                            Génération de la réponse...
+                            {t('project.chat.status.streaming')}
                         </span>
                     </>
                 )}

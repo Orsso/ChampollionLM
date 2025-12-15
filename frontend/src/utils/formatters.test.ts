@@ -1,5 +1,8 @@
 /**
  * Tests for formatting utilities.
+ * 
+ * Tests use language-agnostic matchers since formatters
+ * now use dynamic locale from i18n settings.
  */
 import { describe, it, expect } from 'vitest';
 import {
@@ -12,33 +15,41 @@ import {
 } from './formatters';
 
 describe('formatDate', () => {
-  it('formats ISO date string to French format', () => {
+  it('formats ISO date string to locale format', () => {
     const result = formatDate('2025-01-15');
-    expect(result).toMatch(/15.+janvier.+2025/i);
+    // Match French "15 janvier 2025" or English "January 15, 2025"
+    expect(result).toMatch(/15.+(janvier|January).+2025|January.+15.+2025/i);
   });
 
-  it('returns "Date inconnue" for undefined', () => {
-    expect(formatDate(undefined)).toBe('Date inconnue');
+  it('returns unknown date message for undefined', () => {
+    const result = formatDate(undefined);
+    // Match French "Date inconnue" or English "Unknown date"
+    expect(result).toMatch(/Date inconnue|Unknown date/i);
   });
 
-  it('returns "Date invalide" for invalid date', () => {
-    expect(formatDate('not-a-date')).toBe('Date invalide');
+  it('returns invalid date message for invalid date', () => {
+    const result = formatDate('not-a-date');
+    // Match French "Date invalide" or English "Invalid date"
+    expect(result).toMatch(/Date invalide|Invalid date/i);
   });
 
   it('handles ISO datetime strings', () => {
     const result = formatDate('2025-01-15T14:30:00Z');
-    expect(result).toMatch(/15.+janvier.+2025/i);
+    // Match French "15 janvier 2025" or English "January 15, 2025"
+    expect(result).toMatch(/15.+(janvier|January).+2025|January.+15.+2025/i);
   });
 });
 
 describe('formatDateShort', () => {
-  it('formats date to short French format', () => {
+  it('formats date to short locale format', () => {
     const result = formatDateShort('2025-01-15');
-    expect(result).toMatch(/15.+janv\.?.+2025/i);
+    // Match French "15 janv. 2025" or English "Jan 15, 2025"
+    expect(result).toMatch(/15.+(janv|Jan).+2025|Jan.+15.+2025/i);
   });
 
-  it('returns "Date invalide" for invalid date', () => {
-    expect(formatDateShort('invalid')).toBe('Date invalide');
+  it('returns invalid date message for invalid date', () => {
+    const result = formatDateShort('invalid');
+    expect(result).toMatch(/Date invalide|Invalid date/i);
   });
 });
 
@@ -46,24 +57,29 @@ describe('formatDateTime', () => {
   it('formats datetime with time', () => {
     const result = formatDateTime('2025-01-15T14:30:00');
     expect(result).toMatch(/15/);
-    expect(result).toMatch(/janv\.?/i);
+    // Match French "janv" or English "Jan"
+    expect(result).toMatch(/janv|Jan/i);
   });
 
-  it('returns "Date invalide" for invalid date', () => {
-    expect(formatDateTime('invalid')).toBe('Date invalide');
+  it('returns invalid date message for invalid date', () => {
+    const result = formatDateTime('invalid');
+    expect(result).toMatch(/Date invalide|Invalid date/i);
   });
 });
 
 describe('formatDateSimple', () => {
-  it('formats date to simple French format', () => {
+  it('formats date to simple locale format', () => {
     const result = formatDateSimple('2025-01-15');
-    expect(result).toMatch(/15\/01\/2025/);
+    // Match French "15/01/2025" or English "1/15/2025"
+    expect(result).toMatch(/15\/01\/2025|1\/15\/2025/);
   });
 
-  it('returns "Date invalide" for invalid date', () => {
-    expect(formatDateSimple('invalid')).toBe('Date invalide');
+  it('returns invalid date message for invalid date', () => {
+    const result = formatDateSimple('invalid');
+    expect(result).toMatch(/Date invalide|Invalid date/i);
   });
 });
+
 
 describe('formatDuration', () => {
   it('formats seconds to MM:SS', () => {

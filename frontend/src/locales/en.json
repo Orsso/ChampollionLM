@@ -343,7 +343,9 @@
             "importSourcesHint": "Import sources to enable search.",
             "askAboutSources": "Ask questions about your sources.",
             "noSourcesPanel": "No sources.",
-            "importSourcesAction": "Import sources."
+            "importSourcesAction": "Import sources.",
+            "searching": "Searching documents...",
+            "searchingWithQuery": "Searching documents: '{{query}}'"
         }
     },
     "upload": {
@@ -398,6 +400,9 @@
         "grantError": "Error granting access",
         "revokeError": "Error revoking access",
         "grantSuccess": "Demo access granted to {{email}} for {{days}} days",
-        "revokeSuccess": "Demo access revoked for {{email}}"
+        "revokeSuccess": "Demo access revoked for {{email}}",
+        "adminBadge": "Admin",
+        "apiKeyBadge": "API Key",
+        "daysOption": "{{count}} days"
     }
 }
